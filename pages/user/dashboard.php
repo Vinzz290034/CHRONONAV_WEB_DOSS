@@ -44,9 +44,385 @@ if (isset($user['role'])) {
     }
 }
 require_once $header_path;
+
 ?>
 
 <link rel="stylesheet" href="../../assets/css/user_css/dashboards.css">
+
+<style>
+    body {
+        background-color: rgb(255, 255, 255)
+    }
+
+    .main-dashboard-content {
+        margin-left: 20%;
+        padding: 20px 35px;
+    }
+
+    .main-dashboard-content-wrapper {
+        font-family: "Space Grotesk", "Noto Sans", sans-serif;
+        min-height: 100vh;
+        padding-top: 20px;
+    }
+
+    /* Custom styles to match the exact design */
+    .search-bar {
+        display: flex;
+        align-items: center;
+        background-color: rgb(231, 231, 231);
+        border-radius: 0.75rem;
+        padding: 0px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+        margin-top: 15px;
+        margin-bottom: 25px;
+    }
+
+    .search-bar-custom {
+        height: 48px;
+        background-color: #eaedf1;
+        border-radius: 0.75rem;
+        border: none;
+    }
+
+    .search-bar-custom .input-group-text {
+        background-color: #eaedf1;
+        border: none;
+        border-radius: 0.75rem 0 0 0.75rem;
+        color: #5c748a;
+        padding-left: 1rem;
+    }
+
+    .search-bar-custom .form-control {
+        background-color: #eaedf1;
+        border: none;
+        border-radius: 0 0.75rem 0.75rem 0;
+        color: #101518;
+        padding-left: 0.5rem;
+        height: 48px;
+    }
+
+    .search-bar-custom .form-control:focus {
+        box-shadow: none;
+        background-color: #eaedf1;
+    }
+
+    .search-bar-custom .form-control::placeholder {
+        color: #5c748a;
+    }
+
+    .study-load-card-custom {
+        border-radius: 0.75rem;
+        overflow: hidden;
+        border: none;
+        background: white;
+    }
+
+    .study-load-image-custom {
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        border-radius: 0.75rem;
+        min-height: 200px;
+        height: 100%;
+    }
+
+    .class-item-custom {
+        background-color: #f9fafb;
+        padding: 12px 16px;
+        border-radius: 0.5rem;
+        margin-bottom: 8px;
+    }
+
+    .class-image-custom {
+        width: 56px;
+        height: 74.67px;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        border-radius: 0.5rem;
+        flex-shrink: 0;
+    }
+
+    .btn-custom-outline {
+        background-color: #eaedf1;
+        color: #101518;
+        border: none;
+        border-radius: 9999px;
+        font-weight: 500;
+        font-size: 0.875rem;
+        padding: 8px 16px;
+        min-width: 84px;
+        height: 32px;
+    }
+
+    .btn-custom-primary {
+        background-color: #dce8f3;
+        color: #101518;
+        border: none;
+        border-radius: 9999px;
+        font-weight: 500;
+        font-size: 0.875rem;
+        padding: 8px 16px;
+        min-width: 84px;
+        height: 32px;
+    }
+
+    .text-truncate-2 {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .welcome-title {
+        font-size: 28px;
+        font-weight: bold;
+        color: #101518;
+        line-height: 1.2;
+    }
+
+    .section-title {
+        font-size: 22px;
+        font-weight: bold;
+        color: #101518;
+        line-height: 1.2;
+    }
+
+    .onboarding-controls .btn-custom-blue,
+    .onboarding-controls .btn-custom-primary,
+    .onboarding-controls .btn-custom-outline {
+        background: #E8EDF2;
+    }
+
+    .onboarding-controls .btn-custom-blue:hover,
+    .onboarding-controls .btn-custom-primary:hover,
+    .onboarding-controls .btn-custom-outline:hover {
+        color: #2e78c6;
+    }
+
+    /* Scrollbar Styling */
+    ::-webkit-scrollbar {
+        width: 12px;
+        height: 12px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: #ffffff;
+        /* white track */
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background-color: #737373;
+        /* gray thumb */
+        border-radius: 6px;
+        border: 3px solid #ffffff;
+        /* padding effect with white border */
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background-color: #2e78c6;
+        /* blue on hover */
+    }
+
+
+
+    /* Mobile: 767px and below */
+    @media (max-width: 767px) {
+        .main-dashboard-content {
+            margin-left: 0;
+            padding: 15px;
+        }
+
+        .welcome-title {
+            font-size: 22px;
+        }
+
+        .section-title {
+            font-size: 18px;
+        }
+
+        .search-bar-custom {
+            height: 42px;
+        }
+
+        .search-bar-custom .form-control {
+            height: 42px;
+            font-size: 0.875rem;
+        }
+
+        input#searchInput {
+            padding-right: 1rem;
+        }
+
+        .study-load-card-custom .row {
+            flex-direction: column;
+        }
+
+        .study-load-image-custom {
+            min-height: 150px;
+        }
+
+        .class-item-custom {
+            /* REVERT: Keep class item horizontal on mobile */
+            display: flex;
+            /* Ensure it's a flex container */
+            align-items: center;
+            /* Vertically align image/text */
+            justify-content: space-between;
+            /* Space out the content and the button */
+            margin-bottom: 12px;
+            /* Add slight separation */
+            padding: 12px 16px;
+            /* Restore padding */
+            gap: 10px;
+            /* Space between elements */
+            min-width: 100%;
+            /* FIX 1: Ensure the container doesn't overflow */
+        }
+
+        .class-image-custom {
+            /* REVERT: Small fixed size for image on mobile */
+            width: 56px;
+            height: 74.67px;
+            flex-shrink: 0;
+            /* Important: prevents image from shrinking */
+        }
+
+        .class-item-custom .d-flex.flex-column.flex-grow-1 {
+            /* FIX 2: Important - allows the child elements (text) to be compressed */
+            min-width: 60%;
+            /* Important for spacing between image and text */
+            gap: 10px;
+        }
+
+        .d-flex.align-items-center.flex-grow-1 {
+            min-width: 60%;
+        }
+
+        /* FIX: Ensure the button doesn't wrap or overlap text on small screens */
+        .class-item-custom button {
+            flex-shrink: 0;
+            /* Ensure button doesn't shrink */
+            min-width: 70px;
+            /* Give the button a minimal width */
+        }
+
+        .onboarding-controls .d-flex {
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .onboarding-controls .btn {
+            width: 100%;
+        }
+
+        .dashboard-widgets-grid {
+            margin-bottom: 20px;
+        }
+    }
+
+    /* Tablet: 768px to 1023px */
+    @media (min-width: 768px) and (max-width: 1023px) {
+        .main-dashboard-content {
+            margin-left: 80px;
+            padding: 20px 25px;
+        }
+
+        .welcome-title {
+            font-size: 24px;
+        }
+
+        .section-title {
+            font-size: 20px;
+        }
+
+        .study-load-card-custom .row {
+            flex-direction: row;
+        }
+
+        .study-load-image-custom {
+            min-height: 180px;
+        }
+
+        .class-item-custom {
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .class-image-custom {
+            width: 56px;
+            height: 74.67px;
+        }
+    }
+
+    /* Desktop: 1024px and above */
+    @media (min-width: 1024px) {
+        .main-dashboard-content {
+            margin-left: 20%;
+            padding: 20px 35px;
+        }
+
+        .welcome-title {
+            font-size: 28px;
+        }
+
+        .section-title {
+            font-size: 22px;
+        }
+
+        .study-load-card-custom .row {
+            flex-direction: row;
+        }
+
+        .study-load-image-custom {
+            min-height: 200px;
+        }
+
+        .class-item-custom {
+            flex-direction: row;
+            align-items: center;
+        }
+
+        .class-image-custom {
+            width: 56px;
+            height: 74.67px;
+        }
+    }
+
+    /* Demo content styles */
+    body {
+        font-family: 'Space Grotesk', 'Noto Sans', sans-serif;
+        background-color: #f8f9fa;
+        margin: 0;
+        padding: 0;
+    }
+
+    .demo-content {
+        background: white;
+        border-radius: 8px;
+        padding: 2rem;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .screen-size-indicator {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: #333;
+        color: white;
+        padding: 10px 15px;
+        border-radius: 5px;
+        font-size: 0.9rem;
+    }
+</style>
+
+<!-- Favicon -->
+<link rel="icon" type="image/x-icon"
+    href="https://res.cloudinary.com/deua2yipj/image/upload/v1758917007/ChronoNav_logo_muon27.png">
+
+<?php include('../../includes/semantics/head.php'); ?>
 
 <div class="d-flex" id="wrapper" data-user-role="<?= $user_role ?>">
     <?php
@@ -60,67 +436,141 @@ require_once $header_path;
     }
     require_once $sidenav_path;
     ?>
+
     <div class="main-dashboard-content-wrapper" id="page-content-wrapper">
         <div class="main-dashboard-content">
-            <h4>Welcome, <?= htmlspecialchars($user['name']) ?>!</h4>
-
-            <div class="search-bar position-relative">
-                <i class="fas fa-search"></i>
-                <input type="text" id="searchInput" placeholder="Search your schedule, courses, or reminders...">
-                <div id="searchResults" class="list-group position-absolute w-100" style="z-index:1000;"></div>
+            <!-- Header Section -->
+            <div class="d-flex flex-column px-3 pt-4 pb-2">
+                <h2 class="welcome-title mb-0">Welcome, <?= htmlspecialchars($user['name']) ?></h2>
             </div>
-            
-            <div class="card p-4 mb-4">
-                <p>This is your personal space in ChronoNav. Keep an eye on your upcoming schedules and reminders.</p>
+
+
+            <!-- SEARCH BAR WITH AJAX - Updated with proper styling -->
+            <div class="search-bar position-relative mb-4">
+                <div class="input-group search-bar-custom">
+                    <span class="input-group-text">
+                        <i class="fas fa-search"></i>
+                    </span>
+                    <input type="text" id="searchInput" class="form-control"
+                        placeholder="Search your schedule, courses, or reminders...">
+                </div>
+                <div id="searchResults" class="list-group position-absolute w-100 mt-1"
+                    style="z-index:1000; display: none;"></div>
+
+            </div>
+
+            <!-- Welcome Card - Keep original structure but update styling -->
+            <div class="card p-4 mb-4 border-0">
+                <p class="text-dark mb-3">This is your personal space in ChronoNav. Keep an eye on your upcoming
+                    schedules and reminders.</p>
                 <div class="onboarding-controls mt-4 p-3 border rounded">
-                    <h5>Onboarding & Quick Guides</h5>
-                    <p>Learn more about using ChronoNav, view helpful tips, or restart your guided tour.</p>
-                    <button class="btn btn-primary me-2 mb-2" id="viewTourBtn"><i class="fas fa-route me-1"></i> View Step-by-Step Tour</button>
-                    <button class="btn btn-info me-2 mb-2" id="viewTipsBtn"><i class="fas fa-lightbulb me-1"></i> View Tips</button>
-                    <button class="btn btn-secondary mb-2" id="restartOnboardingBtn"><i class="fas fa-sync-alt me-1"></i> Restart Onboarding</button>
+                    <h5 class="text-dark fw-bold mb-3">Onboarding & Quick Guides</h5>
+                    <p class="text-muted mb-3">Learn more about using ChronoNav, view helpful tips, or restart your
+                        guided tour.</p>
+                    <div class="d-flex flex-wrap gap-2">
+                        <button class="btn btn-custom-blue rounded-pill" id="viewTourBtn">
+                            <i class="fas fa-route me-1"></i> View Tour
+                        </button>
+                        <button class="btn btn-custom-primary rounded-pill" id="viewTipsBtn">
+                            <i class="fas fa-lightbulb me-1"></i> View Tips
+                        </button>
+                        <button class="btn btn-custom-outline rounded-pill" id="restartOnboardingBtn">
+                            <i class="fas fa-sync-alt me-1"></i> Restart Onboarding
+                        </button>
+                    </div>
                 </div>
                 <div id="onboardingContent" class="mt-3"></div>
             </div>
 
-            <div class="dashboard-widgets-grid">
-                
-                <div class="schedule-widget card p-3 mb-4">
-                    <h5><i class="fas fa-calendar-alt me-2"></i> My Current Study Load</h5>
-                    <div id="scheduleDisplayContent">
-                        <?php if (empty($user_schedule)): ?>
-                            <div class="text-center p-5">
-                                <i class="fas fa-clock fa-3x text-secondary mb-3"></i>
-                                <p class="text-muted">No schedule found. Get started by adding your study load!</p>
-                                <button class="btn btn-add-lg" data-bs-toggle="modal" data-bs-target="#ocrModal"><i class="fas fa-file-upload me-2"></i> Add Study Load</button>
+            <!-- Study Load Card - Updated with proper Bootstrap grid -->
+            <div class="dashboard-widgets-grid mb-4 px-3">
+                <div class="card study-load-card-custom p-0 w-100">
+                    <div class="row g-0">
+                        <div class="col-12 col-xl-8">
+                            <div class="study-load-image-custom"
+                                style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuD954QIt-gjVs85lBbDP2JqyWtLS1JkL27Y6Or63Qm3SYXXEDGjS_1Zgz278DlR8dGPMDnq8uXRg0NvWFNn3z_sMSFPbzFtTechOl28InzjkBN3fVGWU6VTWRVXNPZ075PPeYJEwmqq6Ye_2n0zcXbwnnIIuRWWKPhUIkz9xa5GmLFWyH_h59WBby1QwlzB_LSr5EVKikvNrmrRTfzrOlefxoZ9Z6fADSNh2E7pi7YyQKNhdB6PlANQDzni9dCVi1p3Ucbkn9SEvw0");'>
                             </div>
-                        <?php else: ?>
-                            <table class="table table-sm table-striped table-hover">
-                                <thead>
-                                    <tr>
-                                        <th>Course</th>
-                                        <th>Time</th>
-                                        <th>Days</th>
-                                        <th>Room</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php foreach ($user_schedule as $item): ?>
-                                        <tr>
-                                            <td><?= htmlspecialchars($item['course_no']) ?></td>
-                                            <td><?= htmlspecialchars($item['time']) ?></td>
-                                            <td><?= htmlspecialchars($item['days']) ?></td>
-                                            <td><?= htmlspecialchars($item['room']) ?></td>
-                                        </tr>
-                                    <?php endforeach; ?>
-                                </tbody>
-                            </table>
-                            <div class="text-end">
-                                <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#ocrModal"><i class="fas fa-edit me-1"></i> Update Schedule</button>
+                        </div>
+                        <div class="col-12 col-xl-4">
+                            <div class="card-body d-flex flex-column justify-content-center h-100 p-4">
+                                <h5 class="card-title fw-bold mb-2">Add Study Load</h5>
+                                <div class="d-flex flex-column flex-xl-row justify-content-between align-items-xl-end">
+                                    <div class="mb-3 mb-xl-0 flex-grow-1">
+                                        <p class="text-muted mb-1">Get started by adding your courses for the semester.
+                                        </p>
+                                        <p class="text-muted mb-0">Plan your academic journey with ease. Add your
+                                            courses and stay organized.</p>
+                                    </div>
+                                    <button class="btn btn-custom-primary ms-xl-3" data-bs-toggle="modal"
+                                        data-bs-target="#ocrModal">
+                                        <span>Add</span>
+                                    </button>
+                                </div>
                             </div>
-                        <?php endif; ?>
+                        </div>
                     </div>
                 </div>
+            </div>
+
+            <!-- Upcoming Classes Section -->
+            <div class="px-3 pt-3 pb-1">
+                <h3 class="section-title mb-0">Upcoming Classes</h3>
+            </div>
+
+            <!-- Class Items -->
+            <div class="px-3">
+                <!-- Psychology Class -->
+                <div class="class-item-custom d-flex align-items-center justify-content-between mb-2">
+                    <div class="d-flex align-items-center flex-grow-1">
+                        <div class="class-image-custom me-3"
+                            style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDOM2c6pMyg5RHOOB7ea-JzGe0jnIpnFBEu_4CDiQ7ONL7ZY-yeNsTFX4ofDoztdfYyNkpgDvh3-x-pRBvL4yY52jqzmy1rhhyOa0iVzY5QFRCbGZkv5fmQgfg1gJPyT6YE3Xa8gJeHLKkthPg42CihnKelbc1Y6whTtiIhxHfzlHCqcwXkQ6IcwBDqRfMUrK7BR_Ng89q3rfflSzNdmjXGhCQGbWj5Vv4mpEGlNtosTvZY8vX0QB3UHvArKqn9R0ypBhs8NsocSkU");'>
+                        </div>
+                        <div class="d-flex flex-column flex-grow-1">
+                            <p class="text-dark fw-medium mb-1 text-truncate">Introduction to Psychology</p>
+                            <p class="text-muted small mb-0 text-truncate-2">Room 201 · 10:00 AM - 11:00 AM</p>
+                        </div>
+                    </div>
+                    <button
+                        class="btn btn-custom-outline ms-3 flex-shrink-0 btn-outline-secondary ms-3 flex-shrink-0 rounded-pill">
+                        <span>View</span>
+                    </button>
                 </div>
+
+                <!-- Calculus Class -->
+                <div class="class-item-custom d-flex align-items-center justify-content-between mb-2">
+                    <div class="d-flex align-items-center flex-grow-1">
+                        <div class="class-image-custom me-3"
+                            style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAzOempcQAOz1ClRlfF1DCpzo_NMftLShPYEuW0Tk0krCxtaaAYD6mptvry6TvngRl4eL1GuQoHjW_mxNaa_3a41Er7bF7cokn4msP_rC8rhOC__hZp5G-uGnutB3GelwB9WPP0RdOG38WQ64AXk7VCA0fDnhCNoMBghXsv7FuvxAYXbs_yVKU9hCrsqj1eqVA4F_5gDPhCOA-gQdGf-9xlVQb4usSfjm7NhjKhSixczD2EXFNlBoRbFcndbFMXCeFjpSsLjpjGmjE");'>
+                        </div>
+                        <div class="d-flex flex-column flex-grow-1">
+                            <p class="text-dark fw-medium mb-1 text-truncate">Calculus I</p>
+                            <p class="text-muted small mb-0 text-truncate-2">Room 305 · 11:30 AM - 12:30 PM</p>
+                        </div>
+                    </div>
+                    <button
+                        class="btn btn-custom-outline ms-3 flex-shrink-0 btn-outline-secondary ms-3 flex-shrink-0 rounded-pill">
+                        <span>View</span>
+                    </button>
+                </div>
+
+                <!-- English Literature Class -->
+                <div class="class-item-custom d-flex align-items-center justify-content-between mb-2">
+                    <div class="d-flex align-items-center flex-grow-1">
+                        <div class="class-image-custom me-3"
+                            style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAIslxgzb_Ge2_CuAzi0CCtpc6UYvrCuw1I3jlmS0ACDVDoaXOfOsEQzeNs_HZ-1-_COcnRTacG_nhP-XdJupXhe0pVNN8A4Qp6ufhjLuaiTIt2l6XBzvKBAANxlRY0BEGNeiybpXUKlz7KCTNacTogVXhB8_tjiJrAFYSjxKyHDVCy4VocCquXxzjgCJcrSITFIFGhAbbPz7Wm-gTSf4uigdiTym8eJHrAhY3hx0yIOuKiKmJ79C3UmDSZwZFlqOp9JesWNkOcneU");'>
+                        </div>
+                        <div class="d-flex flex-column flex-grow-1">
+                            <p class="text-dark fw-medium mb-1 text-truncate">English Literature</p>
+                            <p class="text-muted small mb-0 text-truncate-2">Room 102 · 1:00 PM - 2:00 PM</p>
+                        </div>
+                    </div>
+                    <button
+                        class="btn btn-custom-outline ms-3 flex-shrink-0 btn-outline-secondary ms-3 flex-shrink-0 rounded-pill">
+                        <span>View</span>
+                    </button>
+                </div>
+            </div>
+
         </div>
     </div>
 </div>
@@ -131,39 +581,47 @@ require_once $header_path;
     <?= json_encode($onboarding_steps); ?>
 </script>
 
+
+<!-- OCR MODAL - Keep original structure -->
+
 <div class="modal fade" id="ocrModal" tabindex="-1" aria-labelledby="ocrModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="ocrModalLabel">OCR Study Load Reader</h5>
+
+                <h5 class="modal-title fw-bold" id="ocrModalLabel">OCR Study Load Reader</h5>
+
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div id="ocr-alert" class="alert d-none" role="alert"></div>
                 <div id="upload-step">
-                    <h6>Step 1: Upload your PDF file</h6>
+
+                    <h6 class="fw-medium">Step 1: Upload your PDF file</h6>
+
                     <div class="input-group mb-3">
                         <input type="file" class="form-control" id="studyLoadPdf" accept="application/pdf">
                         <label class="input-group-text" for="studyLoadPdf">Upload</label>
                     </div>
-                    <div id="download-link-container" class="alert alert-info d-none mt-3">
-                        <p class="mb-0">You can download the **extracted schedule** (which reflects the data below) as a PDF:</p>
-                        <a href="#" id="downloadExtractedPdf" target="_blank" class="btn btn-sm btn-info mt-2"><i class="fas fa-download me-1"></i> Download Extracted PDF</a>
-                    </div>
-                    <button class="btn btn-primary mt-2" id="processOcrBtn">Process Document</button>
+
+                    <button class="btn btn-primary" id="processOcrBtn">Process Document</button>
                 </div>
 
                 <div id="preview-step" style="display: none;">
-                    <h6>Step 2: Preview Extracted Schedule</h6>
-                    <p class="text-muted">Please review the extracted data for accuracy before confirming.</p>
-                    <div id="preview-content" class="p-3 border rounded mb-3" style="max-height: 400px; overflow-y: auto;">
-                        </div>
+                    <h6 class="fw-medium">Step 2: Preview Extracted Schedule</h6>
+                    <div id="preview-content" class="p-3 border rounded mb-3"
+                        style="max-height: 400px; overflow-y: auto;">
+                        <p class="text-center text-muted">Awaiting file upload...</p>
+                    </div>
+
                     <button class="btn btn-secondary me-2" id="backToUploadBtn">Back</button>
                     <button class="btn btn-success" id="confirmScheduleBtn">Confirm Extracted Schedule</button>
                 </div>
 
                 <div id="confirmation-step" style="display: none;">
-                    <h6>Step 3: Confirmation</h6>
+
+                    <h6 class="fw-medium">Step 3: Confirmation</h6>
+
                     <p>Your study load has been successfully saved!</p>
                     <button class="btn btn-success" data-bs-dismiss="modal">Done</button>
                 </div>
@@ -178,97 +636,59 @@ require_once $header_path;
 <script src="../../assets/js/onboarding_tour.js"></script>
 
 <script>
-// Global variable to hold the extracted schedule data after successful OCR
-let extractedScheduleData = [];
 
-// Function to reset the modal state
-function resetOcrModal() {
-    $("#studyLoadPdf").val(''); // Clear file input
-    $("#upload-step").show();
-    $("#preview-step").hide();
-    $("#confirmation-step").hide();
-    $("#ocr-alert").addClass("d-none").removeClass("alert-success alert-danger alert-info").text('');
-    $("#preview-content").html('<p class="text-center text-muted">Awaiting file upload...</p>');
-    $("#download-link-container").addClass("d-none"); // Hide download link on reset
-    extractedScheduleData = [];
-}
+    // ================== AJAX SEARCH ==================
+    $("#searchInput").on("keyup", function () {
+        let query = $(this).val();
+        if (query.length > 2) {
+            $.ajax({
+                url: "../../pages/user/search.php",
+                method: "GET",
+                data: { q: query },
+                success: function (response) {
+                    let data = JSON.parse(response);
+                    let output = "";
+                    if (data.length > 0) {
+                        data.forEach(item => {
+                            output += `<a href="#" class="list-group-item list-group-item-action">${item.title}</a>`;
+                        });
+                    } else {
+                        output = `<div class="list-group-item text-muted">No results found</div>`;
+                    }
+                    $("#searchResults").html(output).show();
+                }
+            });
+        } else {
+            $("#searchResults").hide();
+        }
+    });
 
-// Reset modal when it's hidden (e.g., user closes it)
-$('#ocrModal').on('hidden.bs.modal', function () {
-    resetOcrModal();
-});
+    // ================== AJAX OCR UPLOAD ==================
+    $("#processOcrBtn").click(function () {
+        let file = $("#studyLoadPdf")[0].files[0];
+        if (!file) {
+            $("#ocr-alert").removeClass("d-none alert-success").addClass("alert-danger").text("Please upload a file first.");
+            return;
+        }
 
+        let formData = new FormData();
+        formData.append("studyLoadPdf", file);
 
-// ================== AJAX SEARCH (UNCHANGED) ==================
-$("#searchInput").on("keyup", function() {
-    let query = $(this).val();
-    if (query.length > 2) {
         $.ajax({
-            url: "../../pages/user/search.php",
-            method: "GET",
-            data: { q: query },
-            success: function(response) {
-                let data = JSON.parse(response);
-                let output = "";
-                if (data.length > 0) {
-                    data.forEach(item => {
-                        output += `<a href="#" class="list-group-item list-group-item-action">${item.title}</a>`;
-                    });
-                } else {
-                    output = `<div class="list-group-item text-muted">No results found</div>`;
-                }
-                $("#searchResults").html(output).show();
-            }
-        });
-    } else {
-        $("#searchResults").hide();
-    }
-});
+            url: "../../pages/user/process_ocr.php",
+            method: "POST",
+            data: formData,
+            processData: false,
+            contentType: false,
+            dataType: "json",
+            success: function (response) {
+                if (response.success) {
+                    $("#upload-step").hide();
+                    $("#preview-step").show();
+                    $("#ocr-alert").removeClass("d-none alert-danger").addClass("alert-success").text("Document processed successfully! Please review the extracted schedule.");
 
-// ================== OCR STEP 1: UPLOAD & PROCESS ==================
-$("#processOcrBtn").click(function() {
-    let file = $("#studyLoadPdf")[0].files[0];
-    if (!file) {
-        $("#ocr-alert").removeClass("d-none alert-success alert-info").addClass("alert-danger").text("Please upload a file first.");
-        return;
-    }
-    
-    // Hide previous download link
-    $("#download-link-container").addClass("d-none");
-    
-    // Show loading state
-    $("#ocr-alert").removeClass("d-none alert-danger alert-success").addClass("alert-info").text("Processing document using Tesseract, please wait... This may take a moment.");
-    $(this).prop('disabled', true).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Processing...');
+                    let scheduleHtml = `<table class="table table-striped table-hover">
 
-    let formData = new FormData();
-    formData.append("studyLoadPdf", file);
-
-    $.ajax({
-        url: "../../pages/user/process_ocr.php",
-        method: "POST",
-        data: formData,
-        processData: false,
-        contentType: false,
-        dataType: "json",
-        success: function(response) {
-            $("#processOcrBtn").prop('disabled', false).text('Process Document'); // Reset button
-            if (response.success) {
-                // Store the extracted data globally for the next step
-                extractedScheduleData = response.schedule; 
-                
-                // Hide upload step and show preview
-                $("#upload-step").hide();
-                $("#preview-step").show();
-                $("#ocr-alert").removeClass("d-none alert-danger alert-info").addClass("alert-success").text("Document processed successfully! Please review the extracted schedule.");
-
-                // Check for and set the download link
-                if (response.extracted_pdf_url) {
-                    $("#downloadExtractedPdf").attr("href", response.extracted_pdf_url);
-                    $("#download-link-container").removeClass("d-none");
-                }
-
-                // Generate HTML for the schedule table
-                let scheduleHtml = `<table class="table table-sm table-striped table-hover">
                                         <thead>
                                             <tr>
                                                 <th>Sched No.</th>
@@ -280,9 +700,10 @@ $("#processOcrBtn").click(function() {
                                             </tr>
                                         </thead>
                                         <tbody>`;
-                
-                extractedScheduleData.forEach(item => {
-                    scheduleHtml += `<tr>
+
+                    response.schedule.forEach(item => {
+                        scheduleHtml += `<tr>
+
                                         <td>${item.sched_no}</td>
                                         <td>${item.course_no}</td>
                                         <td>${item.time}</td>
@@ -290,85 +711,114 @@ $("#processOcrBtn").click(function() {
                                         <td>${item.room}</td>
                                         <td>${item.units}</td>
                                     </tr>`;
-                });
-                
-                scheduleHtml += `</tbody></table>`;
-                $("#preview-content").html(scheduleHtml);
-            } else {
-                // If there's an error from the server, display it
-                $("#ocr-alert").removeClass("d-none alert-success alert-info").addClass("alert-danger").text(response.error);
-                $("#upload-step").show();
-                $("#preview-step").hide();
+                    });
+
+                    scheduleHtml += `</tbody></table>`;
+                    $("#preview-content").html(scheduleHtml);
+                } else {
+                    $("#ocr-alert").removeClass("d-none alert-success").addClass("alert-danger").text(response.error);
+                    $("#upload-step").show();
+                    $("#preview-step").hide();
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                $("#ocr-alert").removeClass("d-none alert-success").addClass("alert-danger").text("An unexpected error occurred during processing. Please try again.");
+                console.error("AJAX Error: ", textStatus, errorThrown);
             }
-        },
-        error: function(jqXHR, textStatus, errorThrown) {
-            $("#processOcrBtn").prop('disabled', false).text('Process Document'); // Reset button
-            // Handle AJAX errors (e.g., server not responding)
-            $("#ocr-alert").removeClass("d-none alert-success alert-info").addClass("alert-danger").text("An unexpected error occurred during processing. Please try again.");
-            console.error("AJAX Error: ", textStatus, errorThrown);
-        }
+        });
+
     });
-});
 
-// ================== OCR STEP 2: BACK BUTTON ==================
-$("#backToUploadBtn").click(function() {
-    $("#upload-step").show();
-    $("#preview-step").hide();
-    $("#ocr-alert").addClass("d-none"); // Clear alert
-    $("#download-link-container").addClass("d-none"); // Hide download link
-});
 
-// ================== OCR STEP 3: CONFIRM & SAVE SCHEDULE (UNCHANGED) ==================
-$("#confirmScheduleBtn").click(function() {
-    if (extractedScheduleData.length === 0) {
-        $("#ocr-alert").removeClass("d-none alert-success").addClass("alert-danger").text("No schedule data to save. Please re-upload your document.");
-        return;
-    }
-    
-    // Show loading state
-    $("#ocr-alert").removeClass("d-none alert-danger alert-success").addClass("alert-info").text("Saving schedule...");
-    $(this).prop('disabled', true).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Saving...');
+    // ================== AJAX ONBOARDING ==================
+    $("#viewTipsBtn").click(function () {
+        $.get("../../pages/user/get_tips.php", function (data) {
+            $("#onboardingContent").html(data);
+        });
+    });
+    $("#restartOnboardingBtn").click(function () {
+        $.post("../../pages/user/restart_onboarding.php", { user: "<?= $user['id'] ?? 0 ?>" }, function (data) {
+            $("#onboardingContent").html("<div class='alert alert-success'>Onboarding restarted!</div>");
+        });
 
-    $.ajax({
-        url: "../../pages/user/save_schedule.php",
-        method: "POST",
-        // Send the extracted schedule data as a JSON string
-        data: { schedule: JSON.stringify(extractedScheduleData) }, 
-        dataType: "json",
-        success: function(response) {
-            $("#confirmScheduleBtn").prop('disabled', false).text('Confirm Extracted Schedule'); // Reset button
-            if (response.success) {
-                $("#preview-step").hide();
-                $("#confirmation-step").show();
-                $("#ocr-alert").removeClass("d-none alert-danger alert-info").addClass("alert-success").text("Success! Your schedule has been saved.");
-                
-                // *** CRITICAL: Refresh the dashboard schedule content ***
-                setTimeout(() => {
-                    // Simple full page refresh to reload the PHP-rendered schedule
-                    window.location.reload(); 
-                }, 1000); 
+    });
 
+    // Back to upload button functionality
+    $("#backToUploadBtn").click(function () {
+        $("#preview-step").hide();
+        $("#upload-step").show();
+        $("#ocr-alert").addClass("d-none");
+    });
+
+
+
+
+    // JavaScript for responsive behavior
+    document.addEventListener('DOMContentLoaded', function () {
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const mainContent = document.querySelector('.main-dashboard-content');
+        const screenSizeText = document.getElementById('screenSizeText');
+
+        // Function to update screen size indicator
+        function updateScreenSizeIndicator() {
+            const width = window.innerWidth;
+            if (width <= 767) {
+                screenSizeText.textContent = 'Mobile';
+            } else if (width >= 768 && width <= 1023) {
+                screenSizeText.textContent = 'Tablet';
             } else {
-                $("#ocr-alert").removeClass("d-none alert-success alert-info").addClass("alert-danger").text(response.error || "An error occurred while saving the schedule.");
+                screenSizeText.textContent = 'Desktop';
             }
-        },
-        error: function(jqXHR, textStatus, errorThrown) {
-            $("#confirmScheduleBtn").prop('disabled', false).text('Confirm Extracted Schedule'); // Reset button
-            $("#ocr-alert").removeClass("d-none alert-success alert-info").addClass("alert-danger").text("An unexpected network error occurred while saving.");
-            console.error("Save Schedule AJAX Error: ", textStatus, errorThrown);
         }
-    });
-});
 
-// ================== AJAX ONBOARDING (UNCHANGED) ==================
-$("#viewTipsBtn").click(function() {
-    $.get("../../pages/user/get_tips.php", function(data) {
-        $("#onboardingContent").html(data);
+        // Toggle sidebar on button click
+        sidebarToggle.addEventListener('click', function () {
+            const isCollapsed = mainContent.style.marginLeft === '0px' ||
+                (window.innerWidth <= 1023 && mainContent.style.marginLeft !== '20%');
+
+            if (isCollapsed) {
+                // Expand sidebar
+                if (window.innerWidth <= 767) {
+                    mainContent.style.marginLeft = '0';
+                } else if (window.innerWidth <= 1023) {
+                    mainContent.style.marginLeft = '80px';
+                } else {
+                    mainContent.style.marginLeft = '20%';
+                }
+            } else {
+                // Collapse sidebar
+                mainContent.style.marginLeft = '0';
+            }
+        });
+
+        // Handle window resize
+        window.addEventListener('resize', function () {
+            updateScreenSizeIndicator();
+
+            // Reset content area based on screen size
+            if (window.innerWidth >= 1024) {
+                mainContent.style.marginLeft = '20%';
+            } else if (window.innerWidth >= 768 && window.innerWidth <= 1023) {
+                mainContent.style.marginLeft = '80px';
+            } else {
+                mainContent.style.marginLeft = '0';
+            }
+        });
+
+        // Initialize
+        updateScreenSizeIndicator();
+
+        // Demo AJAX functionality
+        document.getElementById('viewTipsBtn').addEventListener('click', function () {
+            document.getElementById('onboardingContent').innerHTML =
+                '<div class="alert alert-info">Tips loaded successfully! Here are some helpful tips for using ChronoNav.</div>';
+        });
+
+        document.getElementById('restartOnboardingBtn').addEventListener('click', function () {
+            document.getElementById('onboardingContent').innerHTML =
+                '<div class="alert alert-success">Onboarding restarted successfully!</div>';
+        });
     });
-});
-$("#restartOnboardingBtn").click(function() {
-    $.post("../../pages/user/restart_onboarding.php", { user: "<?= $user['id'] ?? 0 ?>" }, function(data) {
-        $("#onboardingContent").html("<div class='alert alert-success'>Onboarding restarted!</div>");
-    });
-});
 </script>
+
+<?php include('../../includes/semantics/footer.php'); ?>
