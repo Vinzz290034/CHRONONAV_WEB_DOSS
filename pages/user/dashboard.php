@@ -10,6 +10,7 @@ $page_title = "User Dashboard";
 $current_page = "dashboard";
 $display_name = htmlspecialchars($user['name'] ?? 'User');
 $user_role = htmlspecialchars($user['role'] ?? 'user');
+$user_id = $user['id'] ?? 0; // Get user ID for fetching schedule
 
 $onboarding_steps = [];
 try {
@@ -18,6 +19,21 @@ try {
 } catch (PDOException $e) {
     error_log("Onboarding data fetch error: " . $e->getMessage());
 }
+
+// --- NEW PHP FUNCTION: Fetch User's Schedule ---
+function getUserSchedule($user_id, $pdo) {
+    try {
+        // Assuming your schedule table is named 'user_schedule'
+        $stmt = $pdo->prepare("SELECT course_no, time, days, room, instructor FROM user_schedule WHERE user_id = ? ORDER BY FIELD(days, 'M', 'T', 'W', 'Th', 'F', 'S'), time");
+        $stmt->execute([$user_id]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        error_log("Failed to fetch user schedule: " . $e->getMessage());
+        return [];
+    }
+}
+$user_schedule = getUserSchedule($user_id, $pdo);
+// --- END NEW PHP FUNCTION ---
 
 $header_path = '../../templates/user/header_user.php';
 if (isset($user['role'])) {
@@ -428,6 +444,7 @@ require_once $header_path;
                 <h2 class="welcome-title mb-0">Welcome, <?= htmlspecialchars($user['name']) ?></h2>
             </div>
 
+
             <!-- SEARCH BAR WITH AJAX - Updated with proper styling -->
             <div class="search-bar position-relative mb-4">
                 <div class="input-group search-bar-custom">
@@ -439,6 +456,7 @@ require_once $header_path;
                 </div>
                 <div id="searchResults" class="list-group position-absolute w-100 mt-1"
                     style="z-index:1000; display: none;"></div>
+
             </div>
 
             <!-- Welcome Card - Keep original structure but update styling -->
@@ -461,7 +479,6 @@ require_once $header_path;
                         </button>
                     </div>
                 </div>
-                <!-- AJAX container for onboarding tips -->
                 <div id="onboardingContent" class="mt-3"></div>
             </div>
 
@@ -553,6 +570,7 @@ require_once $header_path;
                     </button>
                 </div>
             </div>
+
         </div>
     </div>
 </div>
@@ -563,22 +581,29 @@ require_once $header_path;
     <?= json_encode($onboarding_steps); ?>
 </script>
 
+
 <!-- OCR MODAL - Keep original structure -->
+
 <div class="modal fade" id="ocrModal" tabindex="-1" aria-labelledby="ocrModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header">
+
                 <h5 class="modal-title fw-bold" id="ocrModalLabel">OCR Study Load Reader</h5>
+
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div id="ocr-alert" class="alert d-none" role="alert"></div>
                 <div id="upload-step">
+
                     <h6 class="fw-medium">Step 1: Upload your PDF file</h6>
+
                     <div class="input-group mb-3">
                         <input type="file" class="form-control" id="studyLoadPdf" accept="application/pdf">
                         <label class="input-group-text" for="studyLoadPdf">Upload</label>
                     </div>
+
                     <button class="btn btn-primary" id="processOcrBtn">Process Document</button>
                 </div>
 
@@ -588,12 +613,15 @@ require_once $header_path;
                         style="max-height: 400px; overflow-y: auto;">
                         <p class="text-center text-muted">Awaiting file upload...</p>
                     </div>
+
                     <button class="btn btn-secondary me-2" id="backToUploadBtn">Back</button>
                     <button class="btn btn-success" id="confirmScheduleBtn">Confirm Extracted Schedule</button>
                 </div>
 
                 <div id="confirmation-step" style="display: none;">
+
                     <h6 class="fw-medium">Step 3: Confirmation</h6>
+
                     <p>Your study load has been successfully saved!</p>
                     <button class="btn btn-success" data-bs-dismiss="modal">Done</button>
                 </div>
@@ -608,6 +636,7 @@ require_once $header_path;
 <script src="../../assets/js/onboarding_tour.js"></script>
 
 <script>
+
     // ================== AJAX SEARCH ==================
     $("#searchInput").on("keyup", function () {
         let query = $(this).val();
@@ -659,6 +688,7 @@ require_once $header_path;
                     $("#ocr-alert").removeClass("d-none alert-danger").addClass("alert-success").text("Document processed successfully! Please review the extracted schedule.");
 
                     let scheduleHtml = `<table class="table table-striped table-hover">
+
                                         <thead>
                                             <tr>
                                                 <th>Sched No.</th>
@@ -673,6 +703,7 @@ require_once $header_path;
 
                     response.schedule.forEach(item => {
                         scheduleHtml += `<tr>
+
                                         <td>${item.sched_no}</td>
                                         <td>${item.course_no}</td>
                                         <td>${item.time}</td>
@@ -695,7 +726,9 @@ require_once $header_path;
                 console.error("AJAX Error: ", textStatus, errorThrown);
             }
         });
+
     });
+
 
     // ================== AJAX ONBOARDING ==================
     $("#viewTipsBtn").click(function () {
@@ -707,6 +740,7 @@ require_once $header_path;
         $.post("../../pages/user/restart_onboarding.php", { user: "<?= $user['id'] ?? 0 ?>" }, function (data) {
             $("#onboardingContent").html("<div class='alert alert-success'>Onboarding restarted!</div>");
         });
+
     });
 
     // Back to upload button functionality
@@ -715,6 +749,7 @@ require_once $header_path;
         $("#upload-step").show();
         $("#ocr-alert").addClass("d-none");
     });
+
 
 
 

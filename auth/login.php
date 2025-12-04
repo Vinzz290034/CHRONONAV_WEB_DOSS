@@ -3,6 +3,7 @@
 session_start();
 require_once '../config/db_connect.php';
 
+/** @var string $error */ // Type hint for Intelephense
 $error = ''; // Initialize error message
 
 // Handle session messages if redirected from other pages (e.g., from admin actions)
@@ -21,7 +22,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error = "Please enter both email and password.";
     } else {
         // IMPORTANT: Select the 'is_active' column from the users table
+
         // This query requires the 'is_active' column in the users table.
+
         $stmt = $conn->prepare("SELECT id, name, email, role, password, profile_img, is_active FROM users WHERE email = ?");
         if ($stmt) {
             $stmt->bind_param("s", $email);
@@ -41,10 +44,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     } else {
                         // Account is active and password is correct, proceed to log in
 
-                        // --- START OF NEW CODE: INSERT AUDIT LOG ---
+                        // --- START: INSERT AUDIT LOG ---
+                        // CRITICAL FIX: Hardened check for null or empty string, defaulting to 'user'.
+                        $db_role = trim((string)($user['role'] ?? ''));
+                        $role_to_redirect = (empty($db_role)) ? 'user' : $db_role;
+
                         try {
                             $user_id = $user['id'];
                             $user_name = $user['name'];
+
                             $user_role = $user['role'];
 
                             $action = ucfirst($user_role) . ' Login';
@@ -53,6 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             // NOTE: Changed 'audit_log' to 'audit_logs' for common convention.
                             // If your table is named 'audit_log' (singular), revert this change.
                             $stmt_log = $conn->prepare("INSERT INTO audit_logs (user_id, action, details) VALUES (?, ?, ?)");
+
                             if ($stmt_log) {
                                 $stmt_log->bind_param("iss", $user_id, $action, $details);
                                 $stmt_log->execute();
@@ -62,6 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             // Log the error but don't stop the login process for the user
                             error_log("Failed to insert audit log for user {$user['id']}: " . $e->getMessage());
                         }
+
                         // --- END OF NEW CODE ---
 
                         $_SESSION['user'] = [
@@ -70,11 +80,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             'email' => $user['email'],
                             'role' => $user['role'],
                             'profile_img' => $user['profile_img']
+
                         ];
                         $_SESSION['loggedin'] = true; // A general flag for being logged in
 
-                        // Redirect based on role
-                        header("Location: ../pages/{$user['role']}/dashboard.php");
+                        // Redirect based on role (uses the validated role)
+                        $redirect_path = "../pages/{$role_to_redirect}/dashboard.php";
+                        
+                        header("Location: " . $redirect_path);
                         exit(); // Crucial to exit after a header redirect
                     }
                 } else {
@@ -85,7 +98,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         } else {
             $error = "Database query failed. Please try again later."; // Error preparing statement
-            error_log("Login prepare failed: " . $conn->error); // Log the actual database error
+            // FIX: Corrected the connection object for error logging
+            error_log("Login prepare failed: " . $connect->error); 
         }
     }
 }
