@@ -590,7 +590,6 @@ require_once '../../templates/admin/header_admin.php';
     .row.mb-4.px-3 .col-md-6 {
         margin-bottom: 1rem;
     }
-    }
 
     /* Tablet: 768px to 1023px */
     @media (min-width: 768px) and (max-width: 1023px) {
@@ -1351,7 +1350,7 @@ require_once '../../templates/admin/header_admin.php';
         const departmentCounts = <?= json_encode($department_counts) ?>;
 
         // Set fixed height for all chart containers
-        const chartHeight = '300px'; // Fixed height for all charts
+        const chartHeight = '350px'; // Fixed height for all charts
 
         // ======================================================================
         // 2. Bar Chart: Activity Metrics
