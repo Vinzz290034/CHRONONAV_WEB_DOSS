@@ -42,12 +42,13 @@ if (isset($_SESSION['message'])) {
 ?>
 
 <?php
-// --- Include the Admin-specific Header ---
+// --- Include the Admin-specific Header and Sidenav ---
 require_once '../../templates/admin/header_admin.php';
+require_once '../../templates/admin/sidenav_admin.php';
 ?>
 
 <style>
-    /* Consistent design from previous pages */
+    /* CSS Styles remain unchanged for design consistency */
     body {
         font-family: "Space Grotesk", "Noto Sans", sans-serif;
         background-color: #fff;
@@ -247,22 +248,11 @@ require_once '../../templates/admin/header_admin.php';
     }
 </style>
 
-<?php
-// --- Include the Admin-specific Sidenav ---
-require_once '../../templates/admin/sidenav_admin.php';
-?>
 
-<!-- Font Awesome -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
-<!-- Google Fonts -->
-<link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
-<link rel="stylesheet" as="style" onload="this.rel='stylesheet'"
-    href="https://fonts.googleapis.com/css2?display=swap&family=Noto+Sans:wght@400;500;700;900&family=Space+Grotesk:wght@400;500;700">
 
 <div class="main-content-wrapper" style="margin-left: 20%;">
     <div class="main-dashboard-content">
-        <!-- Header Section - Consistent with previous pages -->
+
         <div class="d-flex flex-wrap justify-content-between gap-3 p-3">
             <h2 class="text-dark fw-bold fs-3 mb-0" style="min-width: 288px;"><?= $page_title ?></h2>
         </div>
@@ -275,7 +265,7 @@ require_once '../../templates/admin/sidenav_admin.php';
         <?php endif; ?>
 
         <div class="settings-container">
-            <!-- Accessibility Section -->
+
             <div class="settings-section card shadow-sm">
                 <div class="card-header">
                     <h5 class="mb-0">Accessibility</h5>
@@ -302,7 +292,7 @@ require_once '../../templates/admin/sidenav_admin.php';
                 </div>
             </div>
 
-            <!-- Display Section -->
+
             <div class="settings-section card shadow-sm">
                 <div class="card-header">
                     <h5 class="mb-0">Display</h5>
@@ -315,7 +305,7 @@ require_once '../../templates/admin/sidenav_admin.php';
                 </div>
             </div>
 
-            <!-- Language Section -->
+
             <div class="settings-section card shadow-sm">
                 <div class="card-header">
                     <h5 class="mb-0">Language</h5>
@@ -328,7 +318,7 @@ require_once '../../templates/admin/sidenav_admin.php';
                 </div>
             </div>
 
-            <!-- Account Management Section -->
+
             <div class="settings-section card shadow-sm">
                 <div class="card-header">
                     <h5 class="mb-0">Account Management</h5>
@@ -350,7 +340,7 @@ require_once '../../templates/admin/sidenav_admin.php';
     </div>
 </div>
 
-<!-- Change Password Modal -->
+
 <div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel"
     aria-hidden="true">
     <div class="modal-dialog">
@@ -369,6 +359,7 @@ require_once '../../templates/admin/sidenav_admin.php';
                     <div class="mb-3">
                         <label for="new_password" class="form-label">New Password</label>
                         <input type="password" class="form-control" id="new_password" name="new_password" required>
+                        <small class="text-muted">Password must be at least 8 characters, include an uppercase letter, a number, and a symbol.</small>
                     </div>
                     <div class="mb-3">
                         <label for="confirm_password" class="form-label">Confirm New Password</label>
@@ -385,7 +376,7 @@ require_once '../../templates/admin/sidenav_admin.php';
     </div>
 </div>
 
-<!-- Deactivate Account Modal -->
+
 <div class="modal fade" id="deactivateAccountModal" tabindex="-1" aria-labelledby="deactivateAccountModalLabel"
     aria-hidden="true">
     <div class="modal-dialog">
@@ -395,18 +386,31 @@ require_once '../../templates/admin/sidenav_admin.php';
                     <h5 class="modal-title fw-bold" id="deactivateAccountModalLabel">Deactivate Account</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
+                
+                <!-- START: MODAL BODY CONTENT -->
                 <div class="modal-body">
                     <p class="text-muted mb-3">Are you sure you want to deactivate your account? This action is
                         permanent and cannot be undone.</p>
+                    
+                    <!-- Input for Current Password (Required Security Check) -->
+                    <div class="mb-3">
+                        <label for="deactivate_password" class="form-label">Enter Current Password to Confirm</label>
+                        <input type="password" class="form-control" id="deactivate_password" name="current_password" required>
+                    </div>
+
+                    <!-- Confirmation Checkbox -->
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" id="confirm_deactivate"
-                            name="confirm_deactivate" required>
+                            name="confirm_deactivate"> 
                         <label class="form-check-label" for="confirm_deactivate">I understand and want to proceed with
                             deactivating my account.</label>
                     </div>
                 </div>
+                <!-- END: MODAL BODY CONTENT -->
+                
                 <div class="modal-footer">
                     <button type="button" class="btn btn-custom-outline" data-bs-dismiss="modal">Cancel</button>
+                    <!-- Button starts disabled, enabled by JS on checking the box AND typing the password -->
                     <button type="submit" class="btn btn-custom-danger" id="deactivateSubmitButton" disabled>Deactivate
                         Account</button>
                 </div>
@@ -424,12 +428,59 @@ require_once '../../templates/admin/sidenav_admin.php';
         console.log(setting + ' changed to ' + value);
     });
 
-    const confirmCheckbox = document.getElementById('confirm_deactivate');
-    const deactivateButton = document.getElementById('deactivateSubmitButton');
+    // --- Deactivation Button Logic FIX ---
+    document.addEventListener('DOMContentLoaded', function() {
+        const confirmCheckbox = document.getElementById('confirm_deactivate');
+        const deactivateButton = document.getElementById('deactivateSubmitButton');
+        const deactivatePasswordInput = document.getElementById('deactivate_password'); 
 
-    if (confirmCheckbox && deactivateButton) {
-        confirmCheckbox.addEventListener('change', function () {
-            deactivateButton.disabled = !this.checked;
-        });
-    }
+        // Function to update the button state
+        function updateDeactivateButtonState() {
+             if (deactivateButton && confirmCheckbox && deactivatePasswordInput) {
+                 const passwordEntered = deactivatePasswordInput.value.trim() !== '';
+                 
+                 // Enable button only if BOTH conditions are met
+                 deactivateButton.disabled = !(confirmCheckbox.checked && passwordEntered);
+             }
+        }
+
+        if (confirmCheckbox && deactivateButton && deactivatePasswordInput) {
+            // 1. Initial State: Set to disabled
+            updateDeactivateButtonState();
+
+            // 2. Event Listeners: Re-check state whenever EITHER input changes
+            confirmCheckbox.addEventListener('change', updateDeactivateButtonState);
+            deactivatePasswordInput.addEventListener('input', updateDeactivateButtonState); 
+            deactivatePasswordInput.addEventListener('keyup', updateDeactivateButtonState); // Added keyup for robustness
+
+            // 3. Reset State on Modal Open 
+            const deactivateModal = document.getElementById('deactivateAccountModal');
+            if (deactivateModal) {
+                 deactivateModal.addEventListener('show.bs.modal', function () {
+                    // Force reset checkbox and password field when modal opens
+                    confirmCheckbox.checked = false;
+                    deactivatePasswordInput.value = ''; 
+                    deactivateButton.disabled = true;
+                });
+            }
+        }
+        
+        // --- Password Validation (Client-Side Check for Change Password Modal) ---
+        const newPassword = document.getElementById('new_password');
+        const confirmPassword = document.getElementById('confirm_password');
+
+        if (newPassword && confirmPassword) {
+            const checkPasswordMatch = () => {
+                if (newPassword.value !== confirmPassword.value) {
+                    // Set custom message when passwords don't match
+                    confirmPassword.setCustomValidity("Passwords do not match.");
+                } else {
+                    // Clear custom message when they match
+                    confirmPassword.setCustomValidity("");
+                }
+            };
+            newPassword.addEventListener('input', checkPasswordMatch);
+            confirmPassword.addEventListener('input', checkPasswordMatch);
+        }
+    });
 </script>
