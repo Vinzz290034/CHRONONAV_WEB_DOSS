@@ -124,6 +124,153 @@
         margin-top: 14px;
       }
     }
+
+
+
+    /* ====================================================================== */
+    /* Dark Mode Overrides for Footer - Custom Colors                        */
+    /* ====================================================================== */
+    body.dark-mode .chrononav-footer {
+      background: linear-gradient(180deg, #121A21 0%, #263645 30%) !important;
+      /* Primary to secondary gradient */
+      color: #94ADC7 !important;
+      /* Secondary text color */
+      border-top: 1px solid #121A21 !important;
+      /* Primary dark border */
+    }
+
+    /* Logo adjustments for dark mode */
+    body.dark-mode .chrononav-footer .footer-logo {
+      filter: brightness(1.1);
+      /* Slightly brighten logo for dark mode */
+    }
+
+    /* Links in dark mode */
+    body.dark-mode .chrononav-footer .footer-links {
+      color: #94ADC7 !important;
+      /* Secondary text color */
+    }
+
+    body.dark-mode .chrononav-footer .footer-links span {
+      color: #94ADC7 !important;
+      /* Secondary text color */
+    }
+
+    body.dark-mode .chrononav-footer .footer-links a {
+      color: #94ADC7 !important;
+      /* Secondary text color */
+      text-decoration: none;
+      transition: color 0.2s ease, text-decoration 0.2s ease;
+    }
+
+    body.dark-mode .chrononav-footer .footer-links a:hover {
+      color: #E5E8EB !important;
+      /* Light text on hover */
+      text-decoration: underline;
+    }
+
+    /* Footer bottom section */
+    body.dark-mode .chrononav-footer .footer-bottom {
+      color: #94ADC7 !important;
+      /* Secondary text color */
+    }
+
+    body.dark-mode .chrononav-footer .footer-bottom a {
+      color: #94ADC7 !important;
+      /* Secondary text color */
+      text-decoration: none;
+    }
+
+    body.dark-mode .chrononav-footer .footer-bottom a:hover {
+      color: #E5E8EB !important;
+      /* Light text on hover */
+      text-decoration: underline;
+    }
+
+    /* Social icons in dark mode */
+    body.dark-mode .chrononav-footer .footer-socials a {
+      color: #94ADC7 !important;
+      /* Secondary text color */
+      transition: color 0.2s ease, transform 0.2s ease, opacity 0.2s ease;
+    }
+
+    body.dark-mode .chrononav-footer .footer-socials a:hover {
+      color: #1C7DD6 !important;
+      /* Active blue on hover */
+      transform: translateY(-2px);
+      opacity: 1 !important;
+    }
+
+    /* Specific hover colors for social icons */
+    body.dark-mode .chrononav-footer .footer-socials a:hover i.fa-facebook-f {
+      color: #1877F2 !important;
+      /* Facebook blue */
+    }
+
+    body.dark-mode .chrononav-footer .footer-socials a:hover i.fa-twitter {
+      color: #1DA1F2 !important;
+      /* Twitter blue */
+    }
+
+    body.dark-mode .chrononav-footer .footer-socials a:hover i.fa-linkedin-in {
+      color: #0A66C2 !important;
+      /* LinkedIn blue */
+    }
+
+    body.dark-mode .chrononav-footer .footer-socials a:hover i.fa-github {
+      color: #E5E8EB !important;
+      /* Light color for GitHub */
+    }
+
+    /* Text muted class adjustments for dark mode */
+    body.dark-mode .text-muted {
+      color: #94ADC7 !important;
+      /* Secondary text color */
+    }
+
+    body.dark-mode .text-muted:hover {
+      color: #E5E8EB !important;
+      /* Light text on hover */
+    }
+
+    /* Contact email specific styling */
+    body.dark-mode .chrononav-footer .footer-bottom .contact a {
+      color: #94ADC7 !important;
+      /* Secondary text color */
+    }
+
+    body.dark-mode .chrononav-footer .footer-bottom .contact a:hover {
+      color: #1C7DD6 !important;
+      /* Active blue on hover */
+    }
+
+    /* Responsive adjustments for dark mode */
+    @media (max-width: 600px) {
+      body.dark-mode .chrononav-footer {
+        background: linear-gradient(180deg, #121A21 0%, #263645 40%) !important;
+      }
+
+      body.dark-mode .chrononav-footer .footer-links {
+        gap: 8px !important;
+      }
+
+      body.dark-mode .chrononav-footer .footer-bottom {
+        gap: 6px !important;
+      }
+    }
+
+    /* Version text in dark mode */
+    body.dark-mode .chrononav-footer .footer-bottom .version {
+      color: #94ADC7 !important;
+      opacity: 0.8;
+    }
+
+    /* Privacy and terms links specific hover */
+    body.dark-mode .chrononav-footer .footer-links a.text-decoration-none:hover {
+      text-decoration: underline !important;
+      color: #1C7DD6 !important;
+      /* Active blue on hover */
+    }
   </style>
 </head>
 

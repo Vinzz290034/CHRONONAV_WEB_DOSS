@@ -58,6 +58,160 @@ if (isset($profile_img_src) && !empty($profile_img_src)) {
         .custom-header {
             position: sticky;
         }
+
+        /* ====================================================================== */
+        /* Dark Mode Overrides for Header - Custom Colors                          */
+        /* ====================================================================== */
+        body.dark-mode .custom-header {
+            background-color: #121A21 !important;
+            /* Primary dark background */
+            border-bottom: 1px solid #263645 !important;
+            /* Dark border */
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3) !important;
+        }
+
+        body.dark-mode .custom-header h2 {
+            color: #E5E8EB !important;
+            /* Light text color */
+        }
+
+        body.dark-mode .custom-header .link-offset-2:hover h2 {
+            color: #FFFFFF !important;
+            /* White on hover */
+        }
+
+        /* Settings button in dark mode */
+        body.dark-mode .settings-btn {
+            background-color: #263645 !important;
+            /* Secondary dark */
+            color: #94ADC7 !important;
+            /* Secondary text color */
+            border: 1px solid #121A21 !important;
+        }
+
+        body.dark-mode .settings-btn:hover {
+            background-color: #1C7DD6 !important;
+            /* Active blue */
+            color: #FFFFFF !important;
+            /* White on hover */
+        }
+
+        body.dark-mode .settings-btn svg {
+            color: #94ADC7 !important;
+            /* Icon color */
+        }
+
+        body.dark-mode .settings-btn:hover svg {
+            color: #FFFFFF !important;
+            /* White icon on hover */
+        }
+
+        /* Profile dropdown in dark mode */
+        body.dark-mode .navbar-profile-img {
+            border: 2px solid #263645 !important;
+            box-shadow: 0 0 0 2px #1C7DD6 !important;
+            /* Blue outline on active */
+        }
+
+        body.dark-mode .dropdown-menu {
+            background-color: #121A21 !important;
+            /* Primary dark background */
+            border: 1px solid #263645 !important;
+            /* Dark border */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
+        }
+
+        body.dark-mode .dropdown-menu .text-dark {
+            color: #E5E8EB !important;
+            /* Light text for username */
+        }
+
+        body.dark-mode .dropdown-menu .text-muted {
+            color: #94ADC7 !important;
+            /* Secondary color for role */
+        }
+
+        body.dark-mode .dropdown-divider {
+            border-color: #263645 !important;
+            /* Dark divider */
+        }
+
+        body.dark-mode .dropdown-item {
+            color: #94ADC7 !important;
+            /* Secondary text color */
+            background-color: transparent !important;
+        }
+
+        body.dark-mode .dropdown-item:hover {
+            background-color: #263645 !important;
+            /* Dark hover background */
+            color: #FFFFFF !important;
+            /* White text on hover */
+        }
+
+        body.dark-mode .dropdown-item:active {
+            background-color: #1C7DD6 !important;
+            /* Active blue */
+            color: #FFFFFF !important;
+        }
+
+        /* Dropdown icons in dark mode */
+        body.dark-mode .dropdown-item .text-primary {
+            color: #1C7DD6 !important;
+            /* Blue for profile icon */
+        }
+
+        body.dark-mode .dropdown-item .text-info {
+            color: #94ADC7 !important;
+            /* Secondary color for announcements */
+        }
+
+        body.dark-mode .dropdown-item .text-secondary {
+            color: #94ADC7 !important;
+            /* Secondary color for support */
+        }
+
+        body.dark-mode .dropdown-item:hover .text-primary,
+        body.dark-mode .dropdown-item:hover .text-info,
+        body.dark-mode .dropdown-item:hover .text-secondary {
+            color: #FFFFFF !important;
+            /* White icons on hover */
+        }
+
+        /* Logout item in dark mode */
+        body.dark-mode .dropdown-item.text-danger {
+            color: #E57373 !important;
+            /* Slightly lighter red for dark mode */
+        }
+
+        body.dark-mode .dropdown-item.text-danger:hover {
+            background-color: #C62828 !important;
+            /* Darker red background on hover */
+            color: #FFFFFF !important;
+        }
+
+        /* Dropdown arrow in dark mode */
+        body.dark-mode .navbar-profile-dropdown .nav-link::after {
+            border-color: #94ADC7 !important;
+            /* Secondary color for dropdown arrow */
+        }
+
+        body.dark-mode .navbar-profile-dropdown .nav-link:hover::after {
+            border-color: #FFFFFF !important;
+            /* White arrow on hover */
+        }
+
+        /* Body background in dark mode */
+        body.dark-mode {
+            background-color: #121A21 !important;
+            color: #E5E8EB !important;
+        }
+
+        /* Logo SVG adjustments for dark mode */
+        body.dark-mode .custom-header svg image {
+            filter: brightness(1.1);
+            /* Slightly brighten logo for dark mode */
+        }
     </style>
     <script src="../../assets/js/dark_mode.js" defer></script>
 
@@ -94,38 +248,54 @@ if (isset($profile_img_src) && !empty($profile_img_src)) {
             <li class="nav-item dropdown navbar-profile-dropdown" style="list-style: none;">
                 <a class="nav-link align-items-center" href="#" id="navbarDropdownMenuLink" role="button"
                     data-bs-toggle="dropdown" aria-expanded="false">
-                    <img src="<?= $profile_pic_src ?>" alt="Profile Picture" class="navbar-profile-img"
-                        src="<?= $profile_img_src ?>" alt="Profile Picture" class="profile-avatar mb-2"
-                        id="profileImagePreview"
+                    <img src="<?= $profile_pic_src ?>" class="navbar-profile-img" src="<?= $profile_img_src ?>"
+                        class="profile-avatar mb-2" id="profileImagePreview"
                         style="width: 40px; height: 40px; object-fit: cover; border-radius: 50%;">
                 </a>
-                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
+                <ul class="dropdown-menu dropdown-menu-end shadow border-0 p-2"
+                    aria-labelledby="navbarDropdownMenuLink">
+
+                    <li class="px-3 py-2">
+                        <div class="d-flex flex-column">
+                            <strong class="text-dark fs-6"><?= $display_user_name ?></strong>
+                            <small class="text-muted fw-light"><?= $user_role ?></small>
+                        </div>
+                    </li>
+
                     <li>
-                        <h6 class="dropdown-header">
-                            <?= $display_user_name ?> (
-                            <?= $user_role ?>)
-                        </h6>
+                        <hr class="dropdown-divider my-2">
+                    </li>
+
+                    <li>
+                        <a class="dropdown-item rounded-2" href="../../pages/user/view_profile.php">
+                            <i class="fas fa-user-circle me-3 fa-fw text-primary"></i>Profile
+                        </a>
                     </li>
                     <li>
-                        <hr class="dropdown-divider">
+                        <a class="dropdown-item rounded-2" href="../../pages/user/announcements.php">
+                            <i class="fas fa-bullhorn me-3 fa-fw text-info"></i>Announcements
+                        </a>
                     </li>
-                    <li><a class="dropdown-item" href="../../pages/user/view_profile.php"><i
-                                class="fas fa-user-circle me-2"></i>Profile</a></li>
+
                     <li>
-                        <hr class="dropdown-divider">
+                        <hr class="dropdown-divider my-2">
                     </li>
-                    <li><a class="dropdown-item" href="../../pages/user/support_center.php"><i
-                                class="fas fa-user-circle me-2"></i>Support and Ask question</a></li>
+
                     <li>
-                        <hr class="dropdown-divider">
+                        <a class="dropdown-item rounded-2" href="../../pages/user/support_center.php">
+                            <i class="fas fa-question-circle me-3 fa-fw text-secondary"></i>Support & Help
+                        </a>
                     </li>
-                    <li><a class="dropdown-item" href="../../pages/user/announcements.php"><i
-                                class="fas fa-user-circle me-2"></i>Campus Announcement</a></li>
+
                     <li>
-                        <hr class="dropdown-divider">
+                        <hr class="dropdown-divider my-2">
                     </li>
-                    <li><a class="dropdown-item" href="../../auth/logout.php"><i
-                                class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+
+                    <li>
+                        <a class="dropdown-item rounded-2 text-danger" href="../../auth/logout.php">
+                            <i class="fas fa-sign-out-alt me-3 fa-fw"></i>Logout
+                        </a>
+                    </li>
                 </ul>
             </li>
         </div>

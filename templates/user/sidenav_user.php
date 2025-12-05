@@ -17,11 +17,19 @@ if (!isset($current_page)) {
 <link rel="stylesheet" href="../../assets/css/other_css/sidenav_users.css">
 
 <style>
+    :root {
+        --bs-sidebar-bg: #3e99f4;
+    }
+
+    body {
+        background-color: #ffffff;
+    }
+
     /* Sidenav General Styles */
     .app-sidebar {
         font-family: 'Space Grotesk', 'Noto Sans', sans-serif;
         width: 20%;
-        background-color: #fff;
+        background-color: #ffffff;
         padding: 1rem;
         position: fixed;
         height: 50vh;
@@ -39,6 +47,10 @@ if (!isset($current_page)) {
         margin-bottom: 20px;
         border-bottom: 1px solid rgba(239, 232, 232, 0.1);
         justify-content: center;
+    }
+
+    .bg-sidebar-bg {
+        background-color: var(--bs-sidebar-bg) !important;
     }
 
     /* Transparent Scrollbar */
@@ -359,7 +371,7 @@ if (!isset($current_page)) {
     }
 
     .sidebar-toggle svg {
-        color: #111418;
+        color: #ffffff;
         transition: transform 0.3s ease;
     }
 
@@ -473,50 +485,144 @@ if (!isset($current_page)) {
     }
 
     /* ====================================================================== */
-    /* Dark Mode Overrides                          */
+    /* Dark Mode Overrides - Custom Colors                           */
     /* ====================================================================== */
     body.dark-mode .app-sidebar {
-        background-color: #1e1e1e;
-        border-right: 1px solid #333;
-        color: #ffffff;
+        background-color: #121A21;
+        /* Primary dark background */
+        border-right: 1px solid #121A21;
+        /* Border color */
+        color: #E5E8EB;
+        /* Light text color */
     }
 
     body.dark-mode .sidebar-header {
-        border-bottom: 1px solid #444;
+        border-bottom: 1px solid #263645;
+        /* Darker border */
+        background-color: #121A21;
+        /* Match sidebar background */
     }
 
     body.dark-mode .logo-container {
-        color: #ffffff;
+        color: #FFFFFF;
+        /* White for logo text */
+    }
+
+    body.dark-mode .app-logo {
+        filter: brightness(1.1);
+        /* Slightly brighten logo for dark mode */
     }
 
     body.dark-mode .app-sidebar-menu .nav-link {
-        color: #e0e0e0;
+        color: #94ADC7;
+        /* Secondary text color */
     }
 
     body.dark-mode .app-sidebar-menu .nav-link svg {
-        color: #b0b0b0;
+        color: #94ADC7;
+        /* Icon color */
     }
 
     body.dark-mode .app-sidebar-menu .nav-link:hover {
-        background-color: #2c2c2c;
-        color: #ffffff;
+        background-color: #263645;
+        /* Hover background */
+        color: #FFFFFF;
+        /* White text on hover */
     }
 
     body.dark-mode .app-sidebar-menu .nav-link:hover svg {
-        color: #ffffff;
+        color: #FFFFFF;
+        /* White icons on hover */
     }
 
     body.dark-mode .app-sidebar-menu .nav-link.active {
-        background-color: #2c2c2c;
-        color: #ffffff;
+        background-color: #1C7DD6;
+        /* Active link background */
+        color: #FFFFFF;
+        /* White text for active */
     }
 
     body.dark-mode .app-sidebar-menu .nav-link.active svg {
-        color: #ffffff;
+        color: #FFFFFF;
+        /* White icons for active */
     }
 
     body.dark-mode .app-sidebar .nav-item.mt-auto {
-        border-top: 1px solid #444;
+        border-top: 1px solid #263645;
+        /* Darker border for logout section */
+    }
+
+    /* Logout button specific styles for dark mode */
+    body.dark-mode .app-sidebar .nav-item.mt-auto .nav-link {
+        color: #94ADC7;
+        /* Use secondary color for logout text */
+    }
+
+    body.dark-mode .app-sidebar .nav-item.mt-auto .nav-link svg {
+        color: #94ADC7;
+        /* Use secondary color for logout icon */
+    }
+
+    body.dark-mode .app-sidebar .nav-item.mt-auto .nav-link:hover {
+        background-color: #1C7DD6;
+        /* Active blue on hover */
+        color: #FFFFFF;
+        /* White text on hover */
+    }
+
+    body.dark-mode .app-sidebar .nav-item.mt-auto .nav-link:hover svg {
+        color: #FFFFFF;
+        /* White icon on hover */
+    }
+
+    /* Version text in dark mode */
+    body.dark-mode .app-version .text-muted {
+        color: #94ADC7 !important;
+        /* Use secondary color for version text */
+    }
+
+    /* Sidebar toggle button in dark mode */
+    body.dark-mode .sidebar-toggle {
+        background: #263645;
+        /* Dark background */
+        color: #E5E8EB;
+        /* Light text/icon */
+        border: 1px solid #121A21;
+        /* Dark border */
+    }
+
+    body.dark-mode .sidebar-toggle:hover {
+        background-color: #1C7DD6;
+        /* Blue on hover */
+        color: #FFFFFF;
+        /* White on hover */
+    }
+
+    /* Scrollbar in dark mode */
+    body.dark-mode .app-sidebar::-webkit-scrollbar-thumb {
+        background-color: #263645;
+        /* Scrollbar color */
+    }
+
+    body.dark-mode .app-sidebar {
+        scrollbar-color: #263645 #121A21;
+        /* Firefox scrollbar */
+    }
+
+    /* Main content background for dark mode */
+    body.dark-mode {
+        background-color: #121A21;
+    }
+
+    body.dark-mode .demo-content {
+        background-color: #263645;
+        color: #E5E8EB;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    body.dark-mode .screen-size-indicator {
+        background: #1C7DD6;
+        color: #FFFFFF;
     }
 
     /* Demo content styles */
@@ -547,7 +653,7 @@ if (!isset($current_page)) {
 </style>
 
 <button id="sidebarToggle"
-    class="sidebar-toggle d-md-none top-7 start-5 z-5 bg-body text-dark border-0 rounded-3 p-1 fs-5">
+    class="sidebar-toggle d-md-none top-7 start-5 z-5 bg-sidebar-bg text-dark border-0 rounded-3 p-1 fs-5">
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256">
         <path
             d="M40,128a8,8,0,0,1,8-8H208a8,8,0,0,1,0,16H48A8,8,0,0,1,40,128ZM48,64H208a8,8,0,0,1,0,16H48A8,8,0,0,1,48,64ZM208,184H48a8,8,0,0,0,0,16H208a8,8,0,0,0,0-16Z">

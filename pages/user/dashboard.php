@@ -21,7 +21,8 @@ try {
 }
 
 // --- NEW PHP FUNCTION: Fetch User's Schedule ---
-function getUserSchedule($user_id, $pdo) {
+function getUserSchedule($user_id, $pdo)
+{
     try {
         // Assuming your schedule table is named 'user_schedule'
         $stmt = $pdo->prepare("SELECT course_no, time, days, room, instructor FROM user_schedule WHERE user_id = ? ORDER BY FIELD(days, 'M', 'T', 'W', 'Th', 'F', 'S'), time");
@@ -415,6 +416,410 @@ require_once $header_path;
         padding: 10px 15px;
         border-radius: 5px;
         font-size: 0.9rem;
+    }
+
+
+
+
+    /* ====================================================================== */
+    /* Dark Mode Overrides for Dashboard - Custom Colors                      */
+    /* ====================================================================== */
+    body.dark-mode {
+        background-color: #121A21 !important;
+        /* Primary dark background */
+        color: #E5E8EB !important;
+    }
+
+    body.dark-mode .main-dashboard-content-wrapper {
+        background-color: #121A21 !important;
+        color: #E5E8EB !important;
+    }
+
+    body.dark-mode .main-dashboard-content {
+        background-color: #121A21 !important;
+        color: #E5E8EB !important;
+    }
+
+    /* Welcome and section titles */
+    body.dark-mode .welcome-title {
+        color: #E5E8EB !important;
+        /* Light text for welcome message */
+    }
+
+    body.dark-mode .section-title {
+        color: #E5E8EB !important;
+        /* Light text for section titles */
+    }
+
+    /* Search bar */
+    body.dark-mode .search-bar-custom {
+        background-color: #263645 !important;
+        /* Secondary dark background */
+        border: 1px solid #121A21 !important;
+    }
+
+    body.dark-mode .search-bar-custom .input-group-text {
+        background-color: #263645 !important;
+        color: #94ADC7 !important;
+        /* Secondary text color */
+        border: none !important;
+    }
+
+    body.dark-mode .search-bar-custom .form-control {
+        background-color: #263645 !important;
+        color: #E5E8EB !important;
+        /* Light text */
+        border: none !important;
+    }
+
+    body.dark-mode .search-bar-custom .form-control::placeholder {
+        color: #94ADC7 !important;
+        /* Secondary text for placeholder */
+    }
+
+    body.dark-mode .search-bar-custom .form-control:focus {
+        background-color: #263645 !important;
+        color: #E5E8EB !important;
+        box-shadow: none !important;
+    }
+
+    /* Cards and containers */
+    body.dark-mode .card {
+        background-color: #263645 !important;
+        /* Secondary dark background */
+        border: 1px solid #121A21 !important;
+        color: #E5E8EB !important;
+    }
+
+    body.dark-mode .card.border-0 {
+        background-color: #263645 !important;
+        border: none !important;
+    }
+
+    /* Onboarding controls */
+    body.dark-mode .onboarding-controls {
+        background-color: #121A21 !important;
+        /* Primary dark background */
+        border: 1px solid #263645 !important;
+        /* Secondary border */
+    }
+
+    body.dark-mode .onboarding-controls h5 {
+        color: #E5E8EB !important;
+    }
+
+    body.dark-mode .onboarding-controls p.text-muted {
+        color: #94ADC7 !important;
+        /* Secondary text color */
+    }
+
+    /* Buttons */
+    body.dark-mode .btn-custom-outline {
+        background-color: #121A21 !important;
+        /* Primary dark */
+        color: #94ADC7 !important;
+        /* Secondary text */
+        border: 1px solid #263645 !important;
+    }
+
+    body.dark-mode .btn-custom-outline:hover {
+        background-color: #1C7DD6 !important;
+        /* Active blue */
+        color: #FFFFFF !important;
+        /* White text on hover */
+        border-color: #1C7DD6 !important;
+    }
+
+    body.dark-mode .btn-custom-primary {
+        background-color: #263645 !important;
+        /* Secondary dark */
+        color: #94ADC7 !important;
+        /* Secondary text */
+        border: 1px solid #121A21 !important;
+    }
+
+    body.dark-mode .btn-custom-primary:hover {
+        background-color: #1C7DD6 !important;
+        /* Active blue */
+        color: #FFFFFF !important;
+        /* White text on hover */
+        border-color: #1C7DD6 !important;
+    }
+
+    body.dark-mode .btn-custom-blue {
+        background-color: #121A21 !important;
+        /* Primary dark */
+        color: #94ADC7 !important;
+        /* Secondary text */
+        border: 1px solid #263645 !important;
+    }
+
+    body.dark-mode .btn-custom-blue:hover {
+        background-color: #1C7DD6 !important;
+        /* Active blue */
+        color: #FFFFFF !important;
+        /* White text on hover */
+        border-color: #1C7DD6 !important;
+    }
+
+    /* Onboarding controls buttons - specific */
+    body.dark-mode .onboarding-controls .btn-custom-blue,
+    body.dark-mode .onboarding-controls .btn-custom-primary,
+    body.dark-mode .onboarding-controls .btn-custom-outline {
+        background: #121A21 !important;
+        /* Primary dark background */
+        color: #94ADC7 !important;
+        /* Secondary text */
+        border: 1px solid #263645 !important;
+    }
+
+    body.dark-mode .onboarding-controls .btn-custom-blue:hover,
+    body.dark-mode .onboarding-controls .btn-custom-primary:hover,
+    body.dark-mode .onboarding-controls .btn-custom-outline:hover {
+        background-color: #1C7DD6 !important;
+        /* Active blue */
+        color: #FFFFFF !important;
+        /* White text on hover */
+        border-color: #1C7DD6 !important;
+    }
+
+    /* Study load card */
+    body.dark-mode .study-load-card-custom {
+        background: #263645 !important;
+        /* Secondary dark background */
+        border: 1px solid #121A21 !important;
+    }
+
+    body.dark-mode .study-load-card-custom .card-title {
+        color: #E5E8EB !important;
+    }
+
+    body.dark-mode .study-load-card-custom p.text-muted {
+        color: #94ADC7 !important;
+        /* Secondary text */
+    }
+
+    /* Class items */
+    body.dark-mode .class-item-custom {
+        background-color: #121A21 !important;
+        /* Primary dark background */
+        border: 1px solid #263645 !important;
+    }
+
+    body.dark-mode .class-item-custom:hover {
+        background-color: rgba(28, 125, 214, 0.1) !important;
+        /* Subtle blue tint on hover */
+    }
+
+    body.dark-mode .class-item-custom p.text-dark {
+        color: #E5E8EB !important;
+        /* Light text for class names */
+    }
+
+    body.dark-mode .class-item-custom p.text-muted {
+        color: #94ADC7 !important;
+        /* Secondary text for details */
+    }
+
+    /* Modal styling */
+    body.dark-mode .modal-content {
+        background-color: #263645 !important;
+        /* Secondary dark background */
+        border: 1px solid #121A21 !important;
+        color: #E5E8EB !important;
+    }
+
+    body.dark-mode .modal-header {
+        background-color: #121A21 !important;
+        /* Primary dark */
+        border-bottom: 1px solid #263645 !important;
+    }
+
+    body.dark-mode .modal-header .modal-title {
+        color: #E5E8EB !important;
+    }
+
+    body.dark-mode .modal-body {
+        color: #E5E8EB !important;
+    }
+
+    /* Form elements in modals */
+    body.dark-mode .form-control {
+        background-color: #121A21 !important;
+        /* Primary dark */
+        border: 1px solid #263645 !important;
+        color: #E5E8EB !important;
+    }
+
+    body.dark-mode .form-control:focus {
+        background-color: #121A21 !important;
+        border-color: #1C7DD6 !important;
+        /* Blue focus */
+        color: #E5E8EB !important;
+        box-shadow: 0 0 0 0.2rem rgba(28, 125, 214, 0.25) !important;
+    }
+
+    /* Table styling */
+    body.dark-mode .table {
+        color: #E5E8EB !important;
+    }
+
+    body.dark-mode .table-striped tbody tr:nth-of-type(odd) {
+        background-color: #121A21 !important;
+        /* Primary dark for odd rows */
+    }
+
+    body.dark-mode .table-striped tbody tr:nth-of-type(even) {
+        background-color: #263645 !important;
+        /* Secondary dark for even rows */
+    }
+
+    body.dark-mode .table-hover tbody tr:hover {
+        background-color: rgba(28, 125, 214, 0.2) !important;
+        /* Blue tint on hover */
+    }
+
+    body.dark-mode thead {
+        background-color: #121A21 !important;
+        /* Primary dark for header */
+    }
+
+    /* Alerts */
+    body.dark-mode .alert {
+        background-color: #263645 !important;
+        /* Secondary dark background */
+        border: 1px solid #121A21 !important;
+    }
+
+    body.dark-mode .alert-info {
+        background-color: #0D47A1 !important;
+        /* Dark blue */
+        color: #BBDEFB !important;
+        /* Light blue text */
+        border-color: #1565C0 !important;
+    }
+
+    body.dark-mode .alert-success {
+        background-color: #1B5E20 !important;
+        /* Dark green */
+        color: #C8E6C9 !important;
+        /* Light green text */
+        border-color: #2E7D32 !important;
+    }
+
+    body.dark-mode .alert-danger {
+        background-color: #B71C1C !important;
+        /* Dark red */
+        color: #FFCDD2 !important;
+        /* Light red text */
+        border-color: #C62828 !important;
+    }
+
+    /* Text colors */
+    body.dark-mode .text-dark {
+        color: #E5E8EB !important;
+        /* Light text */
+    }
+
+    body.dark-mode .text-muted {
+        color: #94ADC7 !important;
+        /* Secondary text */
+    }
+
+    /* Scrollbar for dark mode */
+    body.dark-mode ::-webkit-scrollbar-track {
+        background: #121A21 !important;
+        /* Primary dark track */
+    }
+
+    body.dark-mode ::-webkit-scrollbar-thumb {
+        background-color: #263645 !important;
+        /* Secondary dark thumb */
+        border: 3px solid #121A21 !important;
+    }
+
+    body.dark-mode ::-webkit-scrollbar-thumb:hover {
+        background-color: #1C7DD6 !important;
+        /* Blue on hover */
+    }
+
+    /* Demo content for dark mode */
+    body.dark-mode .demo-content {
+        background-color: #263645 !important;
+        /* Secondary dark background */
+        color: #E5E8EB !important;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    body.dark-mode .screen-size-indicator {
+        background: #1C7DD6 !important;
+        /* Active blue */
+        color: #FFFFFF !important;
+    }
+
+    /* Close button in modals */
+    body.dark-mode .btn-close {
+        filter: invert(1) grayscale(100%) brightness(200%) !important;
+    }
+
+    /* Input group in modals */
+    body.dark-mode .input-group-text {
+        background-color: #121A21 !important;
+        /* Primary dark */
+        border: 1px solid #263645 !important;
+        color: #94ADC7 !important;
+        /* Secondary text */
+    }
+
+    /* Responsive adjustments for dark mode */
+    @media (max-width: 767px) {
+        body.dark-mode .main-dashboard-content {
+            background-color: #121A21 !important;
+        }
+
+        body.dark-mode .class-item-custom {
+            background-color: #121A21 !important;
+        }
+    }
+
+    @media (min-width: 768px) and (max-width: 1023px) {
+        body.dark-mode .main-dashboard-content {
+            background-color: #121A21 !important;
+        }
+    }
+
+    @media (min-width: 1024px) {
+        body.dark-mode {
+            background: #121A21 !important;
+            background-color: #121A21 !important;
+        }
+
+        body.dark-mode .main-dashboard-content {
+            background-color: #121A21 !important;
+        }
+    }
+
+    /* Search results dropdown */
+    body.dark-mode #searchResults {
+        background-color: #263645 !important;
+        /* Secondary dark background */
+        border: 1px solid #121A21 !important;
+    }
+
+    body.dark-mode .list-group-item {
+        background-color: #263645 !important;
+        color: #E5E8EB !important;
+        border-color: #121A21 !important;
+    }
+
+    body.dark-mode .list-group-item:hover {
+        background-color: #1C7DD6 !important;
+        /* Active blue on hover */
+        color: #FFFFFF !important;
+    }
+
+    body.dark-mode .list-group-item.text-muted {
+        color: #94ADC7 !important;
     }
 </style>
 

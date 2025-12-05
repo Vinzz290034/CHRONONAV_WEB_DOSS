@@ -49,7 +49,8 @@ require_once '../../templates/user/header_user.php';
     /* Consistent design from previous pages */
     body {
         font-family: "Space Grotesk", "Noto Sans", sans-serif;
-        background-color: #ffff;
+        background-color: #ffffff;
+        background: #ffff;
     }
 
     .main-content-wrapper {
@@ -363,6 +364,11 @@ require_once '../../templates/user/header_user.php';
 
     /* Desktop: 1024px and above */
     @media (min-width: 1024px) {
+        body {
+            background: #ffff;
+            background-color: #ffff;
+        }
+
         .main-content-wrapper {
             margin-left: 20% !important;
             width: 80% !important;
@@ -399,6 +405,334 @@ require_once '../../templates/user/header_user.php';
         .btn-custom-danger {
             min-width: 140px !important;
         }
+    }
+
+
+
+    /* ====================================================================== */
+    /* Dark Mode Overrides for Settings Page - Custom Colors                  */
+    /* ====================================================================== */
+    body.dark-mode {
+        background-color: #121A21 !important;
+        /* Primary dark background */
+        color: #E5E8EB !important;
+        /* Primary light text color */
+    }
+
+    body.dark-mode .main-content-wrapper {
+        background-color: #121A21 !important;
+        /* Primary dark background */
+        color: #E5E8EB !important;
+    }
+
+    body.dark-mode .main-dashboard-content {
+        color: #E5E8EB !important;
+    }
+
+    /* Settings container and cards */
+    body.dark-mode .settings-container {
+        background-color: transparent !important;
+    }
+
+    body.dark-mode .settings-section {
+        background-color: #263645 !important;
+        /* Secondary dark background */
+        border: 1px solid #121A21 !important;
+    }
+
+    body.dark-mode .settings-section .card-header {
+        background-color: #263645 !important;
+        /* Secondary dark background */
+        border-bottom: 1px solid #121A21 !important;
+        /* Dark border */
+    }
+
+    body.dark-mode .settings-section .card-header h5 {
+        color: #E5E8EB !important;
+        /* Light text for headings */
+    }
+
+    body.dark-mode .settings-section .card-body {
+        background-color: #263645 !important;
+        /* Secondary dark background */
+        color: #E5E8EB !important;
+    }
+
+    /* Settings items */
+    body.dark-mode .settings-item {
+        border-bottom: 1px solid #121A21 !important;
+        /* Dark borders */
+        color: #E5E8EB !important;
+    }
+
+    body.dark-mode .settings-item:last-child {
+        border-bottom: none !important;
+    }
+
+    body.dark-mode .settings-item span:first-child {
+        color: #E5E8EB !important;
+        /* Light text for labels */
+    }
+
+    body.dark-mode .settings-item span:last-child {
+        color: #94ADC7 !important;
+        /* Secondary text for values */
+    }
+
+    /* Buttons */
+    body.dark-mode .btn-custom-outline {
+        background-color: #121A21 !important;
+        /* Primary dark */
+        color: #94ADC7 !important;
+        /* Secondary text color */
+        border: 1px solid #263645 !important;
+        /* Secondary border */
+    }
+
+    body.dark-mode .btn-custom-outline:hover {
+        background-color: #1C7DD6 !important;
+        /* Active blue */
+        color: #FFFFFF !important;
+        /* White text on hover */
+        border-color: #1C7DD6 !important;
+    }
+
+    body.dark-mode .btn-custom-blue {
+        background-color: #1C7DD6 !important;
+        /* Active blue */
+        color: #FFFFFF !important;
+        border: none;
+    }
+
+    body.dark-mode .btn-custom-blue:hover {
+        background-color: #1565C0 !important;
+        /* Darker blue on hover */
+    }
+
+    body.dark-mode .btn-custom-danger {
+        background-color: #121A21 !important;
+        /* Primary dark */
+        color: #E57373 !important;
+        /* Light red for dark mode */
+        border: 1px solid #263645 !important;
+    }
+
+    body.dark-mode .btn-custom-danger:hover {
+        background-color: #C62828 !important;
+        /* Darker red background */
+        color: #FFFFFF !important;
+        /* White text on hover */
+        border-color: #C62828 !important;
+    }
+
+    /* Toggle switches */
+    body.dark-mode .form-check-input {
+        background-color: #121A21 !important;
+        border-color: #263645 !important;
+    }
+
+    body.dark-mode .form-check-input:checked {
+        background-color: #1C7DD6 !important;
+        /* Active blue */
+        border-color: #1C7DD6 !important;
+    }
+
+    body.dark-mode .form-check-input:focus {
+        border-color: #1C7DD6 !important;
+        box-shadow: 0 0 0 0.2rem rgba(28, 125, 214, 0.25) !important;
+    }
+
+    /* Form elements */
+    body.dark-mode .form-label {
+        color: #E5E8EB !important;
+        /* Light text for labels */
+    }
+
+    body.dark-mode .form-control {
+        background-color: #121A21 !important;
+        /* Primary dark background */
+        border: 1px solid #263645 !important;
+        /* Secondary border */
+        color: #E5E8EB !important;
+        /* Light text */
+    }
+
+    body.dark-mode .form-control:focus {
+        background-color: #121A21 !important;
+        border-color: #1C7DD6 !important;
+        /* Blue focus */
+        color: #E5E8EB !important;
+        box-shadow: 0 0 0 0.2rem rgba(28, 125, 214, 0.25) !important;
+    }
+
+    /* Modal styling */
+    body.dark-mode .modal-content {
+        background-color: #263645 !important;
+        /* Secondary dark background */
+        border: 1px solid #121A21 !important;
+        color: #E5E8EB !important;
+    }
+
+    body.dark-mode .modal-header {
+        background-color: #121A21 !important;
+        /* Primary dark */
+        border-bottom: 1px solid #263645 !important;
+        /* Secondary border */
+    }
+
+    body.dark-mode .modal-header .modal-title {
+        color: #E5E8EB !important;
+        /* Light text for modal title */
+    }
+
+    body.dark-mode .modal-footer {
+        background-color: #121A21 !important;
+        /* Primary dark */
+        border-top: 1px solid #263645 !important;
+        /* Secondary border */
+    }
+
+    body.dark-mode .modal-body {
+        color: #E5E8EB !important;
+    }
+
+    /* Checkbox */
+    body.dark-mode .form-check-input[type="checkbox"] {
+        background-color: #121A21 !important;
+        border: 1px solid #263645 !important;
+    }
+
+    body.dark-mode .form-check-input[type="checkbox"]:checked {
+        background-color: #1C7DD6 !important;
+        border-color: #1C7DD6 !important;
+    }
+
+    body.dark-mode .form-check-label {
+        color: #94ADC7 !important;
+        /* Secondary text color */
+    }
+
+    /* Alerts */
+    body.dark-mode .alert {
+        background-color: #263645 !important;
+        /* Secondary dark background */
+        border: 1px solid #121A21 !important;
+    }
+
+    body.dark-mode .alert-success {
+        background-color: #1B5E20 !important;
+        /* Dark green */
+        color: #C8E6C9 !important;
+        /* Light green text */
+        border-color: #2E7D32 !important;
+    }
+
+    body.dark-mode .alert-danger {
+        background-color: #B71C1C !important;
+        /* Dark red */
+        color: #FFCDD2 !important;
+        /* Light red text */
+        border-color: #C62828 !important;
+    }
+
+    body.dark-mode .alert-warning {
+        background-color: #F57C00 !important;
+        /* Dark orange */
+        color: #FFE0B2 !important;
+        /* Light orange text */
+        border-color: #EF6C00 !important;
+    }
+
+    body.dark-mode .alert-info {
+        background-color: #0D47A1 !important;
+        /* Dark blue */
+        color: #BBDEFB !important;
+        /* Light blue text */
+        border-color: #1565C0 !important;
+    }
+
+    /* Header section */
+    body.dark-mode .text-dark.fw-bold.fs-3.mb-0 {
+        color: #E5E8EB !important;
+        /* Light text for page title */
+    }
+
+    body.dark-mode .d-flex.flex-wrap.justify-content-between.gap-3.p-3 {
+        border-bottom: 1px solid #263645 !important;
+        /* Dark border */
+    }
+
+    /* Text colors */
+    body.dark-mode .text-muted {
+        color: #94ADC7 !important;
+        /* Secondary text color */
+    }
+
+    /* Scrollbar for dark mode */
+    body.dark-mode ::-webkit-scrollbar-track {
+        background: #121A21 !important;
+        /* Primary dark track */
+    }
+
+    body.dark-mode ::-webkit-scrollbar-thumb {
+        background-color: #263645 !important;
+        /* Secondary dark thumb */
+        border: 3px solid #121A21 !important;
+    }
+
+    body.dark-mode ::-webkit-scrollbar-thumb:hover {
+        background-color: #1C7DD6 !important;
+        /* Blue on hover */
+    }
+
+    /* Deactivate account warning text */
+    body.dark-mode #deactivateAccountModal p.text-muted {
+        color: #94ADC7 !important;
+    }
+
+    /* Close button in modals */
+    body.dark-mode .btn-close {
+        filter: invert(1) grayscale(100%) brightness(200%) !important;
+    }
+
+    /* Responsive adjustments for dark mode */
+    @media (max-width: 767px) {
+        body.dark-mode .main-content-wrapper {
+            background-color: #121A21 !important;
+        }
+
+        body.dark-mode .settings-item:hover {
+            background-color: #121A21 !important;
+            /* Dark hover for mobile */
+        }
+    }
+
+    @media (min-width: 768px) and (max-width: 1023px) {
+        body.dark-mode .main-content-wrapper {
+            background-color: #121A21 !important;
+        }
+    }
+
+    @media (min-width: 1024px) {
+        body.dark-mode {
+            background: #121A21 !important;
+            background-color: #121A21 !important;
+        }
+
+        body.dark-mode .main-content-wrapper {
+            background-color: #121A21 !important;
+        }
+    }
+
+    /* Touch interactions for dark mode */
+    body.dark-mode .settings-item:hover {
+        background-color: rgba(28, 125, 214, 0.1) !important;
+        /* Subtle blue tint on hover */
+    }
+
+    /* Mobile backdrop for dark mode */
+    body.dark-mode .modal-backdrop-mobile {
+        background: rgba(0, 0, 0, 0.7) !important;
     }
 </style>
 
@@ -690,7 +1024,7 @@ require_once '../../templates/user/sidenav_user.php';
             document.querySelectorAll('.settings-item').forEach(item => {
                 item.style.cursor = 'pointer';
                 item.addEventListener('touchstart', function () {
-                    this.style.backgroundColor = '#f8f9fa';
+                    this.style.backgroundColor = '#ffffff';
                 });
                 item.addEventListener('touchend', function () {
                     this.style.backgroundColor = '';
