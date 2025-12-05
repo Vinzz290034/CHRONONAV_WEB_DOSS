@@ -965,6 +965,20 @@ require_once '../../templates/admin/header_admin.php';
                             Able to see all feedback from all users.
                         </small>
                     </li>
+                    <li class="list-group-item bg-info-subtle">
+                        <a href="ocr_management.php">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                                viewBox="0 0 256 256">
+                                <path
+                                    d="M216,40H40A16,16,0,0,0,24,56V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40ZM40,56H216V88H40ZM216,200H40V104H216v96Z">
+                                </path>
+                            </svg>
+                            OCR Management Panel
+                        </a>
+                        <small class="text-muted d-block mt-1">
+                            defines templates for precise data extraction and tracks the processing history of scanned documents.
+                        </small>
+                    </li>
                 </ul>
             </div>
 

@@ -922,3 +922,12 @@ CREATE TABLE user_schedule (
     INDEX (user_id),
     INDEX (course_no)
 );
+
+CREATE TABLE ocr_templates (
+    id INT(11) AUTO_INCREMENT PRIMARY KEY,
+    template_name VARCHAR(255) NOT NULL,
+    file_path VARCHAR(512) NOT NULL COMMENT 'Path or name of the template file (PDF/Image)',
+    status ENUM('draft', 'active', 'error') DEFAULT 'draft' COMMENT 'Template processing status',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
