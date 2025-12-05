@@ -5,11 +5,13 @@ require_once '../../middleware/auth_check.php'; // Ensures user is logged in and
 require_once '../../config/db_connect.php'; // Database connection
 require_once '../../includes/functions.php'; // Assuming requireRole function is here
 
+/** @var \mysqli $conn */ // IDE Hint
+
 // Ensure the user is logged in and has the 'admin' role for this admin page
 requireRole(['admin']);
 
 // Fetch user data for header display (name, role, profile_img)
-// This is done here so the variables are available before including the header.
+// ... (existing header data fetching logic)
 $user_id = $_SESSION['user']['id'];
 $stmt = $conn->prepare("SELECT name, role, profile_img FROM users WHERE id = ?");
 if ($stmt) {
@@ -20,10 +22,10 @@ if ($stmt) {
         $header_user_data = $result->fetch_assoc();
         $display_username = htmlspecialchars($header_user_data['name'] ?? 'Admin User');
         $display_user_role = htmlspecialchars(ucfirst($header_user_data['role'] ?? 'Admin'));
-        // Construct profile_img_src for the header, relative to the templates/admin directory
+
         $profile_img_src = (strpos($header_user_data['profile_img'], 'uploads/') === 0) ? '../../' . $header_user_data['profile_img'] : '../../uploads/profiles/default-avatar.png';
     } else {
-        // Fallback if user data for header somehow isn't found (shouldn't happen with auth_check)
+
         $display_username = 'Admin User';
         $display_user_role = 'Admin';
         $profile_img_src = '../../uploads/profiles/default-avatar.png';
@@ -36,12 +38,37 @@ if ($stmt) {
 }
 
 $page_title = "Building Room Manager";
-$current_page = "room_manager"; // This should match a key in your sidenav for active state
+$current_page = "room_manager";
 
 $message = '';
 $message_type = '';
 
-// --- Handle Add/Update Room ---
+// Check for session messages set by the handler scripts
+if (isset($_SESSION['message'])) {
+    $message = $_SESSION['message'];
+    $message_type = $_SESSION['message_type'];
+    unset($_SESSION['message']);
+    unset($_SESSION['message_type']);
+}
+
+// --- Helper function from class_room_assignments_logic.php to fetch faculty ---
+function getFacultyUsers($conn) {
+    $sql = "SELECT id, name FROM users WHERE role = 'faculty' AND is_active = 1 ORDER BY name ASC";
+    $result = $conn->query($sql);
+    $faculty = [];
+    if ($result) {
+        while ($row = $result->fetch_assoc()) {
+            $faculty[] = $row;
+        }
+    }
+    return $faculty;
+}
+
+// Fetch all faculty and rooms for the new schedule form dropdowns
+$faculty_users = getFacultyUsers($conn); 
+
+// --- Handle Add/Update Room (Existing Logic) ---
+// ... (existing room handling logic remains unchanged) ...
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_room'])) {
     $room_id = $_POST['room_id'] ?? null;
     $room_name = trim($_POST['room_name'] ?? '');
@@ -76,8 +103,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_room'])) {
                     $message_type = 'success';
                 } else {
                     $message = "Error adding room: " . $stmt->error;
-                    // Check for duplicate entry error
-                    if ($conn->errno == 1062) { // MySQL error code for duplicate entry
+                    if ($conn->errno == 1062) { 
                         $message = "Error: A room with this name already exists.";
                     }
                     $message_type = 'danger';
@@ -88,7 +114,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_room'])) {
     }
 }
 
-// --- Handle Delete Room ---
+
+// --- Handle Delete Room (Existing Logic) ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_room'])) {
     $room_id_to_delete = $_POST['delete_room_id'] ?? null;
     if ($room_id_to_delete) {
@@ -107,20 +134,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_room'])) {
     }
 }
 
-// --- Handle Linking Room to Schedule ---
+// --- Handle Linking Room to Schedule (Existing Logic) ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['link_schedule'])) {
     $schedule_id_to_link = $_POST['schedule_id_to_link'] ?? null;
     $selected_room_id = $_POST['selected_room_id'] ?? null;
 
-    if ($schedule_id_to_link && ($selected_room_id !== null)) { // Allow selected_room_id to be 0 or NULL to unlink
+    if ($schedule_id_to_link && ($selected_room_id !== null)) { 
         $stmt = $conn->prepare("UPDATE schedules SET room_id = ? WHERE schedule_id = ?");
         if ($stmt) {
-            // If $selected_room_id is "0" or empty, treat it as NULL for the database
-            // This assumes the room_id column in the schedules table is nullable.
+
+
             $bind_room_id = ($selected_room_id == "0" || empty($selected_room_id)) ? NULL : (int) $selected_room_id;
-
-
-            // A safer way for nullable INT in mysqli where 0 indicates unlinked:
             $stmt->bind_param("ii", $bind_room_id, $schedule_id_to_link);
 
             if ($stmt->execute()) {
@@ -139,7 +163,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['link_schedule'])) {
 }
 
 
-// --- Fetch all Rooms ---
+// --- Fetch all Rooms (Updated Logic) ---
 $rooms = [];
 $stmt_rooms = $conn->prepare("SELECT * FROM rooms ORDER BY room_name ASC");
 $stmt_rooms->execute();
@@ -149,9 +173,9 @@ while ($row = $result_rooms->fetch_assoc()) {
 }
 $stmt_rooms->close();
 
-// --- Fetch all Schedules (and their current room_id) ---
+// --- Fetch all Schedules (and their current room_id) (Updated Logic) ---
 $schedules = [];
-// Joining with rooms to get room_name for display
+
 $stmt_schedules = $conn->prepare("SELECT s.*, r.room_name FROM schedules s LEFT JOIN rooms r ON s.room_id = r.id ORDER BY s.day_of_week, s.start_time");
 $stmt_schedules->execute();
 $result_schedules = $stmt_schedules->get_result();
@@ -160,8 +184,9 @@ while ($row = $result_schedules->fetch_assoc()) {
 }
 $stmt_schedules->close();
 
+
 // --- START HTML STRUCTURE ---
-// Include the admin header which contains <head> and opening <body> tags
+
 require_once '../../templates/admin/header_admin.php';
 require_once '../../templates/admin/sidenav_admin.php'; // Sidenav is included here
 ?>
@@ -986,7 +1011,7 @@ require_once '../../templates/admin/sidenav_admin.php'; // Sidenav is included h
 
 
 <div class="main-dashboard-content">
-    <!-- Header Section -->
+
     <div class="p-4">
         <div class="d-flex flex-wrap justify-content-between gap-3 mb-3">
             <p class="page-title mb-0 fs-3" style="min-width: 288px;">Building Room Manager</p>
@@ -999,8 +1024,7 @@ require_once '../../templates/admin/sidenav_admin.php'; // Sidenav is included h
             </div>
         <?php endif; ?>
 
-        <!-- Add/Update Room Section -->
-        <h2 class="section-title mb-3">+ Add/Update Room</h2>
+        <h2 class="section-title mb-3">🏠 + Add/Update Room</h2>
         <form action="room_manager.php" method="POST" class="mb-5">
             <input type="hidden" name="room_id" id="room_id">
 
@@ -1065,11 +1089,90 @@ require_once '../../templates/admin/sidenav_admin.php'; // Sidenav is included h
                 <button type="button" class="btn-light" onclick="clearRoomForm()">Clear Form</button>
             </div>
         </form>
+        
+        <h2 class="section-title mb-3">🗓 Create New Faculty Schedule Entry</h2>
+        <form action="../../includes/admin_add_schedule_via_room_manager_handler.php" method="POST" class="mb-5" id="scheduleCreationForm">
+            <div class="row mb-2">
+                <div class="col-12 col-md-6">
+                    <div class="mb-1">
+                        <label class="form-label-custom">Schedule Title</label>
+                        <input type="text" class="form-control-custom" name="title" placeholder="e.g., CS 301 Lecture" required>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6">
+                    <div class="mb-1">
+                        <label class="form-label-custom">Assign Faculty</label>
+                        <select class="form-control-custom" name="faculty_id" required>
+                            <option value="">-- Select Faculty --</option>
+                            <?php foreach ($faculty_users as $faculty): ?>
+                                <option value="<?= htmlspecialchars($faculty['id']) ?>"><?= htmlspecialchars($faculty['name']) ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                </div>
+            </div>
 
-        <!-- Existing Rooms Section -->
+            <div class="row mb-2">
+                <div class="col-12 col-md-6">
+                    <div class="mb-1">
+                        <label class="form-label-custom">Day of Week</label>
+                        <select class="form-control-custom" name="day_of_week" required>
+                            <option value="">-- Select Day --</option>
+                            <option value="Monday">Monday</option>
+                            <option value="Tuesday">Tuesday</option>
+                            <option value="Wednesday">Wednesday</option>
+                            <option value="Thursday">Thursday</option>
+                            <option value="Friday">Friday</option>
+                            <option value="Saturday">Saturday</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6">
+                    <div class="mb-1">
+                        <label class="form-label-custom">Assign Room (Optional)</label>
+                        <select class="form-control-custom" name="room_id">
+                            <option value="">-- Unassigned --</option>
+                            <?php foreach ($rooms as $room): ?>
+                                <option value="<?= htmlspecialchars($room['id']) ?>"><?= htmlspecialchars($room['room_name']) ?> (Cap: <?= htmlspecialchars($room['capacity']) ?>)</option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-2">
+                <div class="col-12 col-md-6">
+                    <div class="mb-1">
+                        <label class="form-label-custom">Start Time</label>
+                        <input type="time" class="form-control-custom" name="start_time" required>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6">
+                    <div class="mb-1">
+                        <label class="form-label-custom">End Time</label>
+                        <input type="time" class="form-control-custom" name="end_time" required>
+                    </div>
+                </div>
+            </div>
+            
+             <div class="row mb-2">
+                <div class="col-12">
+                    <div class="mb-1">
+                        <label class="form-label-custom">Description (Optional)</label>
+                        <textarea class="form-control-custom" name="description" placeholder="A brief description or section code"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex flex-wrap gap-3 mb-5">
+                <button type="submit" name="create_schedule" class="btn-primary-custom">Create Schedule Entry</button>
+            </div>
+        </form>
+
+
         <h2 class="section-title mb-3">≡ Existing Rooms</h2>
         <?php if (!empty($rooms)): ?>
-            <div class="table-responsive-custom mb-5">
+        <div class="table-responsive-custom mb-5">
                 <table class="table table-custom mb-0">
                     <thead>
                         <tr>
@@ -1117,8 +1220,7 @@ require_once '../../templates/admin/sidenav_admin.php'; // Sidenav is included h
         <?php else: ?>
             <div class="alert alert-info text-center">No rooms defined yet. Add a new room above.</div>
         <?php endif; ?>
-
-        <!-- Link Rooms to Schedules Section -->
+        
         <h2 class="section-title mb-3">⛓ Link Rooms to Schedules</h2>
         <?php if (!empty($schedules)): ?>
             <div class="table-responsive-custom mb-5">
@@ -1154,7 +1256,7 @@ require_once '../../templates/admin/sidenav_admin.php'; // Sidenav is included h
                                         <input type="hidden" name="schedule_id_to_link"
                                             value="<?= htmlspecialchars($schedule['schedule_id']) ?>">
                                         <select name="selected_room_id" class="form-select form-select-sm me-2">
-                                            <option value="0">-- Unassign Room --</option>
+                                            <option value="">-- Unassign Room --</option>
                                             <?php foreach ($rooms as $room): ?>
                                                 <option value="<?= htmlspecialchars($room['id']) ?>"
                                                     <?= ($schedule['room_id'] == $room['id']) ? 'selected' : '' ?>>
