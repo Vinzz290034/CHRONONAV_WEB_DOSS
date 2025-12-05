@@ -8,6 +8,20 @@ if (session_status() === PHP_SESSION_NONE) {
 
 require_once '../../config/db_connect.php'; // Your existing MySQLi connection file
 
+/** @var \mysqli $conn */ // Tell the IDE that $conn is a mysqli object
+
+// --- Initializing Data Arrays and Messages ---
+// These variables hold the data needed by the class_room_assignments.php view
+$faculty_users = [];
+$all_rooms = [];
+$class_offerings = [];
+$message = $_SESSION['message'] ?? '';
+$message_type = $_SESSION['message_type'] ?? '';
+
+// Clear session messages after retrieving them
+unset($_SESSION['message']);
+unset($_SESSION['message_type']);
+
 // --- Helper Functions ---
 
 // Function to execute a prepared statement (MODIFIED to return AFFECTED ROWS count)
@@ -23,7 +37,12 @@ function executePreparedQuery($conn, $sql, $params, $types = '') {
         foreach ($params as $key => $value) {
             $bind_names[] = &$params[$key];
         }
-        call_user_func_array([$stmt, 'bind_param'], $bind_names);
+        // Use count check for safe bind_param call
+        if (count($params) === strlen($types)) {
+            call_user_func_array([$stmt, 'bind_param'], $bind_names);
+        } else {
+             error_log("Parameter count mismatch in executePreparedQuery. SQL: " . $sql);
+        }
     }
 
     $success = $stmt->execute();
@@ -41,7 +60,7 @@ function executePreparedQuery($conn, $sql, $params, $types = '') {
     return $affected_rows;
 }
 
-// Function to get all users with 'faculty' role (Unchanged)
+// Function to get all users with 'faculty' role
 function getFacultyUsers($conn) {
     $sql = "SELECT id, name, email FROM users WHERE role = 'faculty' AND is_active = 1 ORDER BY name ASC";
     $result = $conn->query($sql);
@@ -57,9 +76,10 @@ function getFacultyUsers($conn) {
     return $faculty;
 }
 
-// Function to get all rooms (Unchanged)
+// Function to get all rooms
 function getAllRooms($conn) {
     $sql = "SELECT id, room_name, capacity FROM rooms ORDER BY room_name ASC";
+    
     $result = $conn->query($sql);
     $rooms = [];
     if ($result) {
@@ -73,7 +93,7 @@ function getAllRooms($conn) {
     return $rooms;
 }
 
-// Function to get all class offerings (Unchanged)
+// Function to get all class offerings
 function getAllClassOfferings($conn) {
     $sql = "SELECT
                 c.class_id,
@@ -108,6 +128,14 @@ function getAllClassOfferings($conn) {
     }
     return $offerings;
 }
+
+
+// --- Initial Data Fetch ---
+// This runs on every GET request to populate the view.
+$faculty_users = getFacultyUsers($conn);
+$all_rooms = getAllRooms($conn);
+$class_offerings = getAllClassOfferings($conn);
+
 
 // --- Handle POST Requests ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -212,8 +240,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             break;
     }
 
+    // Redirect to the display page after handling the POST request
     header("Location: ../../pages/admin/class_room_assignments.php");
     exit();
 }
 
+// If it's a GET request, the page simply continues to render with the fetched data arrays.
 ?>

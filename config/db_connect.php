@@ -1,5 +1,5 @@
 <?php
-// CHRONONAV_WEBZD/config/db_connect.php
+// CHRONONAV_WEB_DOSS/config/db_connect.php
 
 // Prevent multiple connections if included multiple times
 if (!isset($conn)) {

@@ -13,6 +13,7 @@ if (!isset($_SESSION['user'])) {
     exit();
 }
 
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $user_id = $_SESSION['user']['id'];
     $current_password = $_POST['current_password'] ?? '';

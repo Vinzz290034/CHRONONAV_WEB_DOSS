@@ -80,14 +80,15 @@ try {
 
 } catch (PDOException $e) {
     error_log("Dashboard Data Fetch Error: " . $e->getMessage());
-    $total_users = "Error";
-    $active_tickets = "Error";
-    $new_announcements = "Error";
-    $admin_count = "Error";
-    $faculty_count = "Error";
-    $student_count = "Error";
-    $total_feedbacks = "Error";
-    $total_rooms = "Error";
+    // Setting to 0 for safe chart initialization when data fetch fails
+    $total_users = 0;
+    $active_tickets = 0;
+    $new_announcements = 0;
+    $admin_count = 0;
+    $faculty_count = 0;
+    $student_count = 0;
+    $total_feedbacks = 0;
+    $total_rooms = 0;
     $department_counts = [];
 }
 
@@ -101,6 +102,7 @@ require_once '../../templates/admin/header_admin.php';
 <link rel="stylesheet" href="../../assets/css/onboarding.css">
 
 <style>
+    /* CSS code remains unchanged */
     body {
         background-color: white
     }
@@ -190,6 +192,7 @@ require_once '../../templates/admin/header_admin.php';
     .text-truncate-2 {
         display: -webkit-box;
         -webkit-line-clamp: 2;
+        line-clamp: 2;
         -webkit-box-orient: vertical;
         overflow: hidden;
     }
@@ -377,9 +380,6 @@ require_once '../../templates/admin/header_admin.php';
     }
 
 
-
-
-
     /* Chart container styling */
     /* Enhanced Chart Styling */
     .chart-container {
@@ -475,7 +475,6 @@ require_once '../../templates/admin/header_admin.php';
             font-size: 14px;
         }
     }
-
 
 
     /* Add these media queries at the end of your existing CSS - EXACT SAME STRUCTURE AS FACULTY DASHBOARD */
@@ -672,7 +671,6 @@ require_once '../../templates/admin/header_admin.php';
     }
 </style>
 
-<!-- Favicon -->
 <link rel="icon" type="image/x-icon"
     href="https://res.cloudinary.com/deua2yipj/image/upload/v1758917007/ChronoNav_logo_muon27.png">
 
@@ -686,12 +684,10 @@ require_once '../../templates/admin/header_admin.php';
 
     <div class="main-dashboard-content-wrapper" id="page-content-wrapper">
         <div class="main-dashboard-content">
-            <!-- Header Section -->
             <div class="d-flex flex-column px-3 pt-4 pb-2">
                 <h2 class="welcome-title mb-0">Welcome, Admin <?= $display_name ?></h2>
             </div>
 
-            <!-- SEARCH BAR WITH AJAX - Updated with proper styling -->
             <div class="search-bar position-relative mb-4">
                 <div class="input-group search-bar-custom">
                     <span class="input-group-text">
@@ -704,7 +700,6 @@ require_once '../../templates/admin/header_admin.php';
                     style="z-index:1000; display: none;"></div>
             </div>
 
-            <!-- Welcome Card - Keep original structure but update styling -->
             <div class="card p-4 mb-4 border-0 shadow p-3 mb-5 rounded">
                 <p class="text-dark mb-3">This is your central hub for managing your academic responsibilities.</p>
                 <div class="onboarding-controls mt-4 p-3 border rounded">
@@ -723,11 +718,9 @@ require_once '../../templates/admin/header_admin.php';
                         </button>
                     </div>
                 </div>
-                <!-- AJAX container for onboarding tips -->
                 <div id="onboardingContent" class="mt-3"></div>
             </div>
 
-            <!-- Key Metrics Section -->
             <div class="px-3 pt-3 pb-1">
                 <h3 class="section-title mb-3">Key Metrics / Status Cards</h3>
             </div>
@@ -781,7 +774,6 @@ require_once '../../templates/admin/header_admin.php';
             </div>
 
 
-            <!-- Analytics Section -->
             <div class="px-3 pt-3 pb-1">
                 <h3 class="section-title mb-3">Analytics</h3>
             </div>
@@ -827,7 +819,6 @@ require_once '../../templates/admin/header_admin.php';
                 </div>
             </div>
 
-            <!-- Quick Admin Links Section -->
             <div class="px-3 pt-3 pb-1">
                 <h3 class="section-title mb-3">Quick Admin Links</h3>
             </div>
@@ -977,7 +968,6 @@ require_once '../../templates/admin/header_admin.php';
                 </ul>
             </div>
 
-            <!-- Administrator Tools Section -->
             <div class="px-3 pt-4 pb-1">
                 <h3 class="section-title mb-3">Administrator Tools</h3>
             </div>
@@ -1015,7 +1005,6 @@ require_once '../../templates/admin/header_admin.php';
                 </ul>
             </div>
 
-            <!-- Quick Links and Profile Cards -->
             <div class="row mt-4 px-3">
                 <div class="col-md-6 mb-4">
                     <div class="card shadow-sm h-100 border-0">
@@ -1091,248 +1080,6 @@ require_once '../../templates/admin/header_admin.php';
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
-    // ================== AJAX SEARCH ==================
-    $("#searchInput").on("keyup", function () {
-        let query = $(this).val();
-        if (query.length > 2) {
-            $.ajax({
-                url: "../../pages/admin/search.php",
-                method: "GET",
-                data: { q: query },
-                success: function (response) {
-                    let data = JSON.parse(response);
-                    let output = "";
-                    if (data.length > 0) {
-                        data.forEach(item => {
-                            output += `<a href="#" class="list-group-item list-group-item-action">${item.title}</a>`;
-                        });
-                    } else {
-                        output = `<div class="list-group-item text-muted">No results found</div>`;
-                    }
-                    $("#searchResults").html(output).show();
-                }
-            });
-        } else {
-            $("#searchResults").hide();
-        }
-    });
-
-    // ================== AJAX ONBOARDING ==================
-    $("#viewTipsBtn").click(function () {
-        $.get("../../pages/admin/get_tips.php", function (data) {
-            $("#onboardingContent").html(data);
-        });
-    });
-    $("#restartOnboardingBtn").click(function () {
-        $.post("../../pages/admin/restart_onboarding.php", { user: "<?= $user['id'] ?? 0 ?>" }, function (data) {
-            $("#onboardingContent").html("<div class='alert alert-success'>Onboarding restarted!</div>");
-        });
-    });
-
-    // ================== CHART.JS IMPLEMENTATION ==================
-    document.addEventListener('DOMContentLoaded', function () {
-        // Data passed from PHP to JavaScript
-        const totalUsers = <?= json_encode($total_users) ?>;
-        const activeTickets = <?= json_encode($active_tickets) ?>;
-        const newAnnouncements = <?= json_encode($new_announcements) ?>;
-
-        // Data for user roles
-        const adminCount = <?= json_encode($admin_count) ?>;
-        const facultyCount = <?= json_encode($faculty_count) ?>;
-        const studentCount = <?= json_encode($student_count) ?>;
-
-        // Data for department counts
-        const departmentLabels = Object.keys(<?= json_encode($department_counts) ?>);
-        const departmentData = Object.values(<?= json_encode($department_counts) ?>);
-
-        // Generate an array of distinct colors for departments
-        const departmentColors = [
-            '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF',
-            '#FF9900', '#C9CBCF', '#8AC926', '#1982C4', '#6A4C93',
-            '#A70000', '#00A7A7', '#A7A700', '#00A700', '#A700A7',
-            '#B3B300', '#FF4D4D', '#4DA6FF', '#66FF66', '#FF66B2'
-        ];
-
-        // Only attempt to draw charts if primary dashboard data is numeric
-        if (!isNaN(totalUsers) && !isNaN(activeTickets) && !isNaN(newAnnouncements)) {
-            // Pie Chart for Overall System Metrics
-            const pieCtx = document.getElementById('dashboardPieChart').getContext('2d');
-            new Chart(pieCtx, {
-                type: 'pie',
-                data: {
-                    labels: ['Total Users', 'Active Tickets'],
-                    datasets: [{
-                        data: [totalUsers, activeTickets],
-                        backgroundColor: ['#007bff', '#17a2b8'],
-                        hoverOffset: 4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            position: 'top',
-                        },
-                        title: {
-                            display: true,
-                            text: 'Overall System Metrics'
-                        }
-                    }
-                }
-            });
-
-            // Bar Chart for Activity Metrics
-            const barCtx = document.getElementById('dashboardBarChart').getContext('2d');
-            new Chart(barCtx, {
-                type: 'bar',
-                data: {
-                    labels: ['Total Users', 'Active Tickets', 'New Announcements'],
-                    datasets: [{
-                        label: 'Counts',
-                        data: [totalUsers, activeTickets, newAnnouncements],
-                        backgroundColor: [
-                            'rgba(0, 123, 255, 0.7)',
-                            'rgba(23, 162, 184, 0.7)',
-                            'rgba(40, 167, 69, 0.7)'
-                        ],
-                        borderColor: [
-                            'rgba(0, 123, 255, 1)',
-                            'rgba(23, 162, 184, 1)',
-                            'rgba(40, 167, 69, 1)'
-                        ],
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            display: false,
-                        },
-                        title: {
-                            display: true,
-                            text: 'Overall System Metrics'
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                precision: 0
-                            }
-                        }
-                    }
-                }
-            });
-        } else {
-            console.error("Primary dashboard data could not be fetched. Some charts may not be displayed.");
-        }
-
-        // New Pie Chart for User Role Distribution
-        if (!isNaN(adminCount) && !isNaN(facultyCount) && !isNaN(studentCount) && (adminCount + facultyCount + studentCount > 0)) {
-            const userRolePieCtx = document.getElementById('userRolePieChart').getContext('2d');
-            new Chart(userRolePieCtx, {
-                type: 'pie',
-                data: {
-                    labels: ['Admin', 'Faculty', 'Student'],
-                    datasets: [{
-                        data: [adminCount, facultyCount, studentCount],
-                        backgroundColor: ['#0000FF', '#FF0000', '#00FF00'],
-                        hoverOffset: 4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            position: 'top',
-                        },
-                        title: {
-                            display: true,
-                            text: 'User Distribution by Role'
-                        }
-                    }
-                }
-            });
-        } else {
-            console.error("User role data could not be fetched or is zero. User role pie chart will not be displayed.");
-        }
-
-        // New Pie Chart for User Distribution by Department
-        if (departmentLabels.length > 0 && departmentData.some(count => count > 0)) {
-            const departmentPieCtx = document.getElementById('departmentPieChart').getContext('2d');
-            new Chart(departmentPieCtx, {
-                type: 'pie',
-                data: {
-                    labels: departmentLabels,
-                    datasets: [{
-                        data: departmentData,
-                        backgroundColor: departmentColors.slice(0, departmentLabels.length),
-                        hoverOffset: 4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            position: 'top',
-                        },
-                        title: {
-                            display: true,
-                            text: 'User Distribution by Department'
-                        }
-                    }
-                }
-            });
-        } else {
-            console.error("Department data could not be fetched or is empty. Department distribution pie chart will not be displayed.");
-        }
-    });
-
-    // --- Search Functionality ---
-    document.addEventListener('DOMContentLoaded', function () {
-        const searchInput = document.getElementById('searchInput');
-
-        // Target the containers you want to search within
-        const linkLists = [
-            document.getElementById('adminLinksList'),
-            document.getElementById('adminToolsList'),
-            document.getElementById('quickLinksList')
-        ];
-
-        searchInput.addEventListener('keyup', function () {
-            const searchTerm = this.value.toLowerCase();
-
-            linkLists.forEach(list => {
-                if (list) {
-                    const listItems = list.getElementsByTagName('li');
-                    Array.from(listItems).forEach(item => {
-                        const itemText = item.textContent || item.innerText;
-                        if (itemText.toLowerCase().includes(searchTerm)) {
-                            item.style.display = 'block';
-                        } else {
-                            item.style.display = 'none';
-                        }
-                    });
-                }
-            });
-        });
-    });
-</script>
-
-<?php include('../../includes/semantics/footer.php'); ?>
-
-
-
-
-
-
-<!-- // =========================================================================================
-// JavaScript for Chart Rendering
-// =========================================================================================
-?> -->
-
-<script>
     document.addEventListener('DOMContentLoaded', function () {
         // 1. Get PHP data and pass it to JavaScript
         const totalUsers = <?= json_encode($total_users) ?>;
@@ -1348,23 +1095,66 @@ require_once '../../templates/admin/header_admin.php';
 
         // Data for Department Distribution Pie Chart
         const departmentCounts = <?= json_encode($department_counts) ?>;
+        const departmentLabels = Object.keys(departmentCounts);
+        const departmentData = Object.values(departmentCounts);
 
         // Set fixed height for all chart containers
-        const chartHeight = '350px'; // Fixed height for all charts
+        const chartHeight = '350px'; 
+        
+        // Dynamic colors array creation for departments
+        const deptColors = departmentLabels.map((_, index) => {
+            const colors = ['#dc3545', '#007bff', '#17a2b8', '#ffc107', '#28a745', '#6f42c1', '#fd7e14', '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'];
+            return colors[index % colors.length];
+        });
 
-        // ======================================================================
-        // 2. Bar Chart: Activity Metrics
-        // ======================================================================
+        // ----------------------------------------------------------------------
+        // Chart: Overall System Metrics (PIE - Total Users vs Active Tickets)
+        // ----------------------------------------------------------------------
+        const pieCtx = document.getElementById('dashboardPieChart');
+
+        if (pieCtx) {
+            pieCtx.parentElement.style.height = chartHeight; 
+            pieCtx.style.height = '100%';
+
+            new Chart(pieCtx, {
+                type: 'pie',
+                data: {
+                    labels: ['Total Users', 'Active Tickets'],
+                    datasets: [{
+                        data: [totalUsers, activeTickets],
+                        backgroundColor: ['#007bff', '#17a2b8'],
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    aspectRatio: 1, // FIX: Use 1 for circular pie chart
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        title: {
+                            display: false, 
+                        }
+                    }
+                }
+            });
+        }
+        
+        // ----------------------------------------------------------------------
+        // Chart: Activity Metrics (BAR)
+        // ----------------------------------------------------------------------
         const barCtx = document.getElementById('dashboardBarChart');
 
         if (barCtx) {
-            // Set container height
             barCtx.parentElement.style.height = chartHeight;
             barCtx.style.height = '100%';
-
+            
             new Chart(barCtx, {
                 type: 'bar',
                 data: {
+                    // Correct labels for the 4 data points fetched
                     labels: ['Active Tickets', 'Announcements', 'Total Feedback', 'Total Rooms'],
                     datasets: [{
                         label: 'Counts',
@@ -1386,32 +1176,26 @@ require_once '../../templates/admin/header_admin.php';
                 },
                 options: {
                     responsive: true,
-                    maintainAspectRatio: true, // Changed to true for better proportions
-                    aspectRatio: 2, // Set aspect ratio for better bar chart proportions
+                    maintainAspectRatio: true,
+                    aspectRatio: 2, 
                     scales: {
                         y: {
                             beginAtZero: true,
-                            ticks: {
-                                precision: 0
-                            }
+                            ticks: { precision: 0 }
                         }
                     },
                     plugins: {
-                        legend: {
-                            display: false
-                        }
+                        legend: { display: false }
                     }
                 }
             });
         }
 
-        // ======================================================================
-        // 3. Pie Chart: User Role Distribution
-        // ======================================================================
+        // ----------------------------------------------------------------------
+        // Chart: User Role Distribution (PIE)
+        // ----------------------------------------------------------------------
         const userRoleCtx = document.getElementById('userRolePieChart');
-
         if (userRoleCtx) {
-            // Set container height
             userRoleCtx.parentElement.style.height = chartHeight;
             userRoleCtx.style.height = '100%';
 
@@ -1432,7 +1216,7 @@ require_once '../../templates/admin/header_admin.php';
                 options: {
                     responsive: true,
                     maintainAspectRatio: true,
-                    aspectRatio: 2, // Square aspect ratio for pie charts
+                    aspectRatio: 1, // FIX: Changed to 1 for circular display
                     plugins: {
                         legend: {
                             position: 'right',
@@ -1445,20 +1229,12 @@ require_once '../../templates/admin/header_admin.php';
             });
         }
 
-        // ======================================================================
-        // 4. Pie Chart: User Distribution by Department
-        // ======================================================================
+        // ----------------------------------------------------------------------
+        // Chart: User Distribution by Department (PIE)
+        // ----------------------------------------------------------------------
         const departmentCtx = document.getElementById('departmentPieChart');
-        const departmentLabels = Object.keys(departmentCounts);
-        const departmentData = Object.values(departmentCounts);
 
-        const departmentColors = departmentLabels.map((_, index) => {
-            const colors = ['#dc3545', '#007bff', '#17a2b8', '#ffc107', '#28a745', '#6f42c1', '#fd7e14'];
-            return colors[index % colors.length];
-        });
-
-        if (departmentCtx) {
-            // Set container height
+        if (departmentCtx && departmentLabels.length > 0 && departmentData.some(count => count > 0)) {
             departmentCtx.parentElement.style.height = chartHeight;
             departmentCtx.style.height = '100%';
 
@@ -1468,14 +1244,14 @@ require_once '../../templates/admin/header_admin.php';
                     labels: departmentLabels,
                     datasets: [{
                         data: departmentData,
-                        backgroundColor: departmentColors,
+                        backgroundColor: deptColors, // Using dynamic colors
                         hoverOffset: 4
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: true,
-                    aspectRatio: 2, // Square aspect ratio for pie charts
+                    aspectRatio: 1, // FIX: Changed to 1 for circular display
                     plugins: {
                         legend: {
                             position: 'right',
@@ -1487,6 +1263,5 @@ require_once '../../templates/admin/header_admin.php';
                 }
             });
         }
-
     });
 </script>

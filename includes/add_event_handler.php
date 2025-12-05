@@ -5,7 +5,7 @@ require_once '../config/db_connect.php';
 require_once 'functions.php';
 
 requireRole(['admin']); // Ensure only admins can use this handler
-
+/** @var \mysqli $conn */ //
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $event_name = trim($_POST['event_name'] ?? '');
     $description = trim($_POST['description'] ?? '');

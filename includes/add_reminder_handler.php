@@ -5,7 +5,7 @@ session_start();
 require_once '../middleware/auth_check.php';
 require_once '../config/db_connect.php';
 require_once '../includes/functions.php';
-
+/** @var \mysqli $conn */ //
 // Ensure the user is logged in and has the necessary role
 requireRole(['admin', 'faculty', 'user']);
 

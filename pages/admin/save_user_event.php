@@ -6,6 +6,7 @@ require_once '../../middleware/auth_check.php';
 require_once '../../config/db_connect.php';
 require_once '../../includes/functions.php'; // Assuming requireRole is here
 
+/** @var \mysqli $conn */ //
 // This script can be accessed by both 'user' and 'admin' roles, as admins can also save events to their personal calendar.
 requireRole(['user', 'admin']);
 

@@ -8,7 +8,7 @@ if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'faculty') {
     header("Location: ../auth/login.php");
     exit();
 }
-
+/** @var \mysqli $conn */ //
 $current_user_id = $_SESSION['user']['id'];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {

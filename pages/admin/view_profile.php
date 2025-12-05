@@ -8,6 +8,8 @@ require_once '../../includes/functions.php';
 
 requireRole(['admin']);
 
+/** @var \mysqli $conn */ // Keeps your IDE happy
+
 $user = $_SESSION['user'];
 
 $user_id = $user['id'];
@@ -71,196 +73,15 @@ require_once '../../templates/admin/header_admin.php';
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $page_title ?? 'ChronoNav - Admin Profile' ?></title>
 
-    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
     <link rel="stylesheet" as="style" onload="this.rel='stylesheet'"
         href="https://fonts.googleapis.com/css2?display=swap&family=Noto+Sans:wght@400;500;700;900&family=Space+Grotesk:wght@400;500;700">
 
-    <!-- Favicon -->
     <link rel="icon" type="image/x-icon"
         href="https://res.cloudinary.com/deua2yipj/image/upload/v1758917007/ChronoNav_logo_muon27.png">
-
-    <script>
-        // Toggle switch functionality
-        document.querySelectorAll('.toggle-input').forEach(input => {
-            // Set initial state based on checked attribute
-            if (input.checked) {
-                input.parentElement.classList.add('checked');
-            }
-
-            input.addEventListener('change', function () {
-                if (this.checked) {
-                    this.parentElement.classList.add('checked');
-                } else {
-                    this.parentElement.classList.remove('checked');
-                }
-            });
-        });
-
-        // Script to show a preview of the new profile image
-        document.getElementById('profile_img').addEventListener('change', function (e) {
-            const [file] = e.target.files;
-            if (file) {
-                const preview = document.getElementById('profileImagePreview');
-                preview.style.backgroundImage = `url(${URL.createObjectURL(file)})`;
-            }
-        });
-
-        // Populate modal with current data when it's shown
-        const editProfileModal = document.getElementById('editProfileModal');
-        editProfileModal.addEventListener('show.bs.modal', function (event) {
-            const nameInput = document.getElementById('edit_name');
-            const emailInput = document.getElementById('edit_email');
-            const adminIdInput = document.getElementById('edit_admin_id');
-            const departmentInput = document.getElementById('edit_department');
-            const profileImagePreview = document.getElementById('profileImagePreview');
-
-            nameInput.value = "<?= $display_name ?>";
-            emailInput.value = "<?= $display_email ?>";
-            <?php if (($user['role'] ?? '') === 'admin'): ?>
-                adminIdInput.value = "<?= $display_admin_id ?>";
-                departmentInput.value = "<?= $display_department ?>";
-            <?php endif; ?>
-            profileImagePreview.src = "<?= $profile_img_src ?>";
-        });
-
-        // Enhanced file input functionality
-        document.getElementById('profile_img').addEventListener('change', function (e) {
-            const [file] = e.target.files;
-            if (file) {
-                const preview = document.getElementById('profileImagePreview');
-                preview.style.backgroundImage = `url(${URL.createObjectURL(file)})`;
-
-                // Show file name or feedback
-                const fileName = file.name;
-                // You could add a small indicator showing the file was selected
-            }
-        });
-
-        // Add this JavaScript for responsive behavior
-        document.addEventListener('DOMContentLoaded', function () {
-            // Create sidebar toggle button for mobile/tablet
-            const sidebarToggle = document.createElement('button');
-            sidebarToggle.className = 'sidebar-toggle d-none';
-            sidebarToggle.innerHTML = '<i class="fas fa-bars"></i>';
-            sidebarToggle.setAttribute('aria-label', 'Toggle sidebar');
-            document.body.appendChild(sidebarToggle);
-
-            // Function to handle responsive layout
-            function handleResponsiveLayout() {
-                const width = window.innerWidth;
-                const mainContent = document.querySelector('.layout-content-container');
-                const sidebarToggle = document.querySelector('.sidebar-toggle');
-
-                if (width <= 1023) {
-                    // Mobile and Tablet
-                    sidebarToggle.classList.remove('d-none');
-
-                    if (width <= 767) {
-                        // Mobile specific adjustments
-                        mainContent.style.maxWidth = '100%';
-                        mainContent.style.marginLeft = '0';
-                    } else {
-                        // Tablet specific adjustments
-                        mainContent.style.maxWidth = '85%';
-                        mainContent.style.marginLeft = '15%';
-                    }
-                } else {
-                    // Desktop
-                    sidebarToggle.classList.add('d-none');
-                    mainContent.style.maxWidth = '80%';
-                    mainContent.style.marginLeft = '20%';
-                }
-            }
-
-            // Toggle sidebar function
-            function toggleSidebar() {
-                const mainContent = document.querySelector('.layout-content-container');
-                const currentMargin = mainContent.style.marginLeft;
-
-                if (currentMargin === '0px' || !currentMargin) {
-                    if (window.innerWidth <= 767) {
-                        mainContent.style.marginLeft = '0';
-                    } else {
-                        mainContent.style.marginLeft = '15%';
-                    }
-                } else {
-                    mainContent.style.marginLeft = '0';
-                }
-            }
-
-            // Event listeners
-            window.addEventListener('resize', handleResponsiveLayout);
-            document.querySelector('.sidebar-toggle').addEventListener('click', toggleSidebar);
-
-            // Initialize
-            handleResponsiveLayout();
-
-            // Enhanced modal handling for mobile
-            function enhanceModals() {
-                const modals = document.querySelectorAll('.modal');
-                modals.forEach(modal => {
-                    modal.addEventListener('show.bs.modal', function () {
-                        if (window.innerWidth <= 575) {
-                            document.body.style.overflow = 'hidden';
-                        }
-                    });
-
-                    modal.addEventListener('hidden.bs.modal', function () {
-                        document.body.style.overflow = '';
-                    });
-                });
-            }
-
-            enhanceModals();
-
-            // Improve touch interactions for mobile
-            if ('ontouchstart' in window) {
-                document.querySelectorAll('.preference-item, .account-item').forEach(item => {
-                    item.style.cursor = 'pointer';
-                    item.addEventListener('touchstart', function () {
-                        this.style.backgroundColor = '#f8f9fa';
-                    });
-                    item.addEventListener('touchend', function () {
-                        this.style.backgroundColor = '';
-                    });
-                });
-            }
-
-            // Handle orientation changes
-            window.addEventListener('orientationchange', function () {
-                setTimeout(handleResponsiveLayout, 100);
-            });
-        });
-
-        // Additional utility function for responsive images
-        function handleProfileImageResponsive() {
-            const profileImage = document.querySelector('.profile-image');
-            if (profileImage) {
-                const width = window.innerWidth;
-                if (width <= 767) {
-                    profileImage.style.width = '100px';
-                    profileImage.style.height = '100px';
-                } else if (width <= 1023) {
-                    profileImage.style.width = '115px';
-                    profileImage.style.height = '115px';
-                } else {
-                    profileImage.style.width = '128px';
-                    profileImage.style.height = '128px';
-                }
-            }
-        }
-
-        // Call this on load and resize
-        window.addEventListener('load', handleProfileImageResponsive);
-        window.addEventListener('resize', handleProfileImageResponsive);
-    </script>
 
     <style>
         body {
@@ -318,6 +139,7 @@ require_once '../../templates/admin/header_admin.php';
         .text-truncate-2 {
             display: -webkit-box;
             -webkit-line-clamp: 2;
+            line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
         }
@@ -643,13 +465,13 @@ require_once '../../templates/admin/header_admin.php';
             }
         }
     </style>
-</head>
+    </head>
 
 <body>
     <?php require_once '../../templates/admin/sidenav_admin.php'; ?>
 
     <div class="layout-content-container d-flex flex-column mb-5 p-3 px-5 justify-content-end">
-        <!-- Header -->
+
         <div class="d-flex flex-wrap justify-content-between gap-3 mb-3">
             <p class="text-dark fw-bold fs-3 mb-0" style="min-width: 288px;">Hello, <?= $display_name ?>!</p>
         </div>
@@ -661,7 +483,7 @@ require_once '../../templates/admin/header_admin.php';
             </div>
         <?php endif; ?>
 
-        <!-- Profile Section -->
+
         <div class="p-3">
             <div class="d-flex flex-column gap-4 align-items-center w-100">
                 <div class="d-flex flex-column gap-4 align-items-center">
@@ -675,7 +497,7 @@ require_once '../../templates/admin/header_admin.php';
             </div>
         </div>
 
-        <!-- Profile Details -->
+
         <h2 class="text-dark fw-bold fs-4 px-3 pb-3 pt-4">Profile Details</h2>
         <div class="p-3">
             <div class="row profile-detail-row mx-0">
@@ -722,10 +544,10 @@ require_once '../../templates/admin/header_admin.php';
             </div>
         </div>
 
-        <!-- App Preferences -->
+
         <h2 class="text-dark fw-bold fs-4 px-3 pb-3 pt-4">App Preferences</h2>
         <div class="d-flex flex-column">
-            <!-- Notifications -->
+
             <div class="preference-item d-flex align-items-center justify-content-between">
                 <p class="text-dark mb-0 flex-grow-1 text-truncate">Notifications</p>
                 <div class="flex-shrink-0">
@@ -736,7 +558,7 @@ require_once '../../templates/admin/header_admin.php';
                 </div>
             </div>
 
-            <!-- Accessibility Mode -->
+
             <div class="preference-item d-flex align-items-center justify-content-between">
                 <p class="text-dark mb-0 flex-grow-1 text-truncate">Accessibility Mode</p>
                 <div class="flex-shrink-0">
@@ -747,7 +569,7 @@ require_once '../../templates/admin/header_admin.php';
                 </div>
             </div>
 
-            <!-- Voice Navigation -->
+
             <div class="preference-item d-flex align-items-center justify-content-between">
                 <p class="text-dark mb-0 flex-grow-1 text-truncate">Voice Navigation</p>
                 <div class="flex-shrink-0">
@@ -758,7 +580,7 @@ require_once '../../templates/admin/header_admin.php';
                 </div>
             </div>
 
-            <!-- Font Size -->
+            
             <div class="preference-item d-flex align-items-center justify-content-between">
                 <p class="text-dark mb-0 flex-grow-1 text-truncate">Font Size</p>
                 <div class="flex-shrink-0">
@@ -766,7 +588,7 @@ require_once '../../templates/admin/header_admin.php';
                 </div>
             </div>
 
-            <!-- Theme -->
+
             <div class="preference-item d-flex align-items-center justify-content-between">
                 <p class="text-dark mb-0 flex-grow-1 text-truncate">Theme</p>
                 <div class="flex-shrink-0">
@@ -775,10 +597,11 @@ require_once '../../templates/admin/header_admin.php';
             </div>
         </div>
 
-        <!-- Account Management -->
+
+
         <h2 class="text-dark fw-bold fs-4 px-3 pb-3 pt-4">Account Management</h2>
         <div class="d-flex flex-column">
-            <!-- Account Setting -->
+
             <a href="settings.php" class="text-decoration-none">
                 <div class="account-item d-flex align-items-center justify-content-between">
                     <p class="text-dark mb-0 flex-grow-1 text-truncate">Account Setting</p>
@@ -796,7 +619,7 @@ require_once '../../templates/admin/header_admin.php';
                 </div>
             </a>
 
-            <!-- Support and Ask question -->
+
             <a href="support_center.php" class="text-decoration-none">
                 <div class="account-item d-flex align-items-center justify-content-between">
                     <p class="text-dark mb-0 flex-grow-1 text-truncate">Support and Ask question</p>
@@ -809,7 +632,7 @@ require_once '../../templates/admin/header_admin.php';
                 </div>
             </a>
 
-            <!-- Feedback & Suggestion -->
+
             <div class="account-item d-flex align-items-center justify-content-between" data-bs-toggle="modal"
                 data-bs-target="#feedbackModal">
                 <p class="text-dark mb-0 flex-grow-1 text-truncate">Feedback & Suggestion</p>
@@ -822,20 +645,20 @@ require_once '../../templates/admin/header_admin.php';
             </div>
         </div>
 
-        <!-- Logout Button -->
+
         <div class="d-flex px-3 py-3 justify-content-start">
             <a href="../../auth/logout.php" class="btn btn-custom-secondary px-4 py-2">
                 <span>Logout</span>
             </a>
         </div>
 
-        <!-- App Version -->
+
         <div class="text-center text-muted mt-4">
             App Version 1.0.0 · © 2025 ChronoNav
         </div>
     </div>
 
-    <!-- Edit Profile Modal -->
+
     <div class="modal fade overflow-hidden" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel"
         aria-hidden="true">
         <div class="modal-dialog">
@@ -847,7 +670,7 @@ require_once '../../templates/admin/header_admin.php';
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body p-4">
-                        <!-- Profile Image Upload -->
+
                         <div class="text-center mb-4">
                             <div class="profile-image mx-auto mb-3" id="profileImagePreview"
                                 style='background-image: url("<?= $profile_img_src ?>"); width: 100px; height: 100px;'>
@@ -863,16 +686,16 @@ require_once '../../templates/admin/header_admin.php';
                             </button>
                         </div>
 
-                        <!-- Form Fields -->
+
                         <div class="d-flex flex-column gap-3">
-                            <!-- Full Name -->
+
                             <div class="form-group">
                                 <label for="edit_name" class="form-label text-muted small mb-2">Full Name</label>
                                 <input type="text" class="form-control rounded-3 border-0 bg-light py-3" id="edit_name"
                                     name="name" value="<?= $display_name ?>" required>
                             </div>
 
-                            <!-- Email Address -->
+
                             <div class="form-group">
                                 <label for="edit_email" class="form-label text-muted small mb-2">Email address</label>
                                 <input type="email" class="form-control rounded-3 border-0 bg-light py-3"
@@ -880,14 +703,14 @@ require_once '../../templates/admin/header_admin.php';
                             </div>
 
                             <?php if (($user['role'] ?? '') === 'admin'): ?>
-                                <!-- Admin ID -->
+
                                 <div class="form-group">
                                     <label for="edit_admin_id" class="form-label text-muted small mb-2">Admin ID</label>
                                     <input type="text" class="form-control rounded-3 border-0 bg-light py-3"
                                         id="edit_admin_id" name="admin_id" value="<?= $display_admin_id ?>">
                                 </div>
 
-                                <!-- Department -->
+
                                 <div class="form-group">
                                     <label for="edit_department" class="form-label text-muted small mb-2">Department</label>
                                     <input type="text" class="form-control rounded-3 border-0 bg-light py-3"
@@ -907,7 +730,7 @@ require_once '../../templates/admin/header_admin.php';
         </div>
     </div>
 
-    <!-- Feedback Modal -->
+
     <div class="modal fade" id="feedbackModal" tabindex="-1" aria-labelledby="feedbackModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -918,7 +741,7 @@ require_once '../../templates/admin/header_admin.php';
                     </div>
                     <div class="modal-body p-4">
                         <div class="d-flex flex-column gap-3">
-                            <!-- Feedback Type -->
+
                             <div class="form-group">
                                 <label for="feedback_type" class="form-label text-muted small mb-2">Type</label>
                                 <select class="form-select rounded-3 border-0 bg-light py-3" id="feedback_type"
@@ -931,21 +754,21 @@ require_once '../../templates/admin/header_admin.php';
                                 </select>
                             </div>
 
-                            <!-- Subject -->
+
                             <div class="form-group">
                                 <label for="feedback_subject" class="form-label text-muted small mb-2">Subject</label>
                                 <input type="text" class="form-control rounded-3 border-0 bg-light py-3"
                                     id="feedback_subject" name="subject" required>
                             </div>
 
-                            <!-- Message -->
+
                             <div class="form-group">
                                 <label for="feedback_message" class="form-label text-muted small mb-2">Message</label>
                                 <textarea class="form-control rounded-3 border-0 bg-light py-3" id="feedback_message"
                                     name="message" rows="5" required></textarea>
                             </div>
 
-                            <!-- Rating -->
+
                             <div class="form-group">
                                 <label for="feedback_rating" class="form-label text-muted small mb-2">
                                     Rating (1-5) <span class="text-muted">(Optional)</span>
@@ -973,7 +796,7 @@ require_once '../../templates/admin/header_admin.php';
         </div>
     </div>
 
-    <!-- Bootstrap JS -->
+    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
@@ -993,7 +816,7 @@ require_once '../../templates/admin/header_admin.php';
             });
         });
 
-        // Script to show a preview of the new profile image
+        // Script to show a preview of the new profile image (Initial)
         document.getElementById('profile_img').addEventListener('change', function (e) {
             const [file] = e.target.files;
             if (file) {
@@ -1002,7 +825,7 @@ require_once '../../templates/admin/header_admin.php';
             }
         });
 
-        // Populate modal with current data when it's shown
+        // Populate modal with current data when it's shown (Consolidated declaration)
         const editProfileModal = document.getElementById('editProfileModal');
         editProfileModal.addEventListener('show.bs.modal', function (event) {
             const nameInput = document.getElementById('edit_name');
@@ -1019,8 +842,141 @@ require_once '../../templates/admin/header_admin.php';
             <?php endif; ?>
             profileImagePreview.src = "<?= $profile_img_src ?>";
         });
-    </script>
+        
+        // --- Remaining JS (Moved from HEAD to BODY for efficiency and to preserve scope) ---
 
+        // Enhanced file input functionality
+        document.getElementById('profile_img').addEventListener('change', function (e) {
+            const [file] = e.target.files;
+            if (file) {
+                const preview = document.getElementById('profileImagePreview');
+                preview.style.backgroundImage = `url(${URL.createObjectURL(file)})`;
+
+                // Show file name or feedback
+                const fileName = file.name;
+                // You could add a small indicator showing the file was selected
+            }
+        });
+
+        // Add this JavaScript for responsive behavior
+        document.addEventListener('DOMContentLoaded', function () {
+            // Create sidebar toggle button for mobile/tablet
+            const sidebarToggle = document.createElement('button');
+            sidebarToggle.className = 'sidebar-toggle d-none';
+            sidebarToggle.innerHTML = '<i class="fas fa-bars"></i>';
+            sidebarToggle.setAttribute('aria-label', 'Toggle sidebar');
+            document.body.appendChild(sidebarToggle);
+
+            // Function to handle responsive layout
+            function handleResponsiveLayout() {
+                const width = window.innerWidth;
+                const mainContent = document.querySelector('.layout-content-container');
+                const sidebarToggle = document.querySelector('.sidebar-toggle');
+
+                if (width <= 1023) {
+                    // Mobile and Tablet
+                    sidebarToggle.classList.remove('d-none');
+
+                    if (width <= 767) {
+                        // Mobile specific adjustments
+                        mainContent.style.maxWidth = '100%';
+                        mainContent.style.marginLeft = '0';
+                    } else {
+                        // Tablet specific adjustments
+                        mainContent.style.maxWidth = '85%';
+                        mainContent.style.marginLeft = '15%';
+                    }
+                } else {
+                    // Desktop
+                    sidebarToggle.classList.add('d-none');
+                    mainContent.style.maxWidth = '80%';
+                    mainContent.style.marginLeft = '20%';
+                }
+            }
+
+            // Toggle sidebar function
+            function toggleSidebar() {
+                const mainContent = document.querySelector('.layout-content-container');
+                const currentMargin = mainContent.style.marginLeft;
+
+                if (currentMargin === '0px' || !currentMargin) {
+                    if (window.innerWidth <= 767) {
+                        mainContent.style.marginLeft = '0';
+                    } else {
+                        mainContent.style.marginLeft = '15%';
+                    }
+                } else {
+                    mainContent.style.marginLeft = '0';
+                }
+            }
+
+            // Event listeners
+            window.addEventListener('resize', handleResponsiveLayout);
+            document.querySelector('.sidebar-toggle').addEventListener('click', toggleSidebar);
+
+            // Initialize
+            handleResponsiveLayout();
+
+            // Enhanced modal handling for mobile
+            function enhanceModals() {
+                const modals = document.querySelectorAll('.modal');
+                modals.forEach(modal => {
+                    modal.addEventListener('show.bs.modal', function () {
+                        if (window.innerWidth <= 575) {
+                            document.body.style.overflow = 'hidden';
+                        }
+                    });
+
+                    modal.addEventListener('hidden.bs.modal', function () {
+                        document.body.style.overflow = '';
+                    });
+                });
+            }
+
+            enhanceModals();
+
+            // Improve touch interactions for mobile
+            if ('ontouchstart' in window) {
+                document.querySelectorAll('.preference-item, .account-item').forEach(item => {
+                    item.style.cursor = 'pointer';
+                    item.addEventListener('touchstart', function () {
+                        this.style.backgroundColor = '#f8f9fa';
+                    });
+                    item.addEventListener('touchend', function () {
+                        this.style.backgroundColor = '';
+                    });
+                });
+            }
+
+            // Handle orientation changes
+            window.addEventListener('orientationchange', function () {
+                setTimeout(handleResponsiveLayout, 100);
+            });
+        });
+
+        // Additional utility function for responsive images
+        function handleProfileImageResponsive() {
+            const profileImage = document.querySelector('.profile-image');
+            if (profileImage) {
+                const width = window.innerWidth;
+                if (width <= 767) {
+                    profileImage.style.width = '100px';
+                    profileImage.style.height = '100px';
+                } else if (width <= 1023) {
+                    profileImage.style.width = '115px';
+                    profileImage.style.height = '115px';
+                } else {
+                    profileImage.style.width = '128px';
+                    profileImage.style.height = '128px';
+                }
+            }
+        }
+
+        // Call this on load and resize
+        window.addEventListener('load', handleProfileImageResponsive);
+        window.addEventListener('resize', handleProfileImageResponsive);
+
+    </script>
     <?php require_once '../../templates/footer.php'; ?>
 </body>
 <?php include('../../includes/semantics/footer.php'); ?>

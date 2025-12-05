@@ -6,6 +6,7 @@ require_once '../../config/db_connect.php';
 require_once '../../includes/functions.php';
 require_once '../../backend/admin/office_hours_requests_logic.php';
 
+/** @var \mysqli $conn */ //
 requireRole(['admin']);
 
 $user_id = $_SESSION['user']['id'];

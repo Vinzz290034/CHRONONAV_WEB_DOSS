@@ -1,9 +1,12 @@
 <?php
-// pages/admin/schedule.php
+// CHRONONAV_WEB_DOSS/pages/admin/schedule.php
+
 session_start();
 require_once '../../middleware/auth_check.php';
 require_once '../../config/db_connect.php';
 require_once '../../includes/functions.php';
+
+/** @var \mysqli $conn */ // FIX: Resolves "Undefined method/property" IntelliSense errors on $conn.
 
 // Check if the user is an admin using the custom function
 requireRole(['admin']);
@@ -14,6 +17,7 @@ $user = $_SESSION['user'];
 $page_title = "My Schedule";
 $current_page = "schedule";
 
+
 // --- Handle Date Selection ---
 $selected_date = isset($_GET['date']) ? $_GET['date'] : date('Y-m-d');
 $selected_timestamp = strtotime($selected_date);
@@ -23,10 +27,11 @@ $daily_reminders = [];
 
 $day_name = date('l', $selected_timestamp);
 
+// Query for Schedules (Kept for displaying existing schedules, although the form is for reminders)
 $stmt_schedules = $conn->prepare("SELECT s.title, s.description, s.start_time, s.end_time, r.room_name
-                                 FROM schedules s
-                                 LEFT JOIN rooms r ON s.room_id = r.id
-                                 WHERE s.user_id = ? AND s.day_of_week = ? ORDER BY s.start_time");
+                                     FROM schedules s
+                                     LEFT JOIN rooms r ON s.room_id = r.id
+                                     WHERE s.user_id = ? AND s.day_of_week = ? ORDER BY s.start_time");
 if ($stmt_schedules) {
     $stmt_schedules->bind_param("is", $user['id'], $day_name);
     $stmt_schedules->execute();
@@ -39,15 +44,31 @@ if ($stmt_schedules) {
     error_log("Failed to prepare schedule statement: " . $conn->error);
 }
 
+// Query for Reminders (Retrieved from DB)
 $stmt_reminders = $conn->prepare("SELECT title, description, due_date, due_time, is_completed FROM reminders WHERE user_id = ? AND due_date = ? ORDER BY due_time");
 if ($stmt_reminders) {
     $stmt_reminders->bind_param("is", $user['id'], $selected_date);
     $stmt_reminders->execute();
     $result_reminders = $stmt_reminders->get_result();
+    
+    // FIX: Only hide the reminder if it's the current day and the time has passed.
     while ($row = $result_reminders->fetch_assoc()) {
-        $due_datetime = $row['due_date'] . ' ' . $row['due_time'];
-        if ($row['is_completed'] == 0 && ($due_datetime > date('Y-m-d H:i:s') || empty($row['due_time']))) {
-            $daily_reminders[] = $row;
+        if ($row['is_completed'] == 0) {
+            $show_reminder = true;
+
+            // Only apply 'past due time' filtering if the selected date is TODAY
+            if ($selected_date == date('Y-m-d') && !empty($row['due_time'])) {
+                $due_timestamp = strtotime($row['due_date'] . ' ' . $row['due_time']);
+                $current_timestamp = time();
+
+                if ($due_timestamp < $current_timestamp) {
+                    $show_reminder = false;
+                }
+            }
+            
+            if ($show_reminder) {
+                $daily_reminders[] = $row;
+            }
         }
     }
     $stmt_reminders->close();
@@ -56,7 +77,9 @@ if ($stmt_reminders) {
 }
 
 $all_daily_events = [];
+$json_events = []; // Array to be encoded for FullCalendar
 
+// Process Schedules for list and JSON
 foreach ($daily_schedules as $sched) {
     $all_daily_events[] = [
         'type' => 'schedule',
@@ -66,8 +89,17 @@ foreach ($daily_schedules as $sched) {
         'end_time' => $sched['end_time'],
         'location' => $sched['room_name'] ?? 'N/A'
     ];
+    // Prepare for JSON encoding (FullCalendar)
+    $json_events[] = [
+        'title' => $sched['title'],
+        'start' => $selected_date . 'T' . $sched['start_time'],
+        'end' => $selected_date . 'T' . $sched['end_time'],
+        'description' => $sched['room_name'] ?? 'N/A',
+        'color' => '#2E78C6' // Blue for schedules
+    ];
 }
 
+// Process Reminders for list and JSON
 foreach ($daily_reminders as $rem) {
     $all_daily_events[] = [
         'type' => 'reminder',
@@ -77,13 +109,26 @@ foreach ($daily_reminders as $rem) {
         'due_date' => $rem['due_date'],
         'is_completed' => $rem['is_completed']
     ];
+    // Prepare for JSON encoding (FullCalendar)
+    $json_events[] = [
+        'title' => $rem['title'] . ' (R)',
+        'start' => $selected_date . 'T' . $rem['due_time'],
+        'allDay' => empty($rem['due_time']),
+        'description' => $rem['description'],
+        'color' => '#ffc107', // Yellow/Warning for reminders
+        'textColor' => '#000000'
+    ];
 }
 
+// Sort the list view events by time
 usort($all_daily_events, function ($a, $b) {
     $timeA = $a['time'] ? strtotime($a['time']) : 0;
     $timeB = $b['time'] ? strtotime($b['time']) : 0;
     return $timeA - $timeB;
 });
+
+// FIX: Use json_encode for safe JavaScript array generation
+$calendar_json = json_encode($json_events);
 
 $message = '';
 $message_type = '';
@@ -114,21 +159,16 @@ require_once '../../templates/admin/header_admin.php';
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $page_title ?? 'ChronoNav - Admin Schedule' ?></title>
 
-    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- FullCalendar CSS -->
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
 
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
     <link rel="stylesheet" as="style" onload="this.rel='stylesheet'"
         href="https://fonts.googleapis.com/css2?display=swap&family=Noto+Sans:wght@400;500;700;900&family=Space+Grotesk:wght@400;500;700">
 
-    <!-- Favicon -->
     <link rel="icon" type="image/x-icon"
         href="https://res.cloudinary.com/deua2yipj/image/upload/v1758917007/ChronoNav_logo_muon27.png">
 
@@ -212,6 +252,7 @@ require_once '../../templates/admin/header_admin.php';
         .text-truncate-2 {
             display: -webkit-box;
             -webkit-line-clamp: 2;
+            line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
         }
@@ -751,18 +792,15 @@ require_once '../../templates/admin/header_admin.php';
     <?php require_once '../../templates/admin/sidenav_admin.php'; ?>
 
     <div class="layout-content-container d-flex flex-column mb-5 p-3 px-5 justify-content-end">
-        <!-- Header -->
         <div class="d-flex flex-wrap justify-content-between gap-3 mb-3">
             <p class="text-dark fw-bold fs-3 mb-0" style="min-width: 288px;">Schedule</p>
         </div>
 
-        <!-- Calendar Section -->
         <div class="mb-4">
             <div id="calendar" class="bg-white rounded shadow-sm p-3"></div>
         </div>
 
-        <!-- Upcoming Classes Section -->
-        <h3 class="text-dark fw-bold fs-5 px-0 pb-2 pt-4">Upcoming Classes - <?= date('F d, Y', $selected_timestamp) ?>
+        <h3 class="text-dark fw-bold fs-5 px-0 pb-2 pt-4">Upcoming Events - <?= date('F d, Y', $selected_timestamp) ?>
         </h3>
 
         <?php if ($message): ?>
@@ -774,8 +812,8 @@ require_once '../../templates/admin/header_admin.php';
 
         <div class="d-flex justify-content-between align-items-center mb-3">
             <button type="button" class="btn btn-primary px-4 py-2" data-bs-toggle="modal"
-                data-bs-target="#addScheduleModal" data-date="<?= $selected_date ?>">
-                <i class="fas fa-plus"></i> Add Schedule
+                data-bs-target="#addReminderModal" data-date="<?= $selected_date ?>">
+                <i class="fas fa-plus"></i> Add Reminder
             </button>
             <button class="btn btn-primary px-4 py-2" onclick="window.print()">
                 <i class="fas fa-print"></i> Print Schedule
@@ -787,7 +825,6 @@ require_once '../../templates/admin/header_admin.php';
                 No classes or reminders scheduled for this day.
             </div>
         <?php else: ?>
-            <!-- Dynamic Classes from your PHP data -->
             <?php foreach ($all_daily_events as $event): ?>
                 <div class="class-item d-flex align-items-center gap-3">
                     <div class="class-icon text-dark">
@@ -807,7 +844,7 @@ require_once '../../templates/admin/header_admin.php';
                                     · <?= htmlspecialchars($event['location']) ?>
                                 <?php endif; ?>
                             <?php elseif ($event['type'] === 'reminder'): ?>
-                                Due: <?= htmlspecialchars(date('h:i A', strtotime($event['time']))) ?>
+                                <?= !empty($event['time']) ? 'Due: ' . htmlspecialchars(date('h:i A', strtotime($event['time']))) : 'Due: All Day' ?>
                                 <?php if (!empty($event['description'])): ?>
                                     · <?= nl2br(htmlspecialchars($event['description'])) ?>
                                 <?php endif; ?>
@@ -818,43 +855,29 @@ require_once '../../templates/admin/header_admin.php';
             <?php endforeach; ?>
         <?php endif; ?>
 
-        <!-- Floating Action Button -->
         <div class="d-flex justify-content-end overflow-hidden p-0 pt-3">
-            <button class="floating-btn fw-bold text-white" data-bs-toggle="modal" data-bs-target="#addScheduleModal"
+            <button class="floating-btn fw-bold text-white" data-bs-toggle="modal" data-bs-target="#addReminderModal"
                 data-date="<?= $selected_date ?>">
                 <i class="fas fa-plus"></i>
-                <span class="d-none d-md-inline">Add Schedule</span>
+                <span class="d-none d-md-inline">Add Reminder</span>
             </button>
         </div>
     </div>
 
-    <!-- FullCalendar JS -->
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
 
-    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const calendarEl = document.getElementById('calendar');
 
-            // Prepare events for FullCalendar from PHP data
-            const calendarEvents = [
-                <?php foreach ($all_daily_events as $event): ?>
-                                        {
-                        title: '<?= addslashes($event['title']) ?>',
-                        start: '<?= $selected_date ?>T<?= $event['time'] ?>',
-                        <?php if ($event['type'] === 'schedule' && !empty($event['end_time'])): ?>
-                                                                    end: '<?= $selected_date ?>T<?= $event['end_time'] ?>',
-                        <?php endif; ?>
-                                            description: '<?= addslashes($event['type'] === 'schedule' ? $event['location'] : $event['description']) ?>',
-                        color: '<?= $event['type'] === 'schedule' ? '#2E78C6' : '#ffc107' ?>'
-                    },
-                <?php endforeach; ?>
-            ];
+            // FIX: Using the PHP variable that was prepared with json_encode
+            const calendarEvents = <?= $calendar_json ?? '[]' ?>;
 
             const calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
+                initialDate: '<?= $selected_date ?>', // Set calendar to the selected date
                 headerToolbar: {
                     left: 'prev,next today',
                     center: 'title',
@@ -862,56 +885,57 @@ require_once '../../templates/admin/header_admin.php';
                 },
                 events: calendarEvents,
                 eventClick: function (info) {
-                    alert('Event: ' + info.event.title + '\nDescription: ' + info.event.extendedProps.description);
+                    // Simple alert for event details
+                    let details = 'Event: ' + info.event.title + '\nTime: ' + info.event.start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                    if (info.event.end) {
+                        details += ' - ' + info.event.end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                    }
+                    if (info.event.extendedProps.description) {
+                         details += '\nDetails: ' + info.event.extendedProps.description;
+                    }
+                    alert(details);
                 },
                 dateClick: function (info) {
+                    // Clicking a date cell navigates to that date in the schedule list
                     window.location.href = 'schedule.php?date=' + info.dateStr;
                 }
             });
 
             calendar.render();
 
-            // Handle modal functionality
-            const navItems = document.querySelectorAll('.nav-tabs-custom .nav-link');
-            const modal = new bootstrap.Modal(document.getElementById('calendarModal'));
-            const modalBody = document.getElementById('calendarModalBody');
-            const modalTitle = document.getElementById('calendarModalLabel');
-
-            navItems.forEach(item => {
-                item.addEventListener('click', function (event) {
-                    event.preventDefault();
-                    const view = this.getAttribute('data-view');
-                    const titleMap = {
-                        'month': 'Month View',
-                        'week': 'Week View',
-                        'day': 'Day View'
-                    };
-                    modalTitle.textContent = titleMap[view];
-
-                    fetch(`../../includes/fetch_calendar_view.php?view=${view}&user_id=<?= $user['id'] ?>`)
-                        .then(response => response.text())
-                        .then(data => {
-                            modalBody.innerHTML = data;
-                            modal.show();
-                        })
-                        .catch(error => console.error('Error fetching calendar view:', error));
-                });
-            });
-
-            // Handle add schedule modal
-            const addScheduleModal = document.getElementById('addScheduleModal');
-            addScheduleModal.addEventListener('show.bs.modal', function (event) {
+            // Handle add reminder modal initialization 
+            const addReminderModal = document.getElementById('addReminderModal');
+            addReminderModal.addEventListener('show.bs.modal', function (event) {
                 const button = event.relatedTarget;
                 const selectedDate = button.getAttribute('data-date');
-                const scheduleDateInput = document.getElementById('scheduleDate');
+                const reminderDateInput = document.getElementById('reminderDate');
                 if (selectedDate) {
-                    scheduleDateInput.value = selectedDate;
+                    reminderDateInput.value = selectedDate;
                 }
             });
+
+             // Sidebar Toggle functionality 
+             const sidebarToggle = document.createElement('button');
+             sidebarToggle.className = 'sidebar-toggle d-none';
+             sidebarToggle.innerHTML = '<i class="fas fa-bars"></i>';
+             sidebarToggle.setAttribute('aria-label', 'Toggle sidebar');
+             document.body.appendChild(sidebarToggle);
+
+             function toggleSidebar() {
+                const sidebar = document.querySelector('.sidebar');
+                if (sidebar) {
+                    sidebar.classList.toggle('active');
+                }
+             }
+             
+             // Check if the element exists before adding the listener
+             const toggleButton = document.querySelector('.sidebar-toggle');
+             if (toggleButton) {
+                 toggleButton.addEventListener('click', toggleSidebar);
+             }
         });
     </script>
 
-    <!-- Your existing modals -->
     <div class="modal fade" id="calendarModal" tabindex="-1" aria-labelledby="calendarModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-xl modal-dialog-centered">
             <div class="modal-content">
@@ -929,52 +953,44 @@ require_once '../../templates/admin/header_admin.php';
         </div>
     </div>
 
-    <div class="modal fade" id="addScheduleModal" tabindex="-1" aria-labelledby="addScheduleModalLabel"
+    <div class="modal fade" id="addReminderModal" tabindex="-1" aria-labelledby="addReminderModalLabel"
         aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="addScheduleModalLabel">Add New Schedule</h5>
+                    <h5 class="modal-title" id="addReminderModalLabel">Add New Reminder</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="addScheduleForm" action="../../includes/admin_add_schedule_handler.php" method="POST">
+                    <form id="addReminderForm" action="/CHRONONAV_WEB_DOSS/includes/add_reminder_handler.php" method="POST">
                         <input type="hidden" name="user_id" value="<?= $user['id'] ?>">
                         <div class="mb-3">
-                            <label for="scheduleTitle" class="form-label">Title</label>
-                            <input type="text" class="form-control" id="scheduleTitle" name="title" required>
+                            <label for="reminderTitle" class="form-label">Title</label>
+                            <input type="text" class="form-control" id="reminderTitle" name="title" required>
                         </div>
                         <div class="mb-3">
-                            <label for="scheduleDescription" class="form-label">Description (Optional)</label>
-                            <textarea class="form-control" id="scheduleDescription" name="description"
-                                rows="3"></textarea>
+                            <label for="reminderDescription" class="form-label">Description</label>
+                            <textarea class="form-control" id="reminderDescription" name="description"
+                                rows="3" required></textarea>
                         </div>
                         <div class="mb-3">
-                            <label for="scheduleDate" class="form-label">Date</label>
-                            <input type="date" class="form-control" id="scheduleDate" name="event_date" required>
+                            <label for="reminderDate" class="form-label">Due Date</label>
+                            <input type="date" class="form-control" id="reminderDate" name="due_date" required>
                         </div>
                         <div class="mb-3">
-                            <label for="scheduleStartTime" class="form-label">Start Time</label>
-                            <input type="time" class="form-control" id="scheduleStartTime" name="start_time" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="scheduleEndTime" class="form-label">End Time</label>
-                            <input type="time" class="form-control" id="scheduleEndTime" name="end_time" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="scheduleRoom" class="form-label">Room</label>
-                            <input type="text" class="form-control" id="scheduleRoom" name="room" required>
+                            <label for="reminderTime" class="form-label">Due Time (Optional)</label>
+                            <input type="time" class="form-control" id="reminderTime" name="due_time">
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" form="addScheduleForm" class="btn btn-primary">Save Schedule</button>
+                    <button type="submit" form="addReminderForm" class="btn btn-primary">Save Reminder</button>
                 </div>
             </div>
         </div>
     </div>
-
+    
     <?php require_once '../../templates/footer.php'; ?>
 </body>
 <?php include('../../includes/semantics/footer.php'); ?>

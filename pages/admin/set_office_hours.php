@@ -10,6 +10,7 @@ require_once __DIR__ . '/../../middleware/auth_check.php';
 // Include the custom functions, specifically for the requireRole function.
 require_once __DIR__ . '/../../includes/functions.php';
 
+/** @var \mysqli $conn */ //
 // Restrict access to only 'admin' roles for this page.
 // An admin can access this to set their own office hours.
 requireRole(['admin']);

@@ -4,6 +4,7 @@
 require_once '../middleware/auth_check.php';
 require_once '../config/db_connect.php';
 
+/** @var \mysqli $conn */ //
 // Ensure the user is logged in
 if (!isset($_SESSION['user'])) {
     header('Location: ../auth/login.php');
