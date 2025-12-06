@@ -47,7 +47,8 @@ $chrononav_dropdown_logo_path = '../../assets/images/chrononav_logo_small.png';
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="https://res.cloudinary.com/deua2yipj/image/upload/v1758917007/ChronoNav_logo_muon27.png">
+    <link rel="icon" type="image/png"
+        href="https://res.cloudinary.com/deua2yipj/image/upload/v1758917007/ChronoNav_logo_muon27.png">
 
     <!-- <link rel="stylesheet" href="../../assets/css/admin_css/header_admin.css"> -->
 
@@ -65,7 +66,161 @@ $chrononav_dropdown_logo_path = '../../assets/images/chrononav_logo_small.png';
             position: sticky;
         }
 
-        /* Additional styles from the first design - Matching user header exactly */
+        /* ====================================================================== */
+        /* Dark Mode Overrides for Header - Custom Colors                          */
+        /* ====================================================================== */
+        body.dark-mode .custom-header {
+            background-color: #121A21 !important;
+            /* Primary dark background */
+            border-bottom: 1px solid #263645 !important;
+            /* Dark border */
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3) !important;
+        }
+
+        body.dark-mode .custom-header h2 {
+            color: #E5E8EB !important;
+            /* Light text color */
+        }
+
+        body.dark-mode .custom-header .link-offset-2:hover h2 {
+            color: #FFFFFF !important;
+            /* White on hover */
+        }
+
+        /* Settings button in dark mode */
+        body.dark-mode .settings-btn {
+            background-color: #263645 !important;
+            /* Secondary dark */
+            color: #94ADC7 !important;
+            /* Secondary text color */
+            border: 1px solid #121A21 !important;
+        }
+
+        body.dark-mode .settings-btn:hover {
+            background-color: #1C7DD6 !important;
+            /* Active blue */
+            color: #FFFFFF !important;
+            /* White on hover */
+        }
+
+        body.dark-mode .settings-btn svg {
+            color: #94ADC7 !important;
+            /* Icon color */
+        }
+
+        body.dark-mode .settings-btn:hover svg {
+            color: #FFFFFF !important;
+            /* White icon on hover */
+        }
+
+        /* Profile dropdown in dark mode */
+        body.dark-mode .navbar-profile-img {
+            border: 2px solid #263645 !important;
+            box-shadow: 0 0 0 2px #1C7DD6 !important;
+            /* Blue outline on active */
+        }
+
+        body.dark-mode .dropdown-menu {
+            background-color: #121A21 !important;
+            /* Primary dark background */
+            border: 1px solid #263645 !important;
+            /* Dark border */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
+        }
+
+        body.dark-mode .dropdown-menu .text-dark {
+            color: #E5E8EB !important;
+            /* Light text for username */
+        }
+
+        body.dark-mode .dropdown-menu .text-muted {
+            color: #94ADC7 !important;
+            /* Secondary color for role */
+        }
+
+        body.dark-mode .dropdown-divider {
+            border-color: #263645 !important;
+            /* Dark divider */
+        }
+
+        body.dark-mode .dropdown-item {
+            color: #94ADC7 !important;
+            /* Secondary text color */
+            background-color: transparent !important;
+        }
+
+        body.dark-mode .dropdown-item:hover {
+            background-color: #263645 !important;
+            /* Dark hover background */
+            color: #FFFFFF !important;
+            /* White text on hover */
+        }
+
+        body.dark-mode .dropdown-item:active {
+            background-color: #1C7DD6 !important;
+            /* Active blue */
+            color: #FFFFFF !important;
+        }
+
+        /* Dropdown icons in dark mode */
+        body.dark-mode .dropdown-item .text-primary {
+            color: #1C7DD6 !important;
+            /* Blue for profile icon */
+        }
+
+        body.dark-mode .dropdown-item .text-info {
+            color: #94ADC7 !important;
+            /* Secondary color for announcements */
+        }
+
+        body.dark-mode .dropdown-item .text-secondary {
+            color: #94ADC7 !important;
+            /* Secondary color for support */
+        }
+
+        body.dark-mode .dropdown-item:hover .text-primary,
+        body.dark-mode .dropdown-item:hover .text-info,
+        body.dark-mode .dropdown-item:hover .text-secondary {
+            color: #FFFFFF !important;
+            /* White icons on hover */
+        }
+
+        /* Logout item in dark mode */
+        body.dark-mode .dropdown-item.text-danger {
+            color: #E57373 !important;
+            /* Slightly lighter red for dark mode */
+        }
+
+        body.dark-mode .dropdown-item.text-danger:hover {
+            background-color: #C62828 !important;
+            /* Darker red background on hover */
+            color: #FFFFFF !important;
+        }
+
+        /* Dropdown arrow in dark mode */
+        body.dark-mode .navbar-profile-dropdown .nav-link::after {
+            border-color: #94ADC7 !important;
+            /* Secondary color for dropdown arrow */
+        }
+
+        body.dark-mode .navbar-profile-dropdown .nav-link:hover::after {
+            border-color: #FFFFFF !important;
+            /* White arrow on hover */
+        }
+
+        /* Body background in dark mode */
+        body.dark-mode {
+            background-color: #121A21 !important;
+            color: #E5E8EB !important;
+        }
+
+        /* Logo SVG adjustments for dark mode */
+        body.dark-mode .custom-header svg image {
+            filter: brightness(1.1);
+            /* Slightly brighten logo for dark mode */
+        }
+
+        /* Main header styling - matching user header exactly */
         .custom-header {
             font-family: "Space Grotesk", "Noto Sans", sans-serif;
             background-color: #fff;
@@ -79,11 +234,6 @@ $chrononav_dropdown_logo_path = '../../assets/images/chrononav_logo_small.png';
             display: flex;
             align-items: center;
             justify-content: space-between;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-        }
-
-        .custom-header {
-            position: sticky;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
         }
 
@@ -127,95 +277,47 @@ $chrononav_dropdown_logo_path = '../../assets/images/chrononav_logo_small.png';
             border-color: #eaedf1;
         }
 
-        .logo-container {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .logo-icon {
-            width: 1.5rem;
-            height: 1.5rem;
-            color: #101518;
-        }
-
-        .logo-text {
-            font-weight: 700;
-            font-size: 1.25rem;
-            color: #101518;
-            margin-bottom: 0;
-            text-decoration: none;
-        }
-
-        .logo-text:hover {
-            color: #101518;
-        }
-
         .header-right-section {
             display: flex;
             align-items: center;
             gap: 1rem;
         }
 
-        /* Dropdown menu styling */
+        /* Dropdown menu styling - matching user header exactly */
         .dropdown-menu {
             border: none;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             border-radius: 0.75rem;
             padding: 0.5rem 0;
+            min-width: 220px;
         }
 
         .dropdown-item {
             padding: 0.5rem 1rem;
             display: flex;
             align-items: center;
+            font-size: 14px;
         }
 
         .dropdown-item i {
             width: 20px;
             text-align: center;
-            margin-right: 0.5rem;
+            margin-right: 0.75rem;
         }
 
-        /* Dark mode adjustments */
-        .dark-mode .custom-header {
-            background-color: #121212;
-            border-bottom-color: #2d3748;
+        /* Updated dropdown structure to match user header */
+        .dropdown-header {
+            font-weight: 600;
+            font-size: 16px;
+            color: #101518;
+            padding: 0.5rem 1rem;
+            background: transparent;
+            border-bottom: none;
         }
 
-        .dark-mode .logo-text {
-            color: #f8f9fa;
-        }
-
-        .dark-mode .logo-icon {
-            color: #f8f9fa;
-        }
-
-        .dark-mode .settings-btn {
-            background-color: #2d3748;
-            color: #f8f9fa;
-        }
-
-        .dark-mode .settings-btn:hover {
-            background-color: #3a4556;
-            color: #f8f9fa;
-        }
-
-        .dark-mode .navbar-profile-dropdown .nav-link:hover .navbar-profile-img {
-            border-color: #4a5568;
-        }
-
-        .dark-mode .dropdown-menu {
-            background-color: #2d3748;
-            border: 1px solid #4a5568;
-        }
-
-        .dark-mode .dropdown-item {
-            color: #f8f9fa;
-        }
-
-        .dark-mode .dropdown-item:hover {
-            background-color: #4a5568;
+        .dropdown-divider {
+            margin: 0.25rem 0;
+            border-color: #e5e7eb;
         }
 
         /* Responsive adjustments */
@@ -234,6 +336,21 @@ $chrononav_dropdown_logo_path = '../../assets/images/chrononav_logo_small.png';
             .header-right-section {
                 gap: 0.5rem;
             }
+        }
+
+        /* Remove navbar-toggler button styling */
+        .navbar-toggler {
+            display: none;
+        }
+
+        /* Link styling */
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        a:hover {
+            color: inherit;
         }
     </style>
 
@@ -256,11 +373,6 @@ $chrononav_dropdown_logo_path = '../../assets/images/chrononav_logo_small.png';
             </div>
         </a>
 
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-
         <!-- Right Section with Settings and Profile -->
         <div class="header-right-section">
 
@@ -273,40 +385,56 @@ $chrononav_dropdown_logo_path = '../../assets/images/chrononav_logo_small.png';
                 </svg>
             </a>
 
-            <!-- Profile Dropdown - Using the exact same structure as faculty header -->
+            <!-- Profile Dropdown - Using the exact same structure as user header -->
             <li class="nav-item dropdown navbar-profile-dropdown" style="list-style: none;">
                 <a class="nav-link align-items-center" href="#" id="navbarDropdownMenuLink" role="button"
                     data-bs-toggle="dropdown" aria-expanded="false">
                     <img src="<?= $profile_pic_src ?>" alt="" class="navbar-profile-img"
                         style="width: 40px; height: 40px; object-fit: cover; border-radius: 50%;">
                 </a>
-                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
+                <ul class="dropdown-menu dropdown-menu-end shadow border-0 p-2"
+                    aria-labelledby="navbarDropdownMenuLink">
+
+                    <li class="px-3 py-2">
+                        <div class="d-flex flex-column">
+                            <strong class="text-dark fs-6"><?= $display_user_name ?></strong>
+                            <small class="text-muted fw-light"><?= $user_role ?></small>
+                        </div>
+                    </li>
+
                     <li>
-                        <h6 class="dropdown-header">
-                            <?= $display_user_name ?> (
-                            <?= $user_role ?>)
-                        </h6>
+                        <hr class="dropdown-divider my-2">
+                    </li>
+
+                    <li>
+                        <a class="dropdown-item rounded-2" href="../../pages/admin/view_profile.php">
+                            <i class="fas fa-user-circle me-3 fa-fw text-primary"></i>Profile
+                        </a>
                     </li>
                     <li>
-                        <hr class="dropdown-divider">
+                        <a class="dropdown-item rounded-2" href="../../pages/admin/announcements.php">
+                            <i class="fas fa-bullhorn me-3 fa-fw text-info"></i>Announcements
+                        </a>
                     </li>
-                    <li><a class="dropdown-item" href="../../pages/admin/view_profile.php"><i
-                                class="fas fa-user-circle me-2"></i>Profile</a></li>
+
                     <li>
-                        <hr class="dropdown-divider">
+                        <hr class="dropdown-divider my-2">
                     </li>
-                    <li><a class="dropdown-item" href="../../pages/admin/support_center.php"><i
-                                class="fas fa-user-circle me-2"></i>Support and Ask question</a></li>
+
                     <li>
-                        <hr class="dropdown-divider">
+                        <a class="dropdown-item rounded-2" href="../../pages/admin/support_center.php">
+                            <i class="fas fa-question-circle me-3 fa-fw text-secondary"></i>Support & Help
+                        </a>
                     </li>
-                    <li><a class="dropdown-item" href="../../pages/admin/announcements.php"><i
-                                class="fas fa-user-circle me-2"></i>Campus Announcement</a></li>
+
                     <li>
-                        <hr class="dropdown-divider">
+                        <hr class="dropdown-divider my-2">
                     </li>
-                    <li><a class="dropdown-item" href="../../auth/logout.php"><i
-                                class="fas fa-sign-out-alt me-2"></i>Logout</a>
+
+                    <li>
+                        <a class="dropdown-item rounded-2 text-danger" href="../../auth/logout.php">
+                            <i class="fas fa-sign-out-alt me-3 fa-fw"></i>Logout
+                        </a>
                     </li>
                 </ul>
             </li>

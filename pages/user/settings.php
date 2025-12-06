@@ -1078,3 +1078,8 @@ require_once '../../templates/user/sidenav_user.php';
     window.addEventListener('load', handleFormResponsive);
     window.addEventListener('resize', handleFormResponsive);
 </script>
+
+
+<script>
+    document.body.style.backgroundColor = "#ffffff";
+</script>

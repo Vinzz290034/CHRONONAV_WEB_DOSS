@@ -595,3 +595,8 @@ require_once '../../templates/admin/header_admin.php';
 </body>
 
 </html>
+
+
+<script>
+    document.body.style.backgroundColor = "#ffffff";
+</script>

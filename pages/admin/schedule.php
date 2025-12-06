@@ -50,7 +50,7 @@ if ($stmt_reminders) {
     $stmt_reminders->bind_param("is", $user['id'], $selected_date);
     $stmt_reminders->execute();
     $result_reminders = $stmt_reminders->get_result();
-    
+
     // FIX: Only hide the reminder if it's the current day and the time has passed.
     while ($row = $result_reminders->fetch_assoc()) {
         if ($row['is_completed'] == 0) {
@@ -65,7 +65,7 @@ if ($stmt_reminders) {
                     $show_reminder = false;
                 }
             }
-            
+
             if ($show_reminder) {
                 $daily_reminders[] = $row;
             }
@@ -887,7 +887,7 @@ require_once '../../templates/admin/header_admin.php';
                         details += ' - ' + info.event.end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
                     }
                     if (info.event.extendedProps.description) {
-                         details += '\nDetails: ' + info.event.extendedProps.description;
+                        details += '\nDetails: ' + info.event.extendedProps.description;
                     }
                     alert(details);
                 },
@@ -910,25 +910,25 @@ require_once '../../templates/admin/header_admin.php';
                 }
             });
 
-             // Sidebar Toggle functionality 
-             const sidebarToggle = document.createElement('button');
-             sidebarToggle.className = 'sidebar-toggle d-none';
-             sidebarToggle.innerHTML = '<i class="fas fa-bars"></i>';
-             sidebarToggle.setAttribute('aria-label', 'Toggle sidebar');
-             document.body.appendChild(sidebarToggle);
+            // Sidebar Toggle functionality 
+            const sidebarToggle = document.createElement('button');
+            sidebarToggle.className = 'sidebar-toggle d-none';
+            sidebarToggle.innerHTML = '<i class="fas fa-bars"></i>';
+            sidebarToggle.setAttribute('aria-label', 'Toggle sidebar');
+            document.body.appendChild(sidebarToggle);
 
-             function toggleSidebar() {
+            function toggleSidebar() {
                 const sidebar = document.querySelector('.sidebar');
                 if (sidebar) {
                     sidebar.classList.toggle('active');
                 }
-             }
-             
-             // Check if the element exists before adding the listener
-             const toggleButton = document.querySelector('.sidebar-toggle');
-             if (toggleButton) {
-                 toggleButton.addEventListener('click', toggleSidebar);
-             }
+            }
+
+            // Check if the element exists before adding the listener
+            const toggleButton = document.querySelector('.sidebar-toggle');
+            if (toggleButton) {
+                toggleButton.addEventListener('click', toggleSidebar);
+            }
         });
     </script>
 
@@ -958,7 +958,8 @@ require_once '../../templates/admin/header_admin.php';
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="addReminderForm" action="/CHRONONAV_WEB_DOSS/includes/add_reminder_handler.php" method="POST">
+                    <form id="addReminderForm" action="/CHRONONAV_WEB_DOSS/includes/add_reminder_handler.php"
+                        method="POST">
                         <input type="hidden" name="user_id" value="<?= $user['id'] ?>">
                         <div class="mb-3">
                             <label for="reminderTitle" class="form-label">Title</label>
@@ -966,8 +967,8 @@ require_once '../../templates/admin/header_admin.php';
                         </div>
                         <div class="mb-3">
                             <label for="reminderDescription" class="form-label">Description</label>
-                            <textarea class="form-control" id="reminderDescription" name="description"
-                                rows="3" required></textarea>
+                            <textarea class="form-control" id="reminderDescription" name="description" rows="3"
+                                required></textarea>
                         </div>
                         <div class="mb-3">
                             <label for="reminderDate" class="form-label">Due Date</label>
@@ -986,9 +987,15 @@ require_once '../../templates/admin/header_admin.php';
             </div>
         </div>
     </div>
-    
+
     <?php require_once '../../templates/footer.php'; ?>
 </body>
 <?php include('../../includes/semantics/footer.php'); ?>
 
 </html>
+
+
+
+<script>
+    document.body.style.backgroundColor = "#ffffff";
+</script>

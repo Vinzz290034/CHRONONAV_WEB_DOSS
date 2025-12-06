@@ -119,8 +119,7 @@ if (!isset($current_page)) {
     }
 
     .app-sidebar-menu .nav-link svg {
-        width: 24px;
-        height: 24px;
+
         color: #111418;
         flex-shrink: 0;
     }
@@ -679,11 +678,10 @@ if (!isset($current_page)) {
             <li class="nav-item">
                 <a class="nav-link <?= ($current_page === 'map') ? 'active' : '' ?>"
                     href="<?= $base_path ?>pages/user/map_navigation.php">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor"
-                        viewBox="0 0 256 256">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" transform="scale(0.8)"
+                        fill="currentColor" class="bi bi-map" viewBox="0 0 16 16">
                         <path
-                            d="M128,16a48,48,0,1,0,48,48A48.05,48.05,0,0,0,128,16Zm0,80a32,32,0,1,1,32-32A32,32,0,0,1,128,96Zm119.07,103.31L237.26,98.91a24,24,0,0,0-41.51-9.13L169.18,172.2a32,32,0,0,1-52.36,0L60.25,89.78a24,24,0,0,0-41.51,9.13L8.93,199.31A23.88,23.88,0,0,0,32,232a24.1,24.1,0,0,0,6-0.77l73-18.27a32,32,0,0,1,14,0l73,18.27a24,24,0,0,0,30.07-32.92Z">
-                        </path>
+                            d="M15.817.113A.5.5 0 0 1 16 .5v14a.5.5 0 0 1-.402.49l-5 1a.5.5 0 0 1-.196 0L5.5 15.01l-4.902.98A.5.5 0 0 1 0 15.5v-14a.5.5 0 0 1 .402-.49l5-1a.5.5 0 0 1 .196 0L10.5.99l4.902-.98a.5.5 0 0 1 .415.103M10 1.91l-4-.8v12.98l4 .8zm1 12.98 4-.8V1.11l-4 .8zm-6-.8V1.11l-4 .8v12.96z" />
                     </svg>
                     <span class="nav-link-text fs-6">Navigate Map</span>
                 </a>
