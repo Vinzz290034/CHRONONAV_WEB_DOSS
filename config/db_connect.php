@@ -9,7 +9,7 @@ if (!isset($conn)) {
     $dbname = "chrononav_web_doss"; // Your database name
 
     // Create connection
-    $conn = new mysqli($servername, $username, $password, $dbname);
+    $conn = new mysqli($servername, $username, $password, $dbname, 3306, '/opt/lampp/var/mysql/mysql.sock');
 
     // Check connection
     if ($conn->connect_error) {

@@ -92,8 +92,9 @@ echo "<script>const shouldAutoShowOnboardingTour = " . ($should_auto_show_tour ?
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="onboardingSkipTourBtn">Skip Tour</button>
-                <button type="button" class="btn btn-primary" id="onboardingFinishTourBtn" style="display:none;">Finish Tour</button>
-                 <button type="button" class="btn btn-primary" id="onboardingNextTourBtn">Next</button>
+                <button type="button" class="btn btn-outline-secondary" id="onboardingPrevTourBtn" style="display:none;">Previous</button>
+                <button type="button" class="btn btn-primary" id="onboardingNextTourBtn">Next</button>
+                <button type="button" class="btn btn-success" id="onboardingFinishTourBtn" style="display:none;">Finish Tour</button>
             </div>
         </div>
     </div>
@@ -134,11 +135,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const onboardingSkipTourBtn = document.getElementById('onboardingSkipTourBtn');
     const onboardingFinishTourBtn = document.getElementById('onboardingFinishTourBtn');
-    const onboardingNextTourBtn = document.getElementById('onboardingNextTourBtn'); // New: Next button for carousel
+    const onboardingNextTourBtn = document.getElementById('onboardingNextTourBtn');
+    const onboardingPrevTourBtn = document.getElementById('onboardingPrevTourBtn');
 
     // Function to update onboarding status via AJAX
     function updateOnboardingStatus(status) {
-        fetch('/CHRONONAV_WEBZD/api/update_onboarding_status.php', { // Adjust this path if your api folder is named differently
+        fetch('/CHRONONAV_WEB_DOSS/api/profile/update_onboarding_status.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
@@ -149,21 +151,23 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(data => {
             if (data.success) {
                 console.log('Onboarding status updated to:', status);
-                // Optionally, if status becomes 'completed' or 'skipped', you might
-                // want to remove the restart button or refresh the page.
             } else {
                 console.error('Failed to update onboarding status:', data.message);
-                alert('Error updating onboarding status: ' + data.message); // User feedback
             }
         })
         .catch(error => {
             console.error('Error sending AJAX for onboarding status:', error);
-            alert('Network error while updating onboarding status.'); // User feedback
         });
     }
 
+    // Initialize carousel instance
+    let carouselInstance = new bootstrap.Carousel(onboardingCarousel, {
+        interval: false,
+        wrap: false
+    });
+
     // Auto-show tour if needed (controlled by PHP variable `shouldAutoShowOnboardingTour`)
-    if (shouldAutoShowOnboardingTour) {
+    if (typeof shouldAutoShowOnboardingTour !== 'undefined' && shouldAutoShowOnboardingTour) {
         onboardingTourModal.show();
     }
 
@@ -184,45 +188,52 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (onboardingNextTourBtn) {
         onboardingNextTourBtn.addEventListener('click', function() {
-            // Manually advance the carousel to the next slide
-            const carouselInstance = bootstrap.Carousel.getInstance(onboardingCarousel);
-            if (carouselInstance) {
-                carouselInstance.next();
-            }
+            carouselInstance.next();
         });
     }
 
-    // Carousel slide event listener to toggle "Next" and "Finish" buttons
-    if (onboardingCarousel) {
-        onboardingCarousel.addEventListener('slid.bs.carousel', function () {
-            const activeItem = this.querySelector('.carousel-item.active');
-            const isLastSlide = !activeItem.nextElementSibling; // Check if it's the last item
-
-            if (isLastSlide) {
-                onboardingNextTourBtn.style.display = 'none'; // Hide Next
-                onboardingFinishTourBtn.style.display = 'inline-block'; // Show Finish
-            } else {
-                onboardingNextTourBtn.style.display = 'inline-block'; // Show Next
-                onboardingFinishTourBtn.style.display = 'none'; // Hide Finish
-            }
+    if (onboardingPrevTourBtn) {
+        onboardingPrevTourBtn.addEventListener('click', function() {
+            carouselInstance.prev();
         });
-        // Trigger the slide event once on load to set initial button state
-        onboardingCarousel.dispatchEvent(new Event('slid.bs.carousel'));
     }
 
+    // Update button states based on carousel position
+    function updateButtonStates() {
+        const activeIndex = Array.from(onboardingCarousel.querySelectorAll('.carousel-item')).findIndex(item => item.classList.contains('active'));
+        const totalItems = onboardingCarousel.querySelectorAll('.carousel-item').length;
+        const isLastSlide = activeIndex === totalItems - 1;
+        const isFirstSlide = activeIndex === 0;
 
-    // Event listeners for buttons you'll place on your dashboard/main page
+        // Toggle Previous button
+        if (onboardingPrevTourBtn) {
+            onboardingPrevTourBtn.style.display = isFirstSlide ? 'none' : 'inline-block';
+        }
+
+        // Toggle Next and Finish buttons
+        if (isLastSlide) {
+            if (onboardingNextTourBtn) onboardingNextTourBtn.style.display = 'none';
+            if (onboardingFinishTourBtn) onboardingFinishTourBtn.style.display = 'inline-block';
+        } else {
+            if (onboardingNextTourBtn) onboardingNextTourBtn.style.display = 'inline-block';
+            if (onboardingFinishTourBtn) onboardingFinishTourBtn.style.display = 'none';
+        }
+    }
+
+    // Listen for carousel slide changes
+    onboardingCarousel.addEventListener('slid.bs.carousel', updateButtonStates);
+
+    // Set initial button states
+    updateButtonStates();
+
+    // Event listeners for buttons on dashboard/main page
     const viewTourBtn = document.getElementById('viewTourBtn');
     const viewTipsBtn = document.getElementById('viewTipsBtn');
     const restartOnboardingBtn = document.getElementById('restartOnboardingBtn');
 
     if (viewTourBtn) {
         viewTourBtn.addEventListener('click', function() {
-            // Reset carousel to first slide before showing
-            const carouselInstance = bootstrap.Carousel.getInstance(onboardingCarousel);
-            if (carouselInstance) {
-                carouselInstance.to(0); // Go to the first slide (index 0)
-            }
+            carouselInstance.to(0);
             onboardingTourModal.show();
         });
     }
@@ -235,17 +246,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (restartOnboardingBtn) {
         restartOnboardingBtn.addEventListener('click', function() {
-            if (confirm("Are you sure you want to restart the onboarding tour? This will mark it as incomplete in your profile.")) {
-                updateOnboardingStatus('pending'); // Reset status to false (pending)
-                // Give a slight delay before showing the modal to ensure DB update is processed
+            if (confirm("Are you sure you want to restart the onboarding tour?")) {
+                updateOnboardingStatus('pending');
                 setTimeout(() => {
-                    // Reset carousel to first slide before showing
-                    const carouselInstance = bootstrap.Carousel.getInstance(onboardingCarousel);
-                    if (carouselInstance) {
-                        carouselInstance.to(0); // Go to the first slide (index 0)
-                    }
+                    carouselInstance.to(0);
                     onboardingTourModal.show();
-                }, 300); // 300ms delay
+                }, 300);
             }
         });
     }

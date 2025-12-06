@@ -575,6 +575,18 @@ if (!isset($current_page)) {
                 </a>
             </li>
             <li class="nav-item">
+                <a class="nav-link <?= ($current_page === 'map_management') ? 'active' : '' ?>"
+                    href="<?= $base_path ?>pages/admin/map_management.php">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor"
+                        viewBox="0 0 256 256">
+                        <path
+                            d="M128,16a48,48,0,1,0,48,48A48.05,48.05,0,0,0,128,16Zm0,80a32,32,0,1,1,32-32A32,32,0,0,1,128,96Zm119.07,103.31L237.26,98.91a24,24,0,0,0-41.51-9.13L169.18,172.2a32,32,0,0,1-52.36,0L60.25,89.78a24,24,0,0,0-41.51,9.13L8.93,199.31A23.88,23.88,0,0,0,32,232a24.1,24.1,0,0,0,6-0.77l73-18.27a32,32,0,0,1,14,0l73,18.27a24,24,0,0,0,30.07-32.92Z">
+                        </path>
+                    </svg>
+                    <span class="nav-link-text fs-6">Navigate Map</span>
+                </a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link <?= ($current_page === 'schedule') ? 'active' : '' ?>"
                     href="<?= $base_path ?>pages/admin/schedule.php">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor"
@@ -608,6 +620,30 @@ if (!isset($current_page)) {
                         </path>
                     </svg>
                     <span class="nav-link-text fs-6">Report Generator</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link <?= ($current_page === 'faculty_verification_codes') ? 'active' : '' ?>"
+                    href="<?= $base_path ?>pages/admin/faculty_verification_codes.php">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor"
+                        viewBox="0 0 256 256">
+                        <path
+                            d="M224,120a8,8,0,0,1-8,8H216v12a32,32,0,0,1-64,0V128h-8a8,8,0,0,1,0-16h8V96a32,32,0,0,1,64,0v16h0a8,8,0,0,1,0,16Zm-16-12V96a16,16,0,0,0-32,0v12Zm-32,44a16,16,0,0,0,32,0V136h-32ZM104,32A72,72,0,1,0,176,104,72.08,72.08,0,0,0,104,32Zm0,128a56,56,0,1,1,56-56A56.06,56.06,0,0,1,104,160ZM43.39,113.61a8,8,0,1,1,11.31-11.31,8,8,0,0,1-11.31,11.31Z">
+                        </path>
+                    </svg>
+                    <span class="nav-link-text fs-6">Faculty Codes</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link <?= ($current_page === 'manage_admins') ? 'active' : '' ?>"
+                    href="<?= $base_path ?>pages/admin/manage_admins.php">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor"
+                        viewBox="0 0 256 256">
+                        <path
+                            d="M117.25,157.92a60,60,0,1,0-74.5,0,95.83,95.83,0,0,0,60.2,35.27,8,8,0,0,0,2.55-15.73c-16-5.3-31.65-14.6-35.7-26.17a60.22,60.22,0,0,1-2.29-10.66H104a8,8,0,0,0,0-16H55.87a57.8,57.8,0,0,1,.16-8H104a8,8,0,0,0,0-16H52.85a60.27,60.27,0,0,1,2.24-10.5c4.05-11.57,19.75-20.87,35.7-26.17a8,8,0,0,0-2.55-15.73,95.83,95.83,0,0,0-60.2,35.27,60,60,0,1,0,74.5,0ZM140,128a12,12,0,1,1,12-12A12,12,0,0,1,140,128Zm60-12a8,8,0,0,0-8,8v40a8,8,0,0,0,16,0V124A8,8,0,0,0,200,116Zm40,0a8,8,0,0,0-8,8v40a8,8,0,0,0,16,0V124A8,8,0,0,0,240,116Z">
+                        </path>
+                    </svg>
+                    <span class="nav-link-text fs-6">Admin Management</span>
                 </a>
             </li>
         </ul>

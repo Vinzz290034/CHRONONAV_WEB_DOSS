@@ -12,33 +12,86 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $role = $_POST['role'];
     $course = trim($_POST['course']);
     $dept = trim($_POST['department']);
+    $faculty_verification_code = trim($_POST['faculty_verification_code'] ?? '');
 
-    if (empty($name) || empty($email) || empty($password) || empty($role) || empty($course) || empty($dept)) {
-        $error = "All fields are required.";
+    // Validate basic fields
+    if (empty($name) || empty($email) || empty($password) || empty($role)) {
+        $error = "Name, email, password, and account type are required.";
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $error = "Invalid email format.";
     } elseif (strlen($password) < 6) {
         $error = "Password must be at least 6 characters long.";
+    } elseif ($role === 'faculty' && empty($faculty_verification_code)) {
+        $error = "Faculty ID is required to register as Faculty.";
+    } elseif ($role === 'user' && (empty($course) || empty($dept))) {
+        $error = "Course and Department are required for Student accounts.";
     } else {
+        // Check if email already exists
         $check_stmt = $conn->prepare("SELECT id FROM users WHERE email = ?");
         $check_stmt->bind_param("s", $email);
         $check_stmt->execute();
         $check_result = $check_stmt->get_result();
+        
         if ($check_result->num_rows > 0) {
             $error = "Email already registered. Please login or use another.";
         } else {
-            $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-            $stmt = $conn->prepare("INSERT INTO users (name, email, password, role, course, department) VALUES (?, ?, ?, ?, ?, ?)");
-            if ($stmt) {
-                $stmt->bind_param("ssssss", $name, $email, $hashed_password, $role, $course, $dept);
-                if ($stmt->execute()) {
-                    $message = "Registration successful! <a href='login.php' class='auth-link'>Login here</a>.";
+            // If role is faculty, verify the faculty code
+            $faculty_id = null;
+            if ($role === 'faculty') {
+                $code_check = $conn->prepare("
+                    SELECT id FROM faculty_verification_codes 
+                    WHERE verification_code = ? 
+                    AND is_used = 0 
+                    AND (expires_at IS NULL OR expires_at > NOW())
+                ");
+                
+                if ($code_check) {
+                    $code_check->bind_param("s", $faculty_verification_code);
+                    $code_check->execute();
+                    $code_result = $code_check->get_result();
+                    
+                    if ($code_result->num_rows === 0) {
+                        $error = "Invalid, expired, or already used Faculty ID. Please contact your administrator.";
+                    } else {
+                        $faculty_id = $faculty_verification_code;
+                    }
+                    $code_check->close();
                 } else {
-                    $error = "Error during registration: " . $stmt->error;
+                    $error = "Database error: " . $conn->error;
                 }
-                $stmt->close();
-            } else {
-                $error = "Database error: " . $conn->error;
+            }
+            
+            // If no errors so far, proceed with registration
+            if (empty($error)) {
+                $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+                $stmt = $conn->prepare("INSERT INTO users (name, email, password, role, course, department, faculty_id) VALUES (?, ?, ?, ?, ?, ?, ?)");
+                
+                if ($stmt) {
+                    $stmt->bind_param("sssssss", $name, $email, $hashed_password, $role, $course, $dept, $faculty_id);
+                    
+                    if ($stmt->execute()) {
+                        // If faculty, mark the verification code as used
+                        if ($role === 'faculty') {
+                            $user_id = $conn->insert_id;
+                            $update_code = $conn->prepare("
+                                UPDATE faculty_verification_codes 
+                                SET is_used = 1, used_by_user_id = ?, used_at = NOW() 
+                                WHERE verification_code = ?
+                            ");
+                            if ($update_code) {
+                                $update_code->bind_param("is", $user_id, $faculty_verification_code);
+                                $update_code->execute();
+                                $update_code->close();
+                            }
+                        }
+                        $message = "Registration successful! <a href='login.php' class='auth-link'>Login here</a>.";
+                    } else {
+                        $error = "Error during registration: " . $stmt->error;
+                    }
+                    $stmt->close();
+                } else {
+                    $error = "Database error: " . $conn->error;
+                }
             }
         }
         $check_stmt->close();
@@ -466,29 +519,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
 
                 <div class="auth-form-group">
-                    <label for="role" class="auth-form-label fw-bold text-black-50">Role</label>
+                    <label for="role" class="auth-form-label fw-bold text-black-50">Account Type</label>
                     <select class="auth-form-select" id="role" name="role" required>
-                        <option value="">Select your role</option>
                         <option value="user" <?= (($_POST['role'] ?? '') == 'user') ? 'selected' : '' ?>>Student</option>
-                        <option value="faculty" <?= (($_POST['role'] ?? '') == 'faculty') ? 'selected' : '' ?>>Teacher
-                        </option>
-                        <option value="admin" <?= (($_POST['role'] ?? '') == 'admin') ? 'selected' : '' ?>>Administrator
-                        </option>
+                        <option value="faculty" <?= (($_POST['role'] ?? '') == 'faculty') ? 'selected' : '' ?>>Faculty</option>
                     </select>
                 </div>
 
-                <div class="auth-form-group">
-                    <label for="course" class="auth-form-label fw-bold text-black-50">Course</label>
-                    <input type="text" class="auth-form-control" id="course" name="course"
-                        placeholder="Enter your course" value="<?= htmlspecialchars($_POST['course'] ?? '') ?>"
-                        required>
+                <!-- Faculty Verification Code Field - Hidden by default -->
+                <div class="auth-form-group" id="facultyVerificationGroup" style="display: none;">
+                    <label for="faculty_verification_code" class="auth-form-label fw-bold text-black-50">
+                        <i class="fas fa-key"></i> Faculty ID
+                    </label>
+                    <input type="text" class="auth-form-control" id="faculty_verification_code" name="faculty_verification_code"
+                        placeholder="Enter your Faculty ID (provided by administrator)" value="<?= htmlspecialchars($_POST['faculty_verification_code'] ?? '') ?>">
+                    <small class="text-muted d-block mt-2">
+                        <i class="fas fa-info-circle"></i> 
+                        If you don't have a Faculty ID, please contact your administrator.
+                    </small>
                 </div>
 
-                <div class="auth-form-group">
+                <div class="auth-form-group" id="studentFieldsGroup">
+                    <label for="course" class="auth-form-label fw-bold text-black-50">Course</label>
+                    <input type="text" class="auth-form-control" id="course" name="course"
+                        placeholder="Enter your course" value="<?= htmlspecialchars($_POST['course'] ?? '') ?>">
+                </div>
+
+                <div class="auth-form-group" id="departmentFieldsGroup">
                     <label for="department" class="auth-form-label fw-bold text-black-50">Department</label>
                     <input type="text" class="auth-form-control" id="department" name="department"
-                        placeholder="Enter your department" value="<?= htmlspecialchars($_POST['department'] ?? '') ?>"
-                        required>
+                        placeholder="Enter your department" value="<?= htmlspecialchars($_POST['department'] ?? '') ?>">
                 </div>
 
                 <button type="submit" class="auth-btn-register">Create Account</button>
@@ -736,6 +796,54 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 passwordInput.type = 'password';
                 icon.classList.remove('fa-eye-slash');
                 icon.classList.add('fa-eye');
+            }
+        });
+
+        // Handle role change to show/hide faculty verification code field
+        document.getElementById('role').addEventListener('change', function() {
+            const facultyVerificationGroup = document.getElementById('facultyVerificationGroup');
+            const facultyVerificationInput = document.getElementById('faculty_verification_code');
+            const studentFieldsGroup = document.getElementById('studentFieldsGroup');
+            const departmentFieldsGroup = document.getElementById('departmentFieldsGroup');
+            const courseInput = document.getElementById('course');
+            const departmentInput = document.getElementById('department');
+            
+            if (this.value === 'faculty') {
+                // Show faculty field, hide student fields
+                facultyVerificationGroup.style.display = 'block';
+                studentFieldsGroup.style.display = 'none';
+                departmentFieldsGroup.style.display = 'none';
+                facultyVerificationInput.required = true;
+                courseInput.required = false;
+                departmentInput.required = false;
+                courseInput.value = '';
+                departmentInput.value = '';
+            } else {
+                // Show student fields, hide faculty field
+                facultyVerificationGroup.style.display = 'none';
+                studentFieldsGroup.style.display = 'block';
+                departmentFieldsGroup.style.display = 'block';
+                facultyVerificationInput.required = false;
+                courseInput.required = true;
+                departmentInput.required = true;
+                facultyVerificationInput.value = '';
+            }
+        });
+
+        // Show appropriate fields on page load if already selected
+        window.addEventListener('load', function() {
+            const roleSelect = document.getElementById('role');
+            if (roleSelect.value === 'faculty') {
+                document.getElementById('facultyVerificationGroup').style.display = 'block';
+                document.getElementById('studentFieldsGroup').style.display = 'none';
+                document.getElementById('departmentFieldsGroup').style.display = 'none';
+                document.getElementById('faculty_verification_code').required = true;
+            } else if (roleSelect.value === 'user') {
+                document.getElementById('facultyVerificationGroup').style.display = 'none';
+                document.getElementById('studentFieldsGroup').style.display = 'block';
+                document.getElementById('departmentFieldsGroup').style.display = 'block';
+                document.getElementById('course').required = true;
+                document.getElementById('department').required = true;
             }
         });
 

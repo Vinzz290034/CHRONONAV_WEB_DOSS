@@ -4,8 +4,10 @@ require_once '../../middleware/auth_check.php';
 require_once '../../config/db_connect.php';
 require_once '../../includes/functions.php'; // Assuming requireRole function is here
 
-// Composer Autoloader
-require_once '../../vendor/autoload.php';
+// Composer Autoloader (optional - load if available)
+if (file_exists('../../vendor/autoload.php')) {
+    require_once '../../vendor/autoload.php';
+}
 
 // Ensure user is an admin
 // The requireRole function handles redirection and messages
@@ -110,7 +112,7 @@ $sql = "
     LEFT JOIN
         class_sessions cs ON c.class_id = cs.class_id
     LEFT JOIN
-        attendance_records ar ON cs.id = ar.session_id
+        attendance_record ar ON cs.id = ar.session_id
     WHERE
         u.role = 'faculty'
 ";

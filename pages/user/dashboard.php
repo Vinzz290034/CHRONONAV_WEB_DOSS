@@ -4,6 +4,7 @@
 require_once '../../middleware/auth_check.php';
 require_once '../../includes/db_connect.php';
 require_once '../../includes/onboarding_functions.php';
+require_once '../../includes/onboarding_module.php';
 
 $user = $_SESSION['user'];
 $page_title = "User Dashboard";

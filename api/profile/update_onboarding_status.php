@@ -1,8 +1,8 @@
 <?php
-// CHRONONAV_WEBZD/api/update_onboarding_status.php
+// CHRONONAV_WEB_DOSS/api/profile/update_onboarding_status.php
 // This API endpoint handles updating the user's onboarding completion status.
 
-require_once '../config/db_connect.php'; // Adjust path as necessary
+require_once '../../config/db_connect.php';
 
 header('Content-Type: application/json'); // Set header for JSON response
 

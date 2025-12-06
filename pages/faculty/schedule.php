@@ -815,11 +815,7 @@ require_once '../../templates/faculty/header_faculty.php';
             </div>
         <?php endif; ?>
 
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <button type="button" class="btn btn-primary px-4 py-2" data-bs-toggle="modal"
-                data-bs-target="#addReminderModal" data-date="<?= $selected_date ?>">
-                <i class="fas fa-plus"></i> Add Reminder
-            </button>
+        <div class="d-flex justify-content-end align-items-center mb-3">
             <button class="btn btn-primary px-4 py-2" onclick="window.print()">
                 <i class="fas fa-print"></i> Print Schedule
             </button>

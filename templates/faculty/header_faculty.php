@@ -59,8 +59,7 @@ $chrononav_dropdown_logo_path = '../../assets/images/chrononav_logo_small.png'; 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
     <!-- Favicon -->
-    <link rel=" icon" type="image/x-icon"
-        href="https://res.cloudinary.com/deua2yipj/image/upload/v1758917007/ChronoNav_logo_muon27.png">
+    <link rel="icon" type="image/png" href="https://res.cloudinary.com/deua2yipj/image/upload/v1758917007/ChronoNav_logo_muon27.png">
 
     <!-- <link rel="stylesheet" href="../../assets/css/faculty_css/header_faculty.css"> -->
 
