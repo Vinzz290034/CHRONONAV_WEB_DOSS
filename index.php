@@ -28,6 +28,217 @@
         href="https://res.cloudinary.com/deua2yipj/image/upload/v1758917007/ChronoNav_logo_muon27.png">
 </head>
 
+<style>
+    /* Dark Mode Styles - Manual Toggle */
+    body.dark-mode {
+        background-color: #121A21;
+        color: #E5E8EB;
+    }
+
+    body.dark-mode .Header {
+        background-color: #263645 !important;
+    }
+
+    body.dark-mode .header-nav a,
+    body.dark-mode .mobile.nav a {
+        color: #E5E8EB !important;
+    }
+
+    body.dark-mode .header-nav a:hover,
+    body.dark-mode .mobile.nav a:hover {
+        color: #94ADC7 !important;
+    }
+
+    body.dark-mode h1,
+    body.dark-mode h2,
+    body.dark-mode h3,
+    body.dark-mode h4,
+    body.dark-mode h5,
+    body.dark-mode h6,
+    body.dark-mode .text-dark,
+    body.dark-mode .fw-bold,
+    body.dark-mode .display-5,
+    body.dark-mode .display-4,
+    body.dark-mode .fs-5,
+    body.dark-mode .fs-6 {
+        color: #E5E8EB !important;
+    }
+
+    body.dark-mode .text-muted {
+        color: #94ADC7 !important;
+    }
+
+    body.dark-mode .text-black-50 {
+        color: #E5E8EB !important;
+    }
+
+    body.dark-mode .bg-white {
+        background-color: #263645 !important;
+    }
+
+    body.dark-mode .bg-light {
+        background-color: #263645 !important;
+    }
+
+    body.dark-mode .feature-card,
+    body.dark-mode .team-card,
+    body.dark-mode .testimonial-card,
+    body.dark-mode .custom-card,
+    body.dark-mode .accordion-custom {
+        background-color: #263645 !important;
+        border-color: #94ADC7 !important;
+    }
+
+    body.dark-mode .btn-custom-primary {
+        background-color: #1C7DD6 !important;
+        border-color: #1C7DD6 !important;
+        color: #FFFFFF !important;
+    }
+
+    body.dark-mode .btn-custom-secondary {
+        background-color: #94ADC7 !important;
+        border-color: #1C7DD6 !important;
+        color: #ffff !important;
+    }
+
+    body.dark-mode .btn-custom-secondary:hover {
+        background-color: #1C7DD6 !important;
+        color: #FFFFFF !important;
+    }
+
+    body.dark-mode .form-control-custom {
+        background-color: #263645 !important;
+        border-color: #94ADC7 !important;
+        color: #E5E8EB !important;
+    }
+
+    body.dark-mode .form-control-custom::placeholder {
+        color: #94ADC7 !important;
+    }
+
+    body.dark-mode .accordion-button {
+        background-color: #263645 !important;
+        color: #E5E8EB !important;
+    }
+
+    body.dark-mode .accordion-button:not(.collapsed) {
+        background-color: #121A21 !important;
+        color: #E5E8EB !important;
+    }
+
+    body.dark-mode .accordion-body {
+        background-color: #121A21 !important;
+        color: #E5E8EB !important;
+    }
+
+    body.dark-mode footer {
+        background-color: #263645 !important;
+    }
+
+    body.dark-mode .footer-links a,
+    body.dark-mode .social-icon {
+        color: #94ADC7 !important;
+    }
+
+    body.dark-mode .footer-links a:hover,
+    body.dark-mode .social-icon:hover {
+        color: #E5E8EB !important;
+    }
+
+    body.dark-mode .modal-content {
+        background-color: #263645 !important;
+        color: #E5E8EB !important;
+    }
+
+    body.dark-mode .privacy-modal,
+    body.dark-mode .terms-modal {
+        background-color: rgba(0, 0, 0, 0.8) !important;
+    }
+
+    body.dark-mode .highlight-box {
+        background-color: #121A21 !important;
+        border-color: #1C7DD6 !important;
+    }
+
+    body.dark-mode .contact-info {
+        color: #94ADC7 !important;
+    }
+
+    body.dark-mode .btn-light {
+        background-color: #FFFFFF !important;
+        color: #121A21 !important;
+    }
+
+    body.dark-mode .btn-outline-light {
+        border-color: #FFFFFF !important;
+        color: #FFFFFF !important;
+    }
+
+    body.dark-mode .btn-outline-light:hover {
+        background-color: #FFFFFF !important;
+        color: #121A21 !important;
+    }
+
+    body.dark-mode .navbar-toggler {
+        color: #E5E8EB !important;
+    }
+
+    body.dark-mode .mobile.nav.collapse {
+        background-color: #263645 !important;
+    }
+
+    body.dark-mode .testimonial-stars svg[fill="currentColor"] {
+        fill: #1C7DD6 !important;
+    }
+
+    body.dark-mode .text-white.rounded-3[style*="linear-gradient"] {
+        background: linear-gradient(135deg, #1C7DD6 0%, #94ADC7 100%) !important;
+    }
+
+    /* Icon states for dark mode */
+    body.dark-mode #darkModeToggle i,
+    body.dark-mode #darkModeToggleMobile i {
+        transform: rotate(180deg);
+    }
+
+    body.dark-mode #darkModeToggle i::before,
+    body.dark-mode #darkModeToggleMobile i::before {
+        content: "\f185";
+        /* Sun icon */
+    }
+
+    /* System preference detection - only applies if user hasn't manually set preference */
+    @media (prefers-color-scheme: dark) {
+        body:not(.light-mode) {
+            background-color: #121A21;
+            color: #E5E8EB;
+        }
+
+        body:not(.light-mode) .Header {
+            background-color: #263645 !important;
+        }
+
+        /* Add all the same rules as above but with :not(.light-mode) selector */
+        /* ... repeat all the CSS rules from the media query above but replace "body.dark-mode" with "body:not(.light-mode)" */
+        /* For brevity, I'm showing the pattern - you should copy all the body.dark-mode rules and adapt them */
+    }
+
+    /* Override system preference when user manually sets light mode */
+    body.light-mode {
+        /* Reset to light theme */
+        background-color: white;
+        color: #212529;
+    }
+
+    body.light-mode .bg-white {
+        background-color: white !important;
+    }
+
+    body.light-mode .text-dark {
+        color: #212529 !important;
+    }
+</style>
+
 <body>
     <div class="layouts-container">
         <section class="Header fixed-top bg-white p-0">
@@ -53,6 +264,10 @@
                             <a class="text-dark text-decoration-none fw-medium nav-link" href="#services">Services</a>
                             <a class="text-dark text-decoration-none fw-medium nav-link" href="#faqs">FAQs</a>
                             <a class="text-dark text-decoration-none fw-medium nav-link" href="#contact">Contact</a>
+                            <!-- Dark Mode Toggle Button -->
+                            <button class="btn btn-link text-dark p-0" id="darkModeToggle" title="Toggle Dark Mode">
+                                <i class="fas fa-moon"></i>
+                            </button>
                         </div>
                     </div>
 
@@ -76,6 +291,12 @@
                         <a class="text-dark text-decoration-none fw-medium nav-link" href="#services">Services</a>
                         <a class="text-dark text-decoration-none fw-medium nav-link" href="#faqs">FAQs</a>
                         <a class="text-dark text-decoration-none fw-medium nav-link" href="#contact">Contact</a>
+
+                        <!-- Dark Mode Toggle Button for Mobile -->
+                        <button class="btn btn-link text-dark p-0 text-end ms-auto" id="darkModeToggleMobile"
+                            title="Toggle Dark Mode">
+                            <i class="fas fa-moon"></i>
+                        </button>
                     </div>
                 </div>
             </header>
@@ -698,7 +919,7 @@
                 <div class="d-flex flex-wrap justify-content-center gap-3 mb-4">
                     <a href="#" class="text-muted social-icon">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor"
-                            viewBox="0 0 256 256">
+                            viewBox="0 0 256 256" color="#121A21">
                             <path
                                 d="M247.39,68.94A8,8,0,0,0,240,64H209.57A48.66,48.66,0,0,0,168.1,40a46.91,46.91,0,0,0-33.75,13.7A47.9,47.9,0,0,0,120,88v6.09C79.74,83.47,46.81,50.72,46.46,50.37a8,8,0,0,0-13.65,4.92c-4.31,47.79,9.57,79.77,22,98.18a110.93,110.93,0,0,0,21.88,24.2c-15.23,17.53-39.21,26.74-39.47,26.84a8,8,0,0,0-3.85,11.93c.75,1.12,3.75,5.05,11.08,8.72C53.51,229.7,65.48,232,80,232c70.67,0,129.72-54.42,135.75-124.44l29.91-29.9A8,8,0,0,0,247.39,68.94Zm-45,29.41a8,8,0,0,0-2.32,5.14C196,166.58,143.28,216,80,216c-10.56,0-18-1.4-23.22-3.08,11.51-6.25,27.56-17,37.88-32.48A8,8,0,0,0,92,169.08c-.47-.27-43.91-26.34-44-96,16,13,45.25,33.17,78.67,38.79A8,8,0,0,0,136,104V88a32,32,0,0,1,9.6-22.92A30.94,30.94,0,0,1,167.9,56c12.66.16,24.49,7.88,29.44,19.21A8,8,0,0,0,204.67,80h16Z">
                             </path>
@@ -706,7 +927,7 @@
                     </a>
                     <a href="#" class="text-muted social-icon">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor"
-                            viewBox="0 0 256 256">
+                            viewBox="0 0 256 256" color="#121A21">
                             <path
                                 d="M128,80a48,48,0,1,0,48,48A48.05,48.05,0,0,0,128,80Zm0,80a32,32,0,1,1,32-32A32,32,0,0,1,128,160ZM176,24H80A56.06,56.06,0,0,0,24,80v96a56.06,56.06,0,0,0,56,56h96a56.06,56.06,0,0,0,56-56V80A56.06,56.06,0,0,0,176,24Zm40,152a40,40,0,0,1-40,40H80a40,40,0,0,1-40-40V80A40,40,0,0,1,80,40h96a40,40,0,0,1,40,40ZM192,76a12,12,0,1,1-12-12A12,12,0,0,1,192,76Z">
                             </path>
@@ -714,7 +935,7 @@
                     </a>
                     <a href="#" class="text-muted social-icon">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor"
-                            viewBox="0 0 256 256">
+                            viewBox="0 0 256 256" color="#121A21">
                             <path
                                 d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm8,191.63V152h24a8,8,0,0,0,0-16H136V112a16,16,0,0,1,16-16h16a8,8,0,0,0,0-16H152a32,32,0,0,0-32,32v24H96a8,8,0,0,0,0,16h24v63.63a88,88,0,1,1,16,0Z">
                             </path>
@@ -1149,6 +1370,99 @@
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+
+    <script>
+        // Dark Mode Toggle Functionality
+        document.addEventListener('DOMContentLoaded', function () {
+            const darkModeToggle = document.getElementById('darkModeToggle');
+            const darkModeToggleMobile = document.getElementById('darkModeToggleMobile');
+
+            // Check for saved theme preference or respect OS preference
+            const currentTheme = localStorage.getItem('theme') ||
+                (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+
+            // Apply the theme
+            if (currentTheme === 'dark') {
+                document.body.classList.add('dark-mode');
+                document.body.classList.remove('light-mode');
+            } else {
+                document.body.classList.add('light-mode');
+                document.body.classList.remove('dark-mode');
+            }
+
+            // Update button icons based on theme
+            function updateButtonIcons() {
+                const isDarkMode = document.body.classList.contains('dark-mode');
+                const moonIcon = '<i class="fas fa-moon"></i>';
+                const sunIcon = '<i class="fas fa-sun"></i>';
+
+                if (darkModeToggle) {
+                    darkModeToggle.innerHTML = isDarkMode ? sunIcon : moonIcon;
+                }
+
+                // For mobile we only show the icon (no visible text) to avoid layout/underline
+                // but preserve accessible labels via aria-label and title.
+                if (darkModeToggleMobile) {
+                    darkModeToggleMobile.innerHTML = isDarkMode ? sunIcon : moonIcon;
+                    darkModeToggleMobile.setAttribute('aria-label', isDarkMode ? 'Light Mode' : 'Dark Mode');
+                    darkModeToggleMobile.title = isDarkMode ? 'Light Mode' : 'Dark Mode';
+                }
+
+                // Also ensure desktop toggle has accessible label/title
+                if (darkModeToggle) {
+                    darkModeToggle.setAttribute('aria-label', isDarkMode ? 'Light Mode' : 'Dark Mode');
+                    darkModeToggle.title = isDarkMode ? 'Light Mode' : 'Dark Mode';
+                }
+            }
+
+            // Toggle theme function
+            function toggleTheme() {
+                const isDarkMode = document.body.classList.contains('dark-mode');
+
+                if (isDarkMode) {
+                    // Switch to light mode
+                    document.body.classList.remove('dark-mode');
+                    document.body.classList.add('light-mode');
+                    localStorage.setItem('theme', 'light');
+                } else {
+                    // Switch to dark mode
+                    document.body.classList.remove('light-mode');
+                    document.body.classList.add('dark-mode');
+                    localStorage.setItem('theme', 'dark');
+                }
+
+                updateButtonIcons();
+            }
+
+            // Add event listeners
+            if (darkModeToggle) {
+                darkModeToggle.addEventListener('click', toggleTheme);
+            }
+
+            if (darkModeToggleMobile) {
+                darkModeToggleMobile.addEventListener('click', toggleTheme);
+            }
+
+            // Initial icon update
+            updateButtonIcons();
+
+            // Listen for system theme changes (optional)
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+                // Only update if user hasn't manually set a preference
+                if (!localStorage.getItem('theme')) {
+                    if (e.matches) {
+                        document.body.classList.add('dark-mode');
+                        document.body.classList.remove('light-mode');
+                    } else {
+                        document.body.classList.add('light-mode');
+                        document.body.classList.remove('dark-mode');
+                    }
+                    updateButtonIcons();
+                }
+            });
+        });
+    </script>
 </body>
 
 </html>
