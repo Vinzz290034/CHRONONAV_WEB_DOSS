@@ -7,6 +7,8 @@ require_once '../../includes/functions.php'; // Assuming requireRole function is
 // Ensure only users can access this page
 requireRole(['user']); // Use the requireRole function to restrict access to 'user' role only
 
+/** @var \mysqli $conn */
+
 $user = $_SESSION['user']; // Get basic user data from session
 $user_id = $user['id'];
 

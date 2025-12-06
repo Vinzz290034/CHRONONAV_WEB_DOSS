@@ -4,7 +4,7 @@
 
 require_once '../../middleware/auth_check.php';
 require_once '../../includes/db_connect.php';
-
+require_once('../../templates/footer.php');
 $user = $_SESSION['user'];
 $page_title = "Campus Map - Navigation";
 $current_page = "map";
@@ -404,4 +404,4 @@ document.getElementById('mapContainer').addEventListener('wheel', function(e) {
 }, { passive: false });
 </script>
 
-<?php require_once '../../templates/common/footer.php'; ?>
+<?php require_once '../../templates/footer.php'; ?>

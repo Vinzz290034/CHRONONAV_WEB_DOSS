@@ -667,4 +667,4 @@ document.getElementById('roomModal').addEventListener('click', function(e) {
 });
 </script>
 
-<?php require_once '../../templates/common/footer.php'; ?>
+<?php require_once '../../templates/footer.php'; ?>
