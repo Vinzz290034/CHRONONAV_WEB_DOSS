@@ -12,7 +12,7 @@ if (file_exists('../../vendor/autoload.php')) {
 // Ensure user is an admin
 // The requireRole function handles redirection and messages
 requireRole(['admin']);
-
+/** @var \mysqli $conn */
 // Fetch user data for header display (name, role, profile_img)
 // This is done here so the variables are available before including the header.
 $user_id = $_SESSION['user']['id'];

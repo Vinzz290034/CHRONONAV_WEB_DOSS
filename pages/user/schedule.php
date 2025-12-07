@@ -4,6 +4,8 @@ session_start();
 require_once '../../middleware/auth_check.php';
 require_once '../../config/db_connect.php';
 
+/** @var \mysqli $conn */
+
 // Check if the user is a regular user or faculty
 if (!isset($_SESSION['user']) || ($_SESSION['user']['role'] !== 'user' && $_SESSION['user']['role'] !== 'faculty')) {
     header("Location: ../../auth/logout.php");

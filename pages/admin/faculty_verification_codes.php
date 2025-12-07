@@ -11,6 +11,8 @@ if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'admin') {
     exit();
 }
 
+/** @var \mysqli $conn */
+
 $user = $_SESSION['user'];
 $page_title = "Faculty Verification Codes";
 $current_page = "faculty_verification_codes";

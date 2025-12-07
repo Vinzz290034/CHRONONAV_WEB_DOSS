@@ -8,6 +8,8 @@ if (!isset($_SESSION['user']) || !isset($_SESSION['user']['id'])) {
     exit();
 }
 
+/** @var \mysqli $conn */
+
 $user = $_SESSION['user'];
 $user_id = $user['id']; // Primary key for the user
 

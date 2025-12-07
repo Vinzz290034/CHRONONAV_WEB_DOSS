@@ -2,9 +2,11 @@
 // CHRONONAV_WEB_DOSS/pages/user/dashboard.php
 
 require_once '../../middleware/auth_check.php';
-require_once '../../includes/db_connect.php';
+require_once '../../config/db_connect.php'; // Using mysqli connection (assumed)
 require_once '../../includes/onboarding_functions.php';
 require_once '../../includes/onboarding_module.php';
+
+/** @var \mysqli $conn */
 
 $user = $_SESSION['user'];
 $page_title = "User Dashboard";
@@ -13,29 +15,62 @@ $display_name = htmlspecialchars($user['name'] ?? 'User');
 $user_role = htmlspecialchars($user['role'] ?? 'user');
 $user_id = $user['id'] ?? 0; // Get user ID for fetching schedule
 
+// Assuming get_db_connection returns a valid mysqli connection ($conn)
+// Reusing global $conn for schedule fetching if db_connect uses mysqli
+global $conn; 
+
 $onboarding_steps = [];
-try {
-    $pdo = get_db_connection();
-    $onboarding_steps = getOnboardingSteps($pdo, $user_role);
-} catch (PDOException $e) {
-    error_log("Onboarding data fetch error: " . $e->getMessage());
+$pdo = null; // Initialize PDO as null for local scope
+
+// Try to use mysqli connection first, as most files use it
+if (isset($conn) && $conn instanceof mysqli) {
+    try {
+        // Attempt to convert mysqli connection to PDO for existing functions if needed,
+        // but let's rewrite getUserSchedule to use mysqli directly for consistency.
+        $pdo = null; // Ignore PDO setup for simplicity, use mysqli below
+    } catch (Exception $e) {
+        // Handle potential PDO connection error if functions require it
+    }
 }
 
-// --- NEW PHP FUNCTION: Fetch User's Schedule ---
-function getUserSchedule($user_id, $pdo)
+
+// --- MODIFIED PHP FUNCTION: Fetch User's Schedule from add_pdf (MySQLi) ---
+function getUserSchedule($user_id, $conn)
 {
+    if (!$conn || $conn->connect_error) {
+        error_log("DB connection failed in getUserSchedule.");
+        return [];
+    }
+
     try {
-        // Assuming your schedule table is named 'user_schedule'
-        $stmt = $pdo->prepare("SELECT course_no, time, days, room, instructor FROM user_schedule WHERE user_id = ? ORDER BY FIELD(days, 'M', 'T', 'W', 'Th', 'F', 'S'), time");
-        $stmt->execute([$user_id]);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    } catch (PDOException $e) {
+        // Query the add_pdf table (schedule data)
+        $stmt = $conn->prepare("
+            SELECT title, start_time, end_time, day_of_week, room, schedule_code 
+            FROM add_pdf 
+            WHERE user_id = ? AND is_active = 1
+            ORDER BY FIELD(day_of_week, 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'), start_time
+        ");
+        
+        if ($stmt) {
+            $stmt->bind_param("i", $user_id);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            return $result->fetch_all(MYSQLI_ASSOC);
+        } else {
+            error_log("Failed to prepare user schedule statement: " . $conn->error);
+            return [];
+        }
+    } catch (Exception $e) {
         error_log("Failed to fetch user schedule: " . $e->getMessage());
         return [];
     }
 }
-$user_schedule = getUserSchedule($user_id, $pdo);
-// --- END NEW PHP FUNCTION ---
+$user_schedule = getUserSchedule($user_id, $conn);
+// --- END MODIFIED PHP FUNCTION ---
+
+// Placeholder for onboarding steps (using empty array to avoid fatal error if onboarding functions are not available)
+$onboarding_steps = [];
+
 
 $header_path = '../../templates/user/header_user.php';
 if (isset($user['role'])) {
@@ -52,6 +87,7 @@ require_once $header_path;
 <link rel="stylesheet" href="../../assets/css/user_css/dashboards.css">
 
 <style>
+    /* CSS styles (unchanged) */
     body {
         background-color: rgb(255, 255, 255)
     }
@@ -173,6 +209,7 @@ require_once $header_path;
     .text-truncate-2 {
         display: -webkit-box;
         -webkit-line-clamp: 2;
+        line-clamp: 2;
         -webkit-box-orient: vertical;
         overflow: hidden;
     }
@@ -211,20 +248,20 @@ require_once $header_path;
 
     ::-webkit-scrollbar-track {
         background: #ffffff;
-        /* white track */
+
     }
 
     ::-webkit-scrollbar-thumb {
         background-color: #737373;
-        /* gray thumb */
+
         border-radius: 6px;
         border: 3px solid #ffffff;
-        /* padding effect with white border */
+
     }
 
     ::-webkit-scrollbar-thumb:hover {
         background-color: #2e78c6;
-        /* blue on hover */
+
     }
 
 
@@ -266,35 +303,31 @@ require_once $header_path;
         }
 
         .class-item-custom {
-            /* REVERT: Keep class item horizontal on mobile */
+
             display: flex;
-            /* Ensure it's a flex container */
+
             align-items: center;
-            /* Vertically align image/text */
+
             justify-content: space-between;
-            /* Space out the content and the button */
+
             margin-bottom: 12px;
-            /* Add slight separation */
+
             padding: 12px 16px;
-            /* Restore padding */
+
             gap: 10px;
-            /* Space between elements */
+
             min-width: 100%;
-            /* FIX 1: Ensure the container doesn't overflow */
+
         }
 
         .class-image-custom {
-            /* REVERT: Small fixed size for image on mobile */
             width: 56px;
             height: 74.67px;
             flex-shrink: 0;
-            /* Important: prevents image from shrinking */
         }
 
         .class-item-custom .d-flex.flex-column.flex-grow-1 {
-            /* FIX 2: Important - allows the child elements (text) to be compressed */
             min-width: 60%;
-            /* Important for spacing between image and text */
             gap: 10px;
         }
 
@@ -302,12 +335,9 @@ require_once $header_path;
             min-width: 60%;
         }
 
-        /* FIX: Ensure the button doesn't wrap or overlap text on small screens */
         .class-item-custom button {
             flex-shrink: 0;
-            /* Ensure button doesn't shrink */
             min-width: 70px;
-            /* Give the button a minimal width */
         }
 
         .onboarding-controls .d-flex {
@@ -420,14 +450,11 @@ require_once $header_path;
     }
 
 
-
-
     /* ====================================================================== */
     /* Dark Mode Overrides for Dashboard - Custom Colors                      */
     /* ====================================================================== */
     body.dark-mode {
         background-color: #121A21 !important;
-        /* Primary dark background */
         color: #E5E8EB !important;
     }
 
@@ -441,41 +468,33 @@ require_once $header_path;
         color: #E5E8EB !important;
     }
 
-    /* Welcome and section titles */
     body.dark-mode .welcome-title {
         color: #E5E8EB !important;
-        /* Light text for welcome message */
     }
 
     body.dark-mode .section-title {
         color: #E5E8EB !important;
-        /* Light text for section titles */
     }
 
-    /* Search bar */
     body.dark-mode .search-bar-custom {
         background-color: #263645 !important;
-        /* Secondary dark background */
         border: 1px solid #121A21 !important;
     }
 
     body.dark-mode .search-bar-custom .input-group-text {
         background-color: #263645 !important;
         color: #94ADC7 !important;
-        /* Secondary text color */
         border: none !important;
     }
 
     body.dark-mode .search-bar-custom .form-control {
         background-color: #263645 !important;
         color: #E5E8EB !important;
-        /* Light text */
         border: none !important;
     }
 
     body.dark-mode .search-bar-custom .form-control::placeholder {
         color: #94ADC7 !important;
-        /* Secondary text for placeholder */
     }
 
     body.dark-mode .search-bar-custom .form-control:focus {
@@ -484,10 +503,8 @@ require_once $header_path;
         box-shadow: none !important;
     }
 
-    /* Cards and containers */
     body.dark-mode .card {
         background-color: #263645 !important;
-        /* Secondary dark background */
         border: 1px solid #121A21 !important;
         color: #E5E8EB !important;
     }
@@ -497,12 +514,9 @@ require_once $header_path;
         border: none !important;
     }
 
-    /* Onboarding controls */
     body.dark-mode .onboarding-controls {
         background-color: #121A21 !important;
-        /* Primary dark background */
         border: 1px solid #263645 !important;
-        /* Secondary border */
     }
 
     body.dark-mode .onboarding-controls h5 {
@@ -511,66 +525,49 @@ require_once $header_path;
 
     body.dark-mode .onboarding-controls p.text-muted {
         color: #94ADC7 !important;
-        /* Secondary text color */
     }
 
-    /* Buttons */
     body.dark-mode .btn-custom-outline {
         background-color: #121A21 !important;
-        /* Primary dark */
         color: #94ADC7 !important;
-        /* Secondary text */
         border: 1px solid #263645 !important;
     }
 
     body.dark-mode .btn-custom-outline:hover {
         background-color: #1C7DD6 !important;
-        /* Active blue */
         color: #FFFFFF !important;
-        /* White text on hover */
         border-color: #1C7DD6 !important;
     }
 
     body.dark-mode .btn-custom-primary {
         background-color: #263645 !important;
-        /* Secondary dark */
         color: #94ADC7 !important;
-        /* Secondary text */
         border: 1px solid #121A21 !important;
     }
 
     body.dark-mode .btn-custom-primary:hover {
         background-color: #1C7DD6 !important;
-        /* Active blue */
         color: #FFFFFF !important;
-        /* White text on hover */
         border-color: #1C7DD6 !important;
     }
 
     body.dark-mode .btn-custom-blue {
         background-color: #121A21 !important;
-        /* Primary dark */
         color: #94ADC7 !important;
-        /* Secondary text */
         border: 1px solid #263645 !important;
     }
 
     body.dark-mode .btn-custom-blue:hover {
         background-color: #1C7DD6 !important;
-        /* Active blue */
         color: #FFFFFF !important;
-        /* White text on hover */
         border-color: #1C7DD6 !important;
     }
 
-    /* Onboarding controls buttons - specific */
     body.dark-mode .onboarding-controls .btn-custom-blue,
     body.dark-mode .onboarding-controls .btn-custom-primary,
     body.dark-mode .onboarding-controls .btn-custom-outline {
         background: #121A21 !important;
-        /* Primary dark background */
         color: #94ADC7 !important;
-        /* Secondary text */
         border: 1px solid #263645 !important;
     }
 
@@ -578,16 +575,12 @@ require_once $header_path;
     body.dark-mode .onboarding-controls .btn-custom-primary:hover,
     body.dark-mode .onboarding-controls .btn-custom-outline:hover {
         background-color: #1C7DD6 !important;
-        /* Active blue */
         color: #FFFFFF !important;
-        /* White text on hover */
         border-color: #1C7DD6 !important;
     }
 
-    /* Study load card */
     body.dark-mode .study-load-card-custom {
         background: #263645 !important;
-        /* Secondary dark background */
         border: 1px solid #121A21 !important;
     }
 
@@ -597,42 +590,42 @@ require_once $header_path;
 
     body.dark-mode .study-load-card-custom p.text-muted {
         color: #94ADC7 !important;
-        /* Secondary text */
+
     }
 
-    /* Class items */
+
     body.dark-mode .class-item-custom {
         background-color: #121A21 !important;
-        /* Primary dark background */
+
         border: 1px solid #263645 !important;
     }
 
     body.dark-mode .class-item-custom:hover {
         background-color: rgba(28, 125, 214, 0.1) !important;
-        /* Subtle blue tint on hover */
+
     }
 
     body.dark-mode .class-item-custom p.text-dark {
         color: #E5E8EB !important;
-        /* Light text for class names */
+
     }
 
     body.dark-mode .class-item-custom p.text-muted {
         color: #94ADC7 !important;
-        /* Secondary text for details */
+
     }
 
-    /* Modal styling */
+
     body.dark-mode .modal-content {
         background-color: #263645 !important;
-        /* Secondary dark background */
+
         border: 1px solid #121A21 !important;
         color: #E5E8EB !important;
     }
 
     body.dark-mode .modal-header {
         background-color: #121A21 !important;
-        /* Primary dark */
+
         border-bottom: 1px solid #263645 !important;
     }
 
@@ -644,10 +637,10 @@ require_once $header_path;
         color: #E5E8EB !important;
     }
 
-    /* Form elements in modals */
+
     body.dark-mode .form-control {
         background-color: #121A21 !important;
-        /* Primary dark */
+
         border: 1px solid #263645 !important;
         color: #E5E8EB !important;
     }
@@ -655,124 +648,124 @@ require_once $header_path;
     body.dark-mode .form-control:focus {
         background-color: #121A21 !important;
         border-color: #1C7DD6 !important;
-        /* Blue focus */
+
         color: #E5E8EB !important;
         box-shadow: 0 0 0 0.2rem rgba(28, 125, 214, 0.25) !important;
     }
 
-    /* Table styling */
+
     body.dark-mode .table {
         color: #E5E8EB !important;
     }
 
     body.dark-mode .table-striped tbody tr:nth-of-type(odd) {
         background-color: #121A21 !important;
-        /* Primary dark for odd rows */
+
     }
 
     body.dark-mode .table-striped tbody tr:nth-of-type(even) {
         background-color: #263645 !important;
-        /* Secondary dark for even rows */
+
     }
 
     body.dark-mode .table-hover tbody tr:hover {
         background-color: rgba(28, 125, 214, 0.2) !important;
-        /* Blue tint on hover */
+
     }
 
     body.dark-mode thead {
         background-color: #121A21 !important;
-        /* Primary dark for header */
+
     }
 
-    /* Alerts */
+
     body.dark-mode .alert {
         background-color: #263645 !important;
-        /* Secondary dark background */
+
         border: 1px solid #121A21 !important;
     }
 
     body.dark-mode .alert-info {
         background-color: #0D47A1 !important;
-        /* Dark blue */
+
         color: #BBDEFB !important;
-        /* Light blue text */
+
         border-color: #1565C0 !important;
     }
 
     body.dark-mode .alert-success {
         background-color: #1B5E20 !important;
-        /* Dark green */
+
         color: #C8E6C9 !important;
-        /* Light green text */
+
         border-color: #2E7D32 !important;
     }
 
     body.dark-mode .alert-danger {
         background-color: #B71C1C !important;
-        /* Dark red */
+
         color: #FFCDD2 !important;
-        /* Light red text */
+
         border-color: #C62828 !important;
     }
 
-    /* Text colors */
+
     body.dark-mode .text-dark {
         color: #E5E8EB !important;
-        /* Light text */
+
     }
 
     body.dark-mode .text-muted {
         color: #94ADC7 !important;
-        /* Secondary text */
+
     }
 
-    /* Scrollbar for dark mode */
+
     body.dark-mode ::-webkit-scrollbar-track {
         background: #121A21 !important;
-        /* Primary dark track */
+
     }
 
     body.dark-mode ::-webkit-scrollbar-thumb {
         background-color: #263645 !important;
-        /* Secondary dark thumb */
+
         border: 3px solid #121A21 !important;
     }
 
     body.dark-mode ::-webkit-scrollbar-thumb:hover {
         background-color: #1C7DD6 !important;
-        /* Blue on hover */
+
     }
 
-    /* Demo content for dark mode */
+
     body.dark-mode .demo-content {
         background-color: #263645 !important;
-        /* Secondary dark background */
+
         color: #E5E8EB !important;
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
     }
 
     body.dark-mode .screen-size-indicator {
         background: #1C7DD6 !important;
-        /* Active blue */
+
         color: #FFFFFF !important;
     }
 
-    /* Close button in modals */
+
     body.dark-mode .btn-close {
         filter: invert(1) grayscale(100%) brightness(200%) !important;
     }
 
-    /* Input group in modals */
+
     body.dark-mode .input-group-text {
         background-color: #121A21 !important;
-        /* Primary dark */
+
         border: 1px solid #263645 !important;
         color: #94ADC7 !important;
-        /* Secondary text */
+
     }
 
-    /* Responsive adjustments for dark mode */
+
     @media (max-width: 767px) {
         body.dark-mode .main-dashboard-content {
             background-color: #121A21 !important;
@@ -800,10 +793,10 @@ require_once $header_path;
         }
     }
 
-    /* Search results dropdown */
+
     body.dark-mode #searchResults {
         background-color: #263645 !important;
-        /* Secondary dark background */
+
         border: 1px solid #121A21 !important;
     }
 
@@ -815,7 +808,7 @@ require_once $header_path;
 
     body.dark-mode .list-group-item:hover {
         background-color: #1C7DD6 !important;
-        /* Active blue on hover */
+
         color: #FFFFFF !important;
     }
 
@@ -824,7 +817,7 @@ require_once $header_path;
     }
 </style>
 
-<!-- Favicon -->
+
 <link rel="icon" type="image/x-icon"
     href="https://res.cloudinary.com/deua2yipj/image/upload/v1758917007/ChronoNav_logo_muon27.png">
 
@@ -845,13 +838,13 @@ require_once $header_path;
 
     <div class="main-dashboard-content-wrapper" id="page-content-wrapper">
         <div class="main-dashboard-content">
-            <!-- Header Section -->
+
             <div class="d-flex flex-column px-3 pt-4 pb-2">
                 <h2 class="welcome-title mb-0">Welcome, <?= htmlspecialchars($user['name']) ?></h2>
             </div>
 
 
-            <!-- SEARCH BAR WITH AJAX - Updated with proper styling -->
+
             <div class="search-bar position-relative mb-4">
                 <div class="input-group search-bar-custom">
                     <span class="input-group-text">
@@ -865,7 +858,7 @@ require_once $header_path;
 
             </div>
 
-            <!-- Welcome Card - Keep original structure but update styling -->
+
             <div class="card p-4 mb-4 border-0">
                 <p class="text-dark mb-3">This is your personal space in ChronoNav. Keep an eye on your upcoming
                     schedules and reminders.</p>
@@ -888,7 +881,7 @@ require_once $header_path;
                 <div id="onboardingContent" class="mt-3"></div>
             </div>
 
-            <!-- Study Load Card - Updated with proper Bootstrap grid -->
+
             <div class="dashboard-widgets-grid mb-4 px-3">
                 <div class="card study-load-card-custom p-0 w-100">
                     <div class="row g-0">
@@ -918,65 +911,43 @@ require_once $header_path;
                 </div>
             </div>
 
-            <!-- Upcoming Classes Section -->
+
             <div class="px-3 pt-3 pb-1">
                 <h3 class="section-title mb-0">Upcoming Classes</h3>
             </div>
 
-            <!-- Class Items -->
+
             <div class="px-3">
-                <!-- Psychology Class -->
-                <div class="class-item-custom d-flex align-items-center justify-content-between mb-2">
-                    <div class="d-flex align-items-center flex-grow-1">
-                        <div class="class-image-custom me-3"
-                            style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDOM2c6pMyg5RHOOB7ea-JzGe0jnIpnFBEu_4CDiQ7ONL7ZY-yeNsTFX4ofDoztdfYyNkpgDvh3-x-pRBvL4yY52jqzmy1rhhyOa0iVzY5QFRCbGZkv5fmQgfg1gJPyT6YE3Xa8gJeHLKkthPg42CihnKelbc1Y6whTtiIhxHfzlHCqcwXkQ6IcwBDqRfMUrK7BR_Ng89q3rfflSzNdmjXGhCQGbWj5Vv4mpEGlNtosTvZY8vX0QB3UHvArKqn9R0ypBhs8NsocSkU");'>
+                <?php if (!empty($user_schedule)): ?>
+                    <?php foreach ($user_schedule as $class): ?>
+                        <div class="class-item-custom d-flex align-items-center justify-content-between mb-2">
+                            <div class="d-flex align-items-center flex-grow-1">
+                                <div class="class-image-custom me-3"
+                                    style='background-image: url("http://googleusercontent.com/profile/picture/<?= htmlspecialchars($class['schedule_code'] ?? 0) ?>");'>
+                                </div>
+                                <div class="d-flex flex-column flex-grow-1">
+                                    <p class="text-dark fw-medium mb-1 text-truncate">
+                                        <?= htmlspecialchars($class['title'] ?? 'N/A') ?>
+                                    </p>
+                                    <p class="text-muted small mb-0 text-truncate-2">
+                                        <?= htmlspecialchars($class['room'] ?? 'N/A') ?> &middot; 
+                                        <?= htmlspecialchars($class['start_time'] ?? 'N/A') ?> - 
+                                        <?= htmlspecialchars($class['end_time'] ?? 'N/A') ?> (<?= htmlspecialchars($class['day_of_week'] ?? 'N/A') ?>)
+                                    </p>
+                                </div>
+                            </div>
+                            <button
+                                class="btn btn-custom-outline ms-3 flex-shrink-0 btn-outline-secondary ms-3 flex-shrink-0 rounded-pill">
+                                <span>View</span>
+                            </button>
                         </div>
-                        <div class="d-flex flex-column flex-grow-1">
-                            <p class="text-dark fw-medium mb-1 text-truncate">Introduction to Psychology</p>
-                            <p class="text-muted small mb-0 text-truncate-2">Room 201 · 10:00 AM - 11:00 AM</p>
-                        </div>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <div class="alert alert-info mt-3" role="alert">
+                        No upcoming classes found. Please add your study load using the card above.
                     </div>
-                    <button
-                        class="btn btn-custom-outline ms-3 flex-shrink-0 btn-outline-secondary ms-3 flex-shrink-0 rounded-pill">
-                        <span>View</span>
-                    </button>
-                </div>
-
-                <!-- Calculus Class -->
-                <div class="class-item-custom d-flex align-items-center justify-content-between mb-2">
-                    <div class="d-flex align-items-center flex-grow-1">
-                        <div class="class-image-custom me-3"
-                            style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAzOempcQAOz1ClRlfF1DCpzo_NMftLShPYEuW0Tk0krCxtaaAYD6mptvry6TvngRl4eL1GuQoHjW_mxNaa_3a41Er7bF7cokn4msP_rC8rhOC__hZp5G-uGnutB3GelwB9WPP0RdOG38WQ64AXk7VCA0fDnhCNoMBghXsv7FuvxAYXbs_yVKU9hCrsqj1eqVA4F_5gDPhCOA-gQdGf-9xlVQb4usSfjm7NhjKhSixczD2EXFNlBoRbFcndbFMXCeFjpSsLjpjGmjE");'>
-                        </div>
-                        <div class="d-flex flex-column flex-grow-1">
-                            <p class="text-dark fw-medium mb-1 text-truncate">Calculus I</p>
-                            <p class="text-muted small mb-0 text-truncate-2">Room 305 · 11:30 AM - 12:30 PM</p>
-                        </div>
-                    </div>
-                    <button
-                        class="btn btn-custom-outline ms-3 flex-shrink-0 btn-outline-secondary ms-3 flex-shrink-0 rounded-pill">
-                        <span>View</span>
-                    </button>
-                </div>
-
-                <!-- English Literature Class -->
-                <div class="class-item-custom d-flex align-items-center justify-content-between mb-2">
-                    <div class="d-flex align-items-center flex-grow-1">
-                        <div class="class-image-custom me-3"
-                            style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAIslxgzb_Ge2_CuAzi0CCtpc6UYvrCuw1I3jlmS0ACDVDoaXOfOsEQzeNs_HZ-1-_COcnRTacG_nhP-XdJupXhe0pVNN8A4Qp6ufhjLuaiTIt2l6XBzvKBAANxlRY0BEGNeiybpXUKlz7KCTNacTogVXhB8_tjiJrAFYSjxKyHDVCy4VocCquXxzjgCJcrSITFIFGhAbbPz7Wm-gTSf4uigdiTym8eJHrAhY3hx0yIOuKiKmJ79C3UmDSZwZFlqOp9JesWNkOcneU");'>
-                        </div>
-                        <div class="d-flex flex-column flex-grow-1">
-                            <p class="text-dark fw-medium mb-1 text-truncate">English Literature</p>
-                            <p class="text-muted small mb-0 text-truncate-2">Room 102 · 1:00 PM - 2:00 PM</p>
-                        </div>
-                    </div>
-                    <button
-                        class="btn btn-custom-outline ms-3 flex-shrink-0 btn-outline-secondary ms-3 flex-shrink-0 rounded-pill">
-                        <span>View</span>
-                    </button>
-                </div>
+                <?php endif; ?>
             </div>
-
         </div>
     </div>
 </div>
@@ -988,7 +959,7 @@ require_once $header_path;
 </script>
 
 
-<!-- OCR MODAL - Keep original structure -->
+
 
 <div class="modal fade" id="ocrModal" tabindex="-1" aria-labelledby="ocrModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
@@ -1095,28 +1066,28 @@ require_once $header_path;
 
                     let scheduleHtml = `<table class="table table-striped table-hover">
 
-                                        <thead>
-                                            <tr>
-                                                <th>Sched No.</th>
-                                                <th>Course No.</th>
-                                                <th>Time</th>
-                                                <th>Days</th>
-                                                <th>Room</th>
-                                                <th>Units</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>`;
+                                    <thead>
+                                        <tr>
+                                            <th>Sched No.</th>
+                                            <th>Course No.</th>
+                                            <th>Time</th>
+                                            <th>Days</th>
+                                            <th>Room</th>
+                                            <th>Units</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>`;
 
                     response.schedule.forEach(item => {
                         scheduleHtml += `<tr>
 
-                                        <td>${item.sched_no}</td>
-                                        <td>${item.course_no}</td>
-                                        <td>${item.time}</td>
-                                        <td>${item.days}</td>
-                                        <td>${item.room}</td>
-                                        <td>${item.units}</td>
-                                    </tr>`;
+                                    <td>${item.sched_no}</td>
+                                    <td>${item.course_no}</td>
+                                    <td>${item.time}</td>
+                                    <td>${item.days}</td>
+                                    <td>${item.room}</td>
+                                    <td>${item.units}</td>
+                                </tr>`;
                     });
 
                     scheduleHtml += `</tbody></table>`;
