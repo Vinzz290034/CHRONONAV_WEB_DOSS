@@ -634,6 +634,430 @@ require_once '../../templates/admin/sidenav_admin.php';
             }
         }
 
+        /* ====================================================================== */
+/* Dark Mode Overrides for User Management Page - Corrected Colors        */
+/* ====================================================================== */
+body.dark-mode {
+    background-color: #121A21 !important;
+    color: #E5E8EB !important;
+}
+
+body.dark-mode .main-content-wrapper {
+    background-color: #121A21 !important;
+}
+
+body.dark-mode .container-fluid {
+    background-color: #121A21 !important;
+}
+
+/* Headings */
+body.dark-mode h2,
+body.dark-mode h3 {
+    color: #E5E8EB !important;
+}
+
+/* User table container */
+body.dark-mode .user-table-container {
+    background-color: #263645 !important;
+    border: 1px solid #263645 !important;
+    color: #E5E8EB !important;
+}
+
+/* Table styling */
+body.dark-mode .table {
+    background-color: #263645 !important;
+    color: #E5E8EB !important;
+}
+
+body.dark-mode .table th {
+    background-color: #121A21 !important;
+    color: #E5E8EB !important;
+    border-bottom: 1px solid #263645 !important;
+}
+
+body.dark-mode .table td {
+    color: #E5E8EB !important;
+    border-bottom: 1px solid #121A21 !important;
+    background: #263645 !important;
+}
+
+body.dark-mode .table-hover tbody tr:hover {
+    background-color: rgba(28, 125, 214, 0.1) !important;
+}
+
+/* Badges */
+body.dark-mode .badge-active {
+    background-color: #1B5E20 !important;
+    color: #C8E6C9 !important;
+    border: 1px solid #2E7D32 !important;
+}
+
+body.dark-mode .badge-disabled {
+    background-color: #B71C1C !important;
+    color: #FFCDD2 !important;
+    border: 1px solid #C62828 !important;
+}
+
+/* Buttons - Keep original colors for warning, danger, success */
+body.dark-mode .btn-warning {
+    background-color: #ffc107 !important;
+    color: #000000 !important;
+}
+
+body.dark-mode .btn-warning:hover {
+    background-color: #ffca2c !important;
+    color: #000000 !important;
+}
+
+body.dark-mode .btn-danger {
+    background-color: #dc3545 !important;
+    color: #ffffff !important;
+}
+
+body.dark-mode .btn-danger:hover {
+    background-color: #bb2d3b !important;
+    color: #ffffff !important;
+}
+
+body.dark-mode .btn-success {
+    background-color: #28a745 !important;
+    color: #ffffff !important;
+}
+
+body.dark-mode .btn-success:hover {
+    background-color: #218838 !important;
+    color: #ffffff !important;
+}
+
+/* Dark button - use dark theme colors */
+body.dark-mode .btn-dark {
+    background-color: #121A21 !important;
+    color: #94ADC7 !important;
+    border: 1px solid #263645 !important;
+}
+
+body.dark-mode .btn-dark:hover {
+    background-color: #1C7DD6 !important;
+    color: #FFFFFF !important;
+    border-color: #1C7DD6 !important;
+}
+
+body.dark-mode .btn-primary {
+    background-color: #1C7DD6 !important;
+    border-color: #1C7DD6 !important;
+    color: #FFFFFF !important;
+}
+
+body.dark-mode .btn-primary:hover {
+    background-color: #1a6fc0 !important;
+    border-color: #1a6fc0 !important;
+}
+
+/* Alerts - Use dark theme colors */
+body.dark-mode .alert-success {
+    background-color: #1B5E20 !important;
+    color: #C8E6C9 !important;
+    border: 1px solid #2E7D32 !important;
+}
+
+body.dark-mode .alert-danger {
+    background-color: #B71C1C !important;
+    color: #FFCDD2 !important;
+    border: 1px solid #C62828 !important;
+}
+
+body.dark-mode .alert-warning {
+    background-color: #E65100 !important;
+    color: #FFECB3 !important;
+    border: 1px solid #F57C00 !important;
+}
+
+body.dark-mode .alert-info {
+    background-color: #0D47A1 !important;
+    color: #BBDEFB !important;
+    border: 1px solid #1565C0 !important;
+}
+
+/* Modal styling */
+body.dark-mode .modal-content {
+    background-color: #263645 !important;
+    border: 1px solid #121A21 !important;
+    color: #E5E8EB !important;
+}
+
+body.dark-mode .modal-header {
+    background-color: #121A21 !important;
+    border-bottom: 1px solid #263645 !important;
+}
+
+body.dark-mode .modal-title {
+    color: #E5E8EB !important;
+}
+
+body.dark-mode .modal-body {
+    color: #E5E8EB !important;
+}
+
+body.dark-mode .modal-footer {
+    background-color: #121A21 !important;
+    border-top: 1px solid #263645 !important;
+}
+
+/* Form elements */
+body.dark-mode .form-label {
+    color: #E5E8EB !important;
+}
+
+body.dark-mode .form-control,
+body.dark-mode .form-select {
+    background-color: #121A21 !important;
+    border: 1px solid #263645 !important;
+    color: #E5E8EB !important;
+}
+
+body.dark-mode .form-control:focus,
+body.dark-mode .form-select:focus {
+    background-color: #121A21 !important;
+    border-color: #1C7DD6 !important;
+    color: #E5E8EB !important;
+    box-shadow: 0 0 0 0.2rem rgba(28, 125, 214, 0.25) !important;
+}
+
+body.dark-mode .form-control[readonly] {
+    background-color: #121A21 !important;
+    color: #94ADC7 !important;
+}
+
+/* Scrollbar for dark mode */
+body.dark-mode ::-webkit-scrollbar-track {
+    background: #121A21 !important;
+}
+
+body.dark-mode ::-webkit-scrollbar-thumb {
+    background-color: #263645 !important;
+    border: 3px solid #121A21 !important;
+}
+
+body.dark-mode ::-webkit-scrollbar-thumb:hover {
+    background-color: #1C7DD6 !important;
+}
+
+/* Close button */
+body.dark-mode .btn-close {
+    filter: invert(1) grayscale(100%) brightness(200%) !important;
+}
+
+/* Disabled buttons */
+body.dark-mode .btn:disabled {
+    opacity: 0.6 !important;
+    background-color: #263645 !important;
+    color: #94ADC7 !important;
+    border: 1px solid #121A21 !important;
+}
+
+/* Table borders in dark mode */
+body.dark-mode .table-responsive {
+    border-color: #121A21 !important;
+}
+
+/* Text colors */
+body.dark-mode .text-muted {
+    color: #94ADC7 !important;
+}
+
+/* Mobile-specific dark mode adjustments */
+@media (max-width: 767px) {
+    body.dark-mode .table tbody tr {
+        background-color: #263645 !important;
+        border: 1px solid #121A21 !important;
+    }
+    
+    body.dark-mode .table tbody td {
+        background-color: #263645 !important;
+    }
+    
+    body.dark-mode .table tbody td::before {
+        color: #94ADC7 !important;
+    }
+    
+    body.dark-mode .table-actions {
+        border-top: 1px solid #121A21 !important;
+    }
+    
+    body.dark-mode .user-table-container {
+        background-color: #263645 !important;
+    }
+}
+
+/* Tablet dark mode adjustments */
+@media (min-width: 768px) and (max-width: 1023px) {
+    body.dark-mode .main-content-wrapper {
+        background-color: #121A21 !important;
+    }
+}
+
+/* Desktop dark mode adjustments */
+@media (min-width: 1024px) {
+    body.dark-mode .main-content-wrapper {
+        background-color: #121A21 !important;
+    }
+}
+
+/* Sidebar toggle button in dark mode */
+body.dark-mode .sidebar-toggle {
+    background: #263645 !important;
+    color: #94ADC7 !important;
+    border: 1px solid #121A21 !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3) !important;
+}
+
+body.dark-mode .sidebar-toggle:hover {
+    background-color: #1C7DD6 !important;
+    color: #FFFFFF !important;
+}
+
+/* Form text helper text in dark mode */
+body.dark-mode .form-text {
+    color: #94ADC7 !important;
+}
+
+/* Striped table rows for dark mode */
+body.dark-mode .table-striped tbody tr:nth-of-type(odd) {
+    background-color: #121A21 !important;
+}
+
+body.dark-mode .table-striped tbody tr:nth-of-type(even) {
+    background-color: #263645 !important;
+}
+
+/* Focus states */
+body.dark-mode .form-control:focus,
+body.dark-mode .form-select:focus,
+body.dark-mode .btn:focus {
+    box-shadow: 0 0 0 0.2rem rgba(28, 125, 214, 0.25) !important;
+}
+
+/* Links in dark mode */
+body.dark-mode a {
+    color: #1C7DD6 !important;
+}
+
+body.dark-mode a:hover {
+    color: #94ADC7 !important;
+}
+
+/* Border utilities for dark mode */
+body.dark-mode .border {
+    border-color: #263645 !important;
+}
+
+body.dark-mode .border-1 {
+    border-color: #263645 !important;
+}
+
+/* Rounded corners in dark mode */
+body.dark-mode .rounded-3 {
+    border-color: #263645 !important;
+}
+
+/* Container background for dark mode */
+body.dark-mode .container-fluid.py-4 {
+    background-color: #121A21 !important;
+}
+
+/* Disabled form elements in dark mode */
+body.dark-mode .form-control:disabled,
+body.dark-mode .form-select:disabled {
+    background-color: #263645 !important;
+    color: #94ADC7 !important;
+    border-color: #121A21 !important;
+}
+
+/* Validation states in dark mode */
+body.dark-mode .was-validated .form-control:valid,
+body.dark-mode .form-control.is-valid {
+    border-color: #28a745 !important;
+    background-color: rgba(40, 167, 69, 0.1) !important;
+}
+
+body.dark-mode .was-validated .form-control:invalid,
+body.dark-mode .form-control.is-invalid {
+    border-color: #dc3545 !important;
+    background-color: rgba(220, 53, 69, 0.1) !important;
+}
+
+/* Card background for any card-like elements */
+body.dark-mode .card {
+    background-color: #263645 !important;
+    border: 1px solid #121A21 !important;
+    color: #E5E8EB !important;
+}
+
+/* Dropdown menu in dark mode */
+body.dark-mode .dropdown-menu {
+    background-color: #263645 !important;
+    border: 1px solid #121A21 !important;
+    color: #E5E8EB !important;
+}
+
+body.dark-mode .dropdown-item {
+    color: #E5E8EB !important;
+}
+
+body.dark-mode .dropdown-item:hover {
+    background-color: rgba(28, 125, 214, 0.2) !important;
+    color: #FFFFFF !important;
+}
+
+/* Popover in dark mode */
+body.dark-mode .popover {
+    background-color: #263645 !important;
+    border: 1px solid #121A21 !important;
+    color: #E5E8EB !important;
+}
+
+body.dark-mode .popover-header {
+    background-color: #121A21 !important;
+    border-bottom: 1px solid #263645 !important;
+    color: #E5E8EB !important;
+}
+
+body.dark-mode .popover-body {
+    color: #E5E8EB !important;
+}
+
+/* Tooltip in dark mode */
+body.dark-mode .tooltip-inner {
+    background-color: #263645 !important;
+    color: #E5E8EB !important;
+}
+
+body.dark-mode .tooltip-arrow::before {
+    border-top-color: #263645 !important;
+}
+
+/* Progress bar in dark mode */
+body.dark-mode .progress {
+    background-color: #121A21 !important;
+}
+
+body.dark-mode .progress-bar {
+    background-color: #1C7DD6 !important;
+}
+
+/* List group in dark mode */
+body.dark-mode .list-group-item {
+    background-color: #263645 !important;
+    border-color: #121A21 !important;
+    color: #E5E8EB !important;
+}
+
+body.dark-mode .list-group-item.active {
+    background-color: #1C7DD6 !important;
+    border-color: #1C7DD6 !important;
+    color: #FFFFFF !important;
+}
+
         /* Responsive sidebar toggle button */
         .sidebar-toggle {
             display: none;
@@ -836,7 +1260,8 @@ require_once '../../templates/admin/sidenav_admin.php';
     </div>
 
     <!-- Bootstrap JS Bundle with Popper -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- JQuery Library -->
+    <script src="../../assets/js/jquery.min.js"></script>
 
     <script src="../../assets/js/script.js"></script>
     <script>

@@ -477,50 +477,232 @@ if (!isset($current_page)) {
     }
 
     /* ====================================================================== */
-    /* Dark Mode Overrides                          */
+    /* Dark Mode Overrides for Admin Sidenav - Updated Color Scheme           */
     /* ====================================================================== */
     body.dark-mode .app-sidebar {
-        background-color: #1e1e1e;
-        border-right: 1px solid #333;
-        color: #ffffff;
+        background-color: #121A21 !important;
+        border-right: 1px solid #121A21 !important;
+        color: #E5E8EB !important;
     }
 
     body.dark-mode .sidebar-header {
-        border-bottom: 1px solid #444;
+        border-bottom: 1px solid #263645 !important;
     }
 
     body.dark-mode .logo-container {
-        color: #ffffff;
+        color: #E5E8EB !important;
+    }
+
+    body.dark-mode .app-logo {
+        color: #E5E8EB !important;
+        filter: brightness(1.1) !important;
     }
 
     body.dark-mode .app-sidebar-menu .nav-link {
-        color: #e0e0e0;
+        color: #94ADC7 !important;
     }
 
     body.dark-mode .app-sidebar-menu .nav-link svg {
-        color: #b0b0b0;
+        color: #94ADC7 !important;
     }
 
     body.dark-mode .app-sidebar-menu .nav-link:hover {
-        background-color: #2c2c2c;
-        color: #ffffff;
+        background-color: #263645 !important;
+        color: #E5E8EB !important;
     }
 
     body.dark-mode .app-sidebar-menu .nav-link:hover svg {
-        color: #ffffff;
+        color: #E5E8EB !important;
     }
 
     body.dark-mode .app-sidebar-menu .nav-link.active {
-        background-color: #2c2c2c;
-        color: #ffffff;
+        background-color: #1C7DD6 !important;
+        color: #FFFFFF !important;
+        font-weight: 600 !important;
     }
 
     body.dark-mode .app-sidebar-menu .nav-link.active svg {
-        color: #ffffff;
+        color: #FFFFFF !important;
+    }
+
+    body.dark-mode .nav-link-text {
+        color: inherit !important;
     }
 
     body.dark-mode .app-sidebar .nav-item.mt-auto {
-        border-top: 1px solid #444;
+        border-top: 1px solid #263645 !important;
+    }
+
+    body.dark-mode .app-sidebar .nav-item.mt-auto .nav-link {
+        color: #94ADC7 !important;
+    }
+
+    body.dark-mode .app-sidebar .nav-item.mt-auto .nav-link svg {
+        color: #94ADC7 !important;
+    }
+
+    body.dark-mode .app-sidebar .nav-item.mt-auto .nav-link:hover {
+        background-color: #1C7DD6 !important;
+        color: #FFFFFF !important;
+    }
+
+    body.dark-mode .app-sidebar .nav-item.mt-auto .nav-link:hover svg {
+        color: #FFFFFF !important;
+    }
+
+    body.dark-mode .app-version .text-muted {
+        color: #94ADC7 !important;
+    }
+
+    /* Toggle button for dark mode */
+    body.dark-mode .sidebar-toggle {
+        background: #263645 !important;
+        color: #E5E8EB !important;
+        border: 1px solid #121A21 !important;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3) !important;
+    }
+
+    body.dark-mode .sidebar-toggle:hover {
+        background-color: #1C7DD6 !important;
+        color: #FFFFFF !important;
+    }
+
+    body.dark-mode .sidebar-toggle svg {
+        color: #94ADC7 !important;
+    }
+
+    body.dark-mode .sidebar-toggle:hover svg {
+        color: #FFFFFF !important;
+    }
+
+    body.dark-mode .sidebar-toggle.rotated svg {
+        color: #94ADC7 !important;
+    }
+
+    /* Scrollbar for dark mode sidenav */
+    body.dark-mode .app-sidebar::-webkit-scrollbar-track {
+        background: #121A21 !important;
+    }
+
+    body.dark-mode .app-sidebar::-webkit-scrollbar-thumb {
+        background-color: #263645 !important;
+        border-radius: 20px !important;
+    }
+
+    body.dark-mode .app-sidebar::-webkit-scrollbar-thumb:hover {
+        background-color: #1C7DD6 !important;
+    }
+
+    /* Firefox support for dark mode */
+    body.dark-mode .app-sidebar {
+        scrollbar-color: #263645 #121A21 !important;
+    }
+
+    /* Main content adjustments for dark mode */
+    body.dark-mode .main-content-wrapper {
+        background-color: #121A21 !important;
+        color: #E5E8EB !important;
+    }
+
+    /* Media query adjustments for dark mode */
+    @media (max-width: 1023px) {
+        body.dark-mode .app-sidebar {
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.4) !important;
+            border-right: 1px solid #121A21 !important;
+        }
+
+        body.dark-mode .app-sidebar.active {
+            background-color: #121A21 !important;
+        }
+
+        body.dark-mode .sidebar-toggle {
+            background: #263645 !important;
+            border: 1px solid #121A21 !important;
+        }
+    }
+
+    /* Demo content styles for dark mode */
+    body.dark-mode .demo-content {
+        background: #263645 !important;
+        color: #E5E8EB !important;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3) !important;
+    }
+
+    body.dark-mode .screen-size-indicator {
+        background: #1C7DD6 !important;
+        color: #FFFFFF !important;
+    }
+
+    /* Active state enhancements for dark mode */
+    body.dark-mode .app-sidebar-menu .nav-link.active::before {
+        background-color: #1C7DD6 !important;
+    }
+
+    /* Hover effects enhancement for dark mode */
+    body.dark-mode .app-sidebar-menu .nav-link:hover {
+        box-shadow: 0 2px 8px rgba(28, 125, 214, 0.2) !important;
+    }
+
+    /* Version text styling for dark mode */
+    body.dark-mode .app-version {
+        border-top: 1px solid #263645 !important;
+    }
+
+    /* Desktop specific dark mode adjustments */
+    @media (min-width: 1024px) {
+        body.dark-mode .app-sidebar {
+            background-color: #121A21 !important;
+            border-right: 1px solid #121A21 !important;
+        }
+
+        body.dark-mode .main-content-wrapper {
+            background-color: #121A21 !important;
+        }
+    }
+
+    /* Focus states for accessibility in dark mode */
+    body.dark-mode .app-sidebar-menu .nav-link:focus {
+        outline: 2px solid #1C7DD6 !important;
+        outline-offset: 2px !important;
+    }
+
+    /* Transition effects for smooth dark mode changes */
+    body.dark-mode .app-sidebar,
+    body.dark-mode .app-sidebar-menu .nav-link,
+    body.dark-mode .sidebar-toggle {
+        transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease !important;
+    }
+
+    /* Override the existing dark mode styles to use the new color scheme */
+    body.dark-mode .app-sidebar {
+        background-color: #121A21 !important;
+        border-right: 1px solid #121A21 !important;
+    }
+
+    body.dark-mode .sidebar-header {
+        border-bottom: 1px solid #263645 !important;
+    }
+
+    body.dark-mode .app-sidebar-menu .nav-link {
+        color: #94ADC7 !important;
+    }
+
+    body.dark-mode .app-sidebar-menu .nav-link svg {
+        color: #94ADC7 !important;
+    }
+
+    body.dark-mode .app-sidebar-menu .nav-link:hover {
+        background-color: #263645 !important;
+        color: #E5E8EB !important;
+    }
+
+    body.dark-mode .app-sidebar-menu .nav-link.active {
+        background-color: #1C7DD6 !important;
+        color: #FFFFFF !important;
+    }
+
+    body.dark-mode .app-sidebar .nav-item.mt-auto {
+        border-top: 1px solid #263645 !important;
     }
 
     /* Demo content styles */
@@ -559,7 +741,7 @@ if (!isset($current_page)) {
     </svg>
 </button>
 
-<div class="app-sidebar" id="sidebar">
+<div class="app-sidebar overflow-y-hidden" id="sidebar">
     <div class="app-sidebar-menu">
         <ul class="nav flex-column">
             <li class="nav-item">

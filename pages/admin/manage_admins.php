@@ -484,6 +484,380 @@ require_once '../../templates/admin/sidenav_admin.php';
         cursor: pointer;
         z-index: 10;
     }
+
+
+
+
+    /* ====================================================================== */
+    /* Dark Mode Overrides for Admin Management Page                          */
+    /* ====================================================================== */
+    body.dark-mode {
+        background-color: #121A21 !important;
+        color: #E5E8EB !important;
+    }
+
+    body.dark-mode .main-content-wrapper {
+        background-color: #121A21 !important;
+        color: #E5E8EB !important;
+    }
+
+    /* Header styling */
+    body.dark-mode h2 {
+        color: #E5E8EB !important;
+    }
+
+    body.dark-mode h2 i {
+        color: #1C7DD6 !important;
+    }
+
+    body.dark-mode h5 {
+        color: #E5E8EB !important;
+    }
+
+    /* Card styling */
+    body.dark-mode .card {
+        background-color: #263645 !important;
+        border: 1px solid #121A21 !important;
+        color: #E5E8EB !important;
+    }
+
+    body.dark-mode .card.shadow-sm {
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15) !important;
+    }
+
+    body.dark-mode .card-header {
+        background-color: #1C7DD6 !important;
+        color: #FFFFFF !important;
+        border-bottom: 1px solid #121A21 !important;
+    }
+
+    body.dark-mode .card-header.bg-info {
+        background-color: #17a2b8 !important;
+    }
+
+    body.dark-mode .card-header.bg-primary {
+        background-color: #1C7DD6 !important;
+    }
+
+    /* Alert styling */
+    body.dark-mode .alert {
+        background-color: #1a2635 !important;
+        border: 1px solid #263645 !important;
+    }
+
+    body.dark-mode .alert-info {
+        background-color: rgba(28, 125, 214, 0.15) !important;
+        color: #94ADC7 !important;
+        border-color: #1C7DD6 !important;
+    }
+
+    body.dark-mode .alert-success {
+        background-color: rgba(40, 167, 69, 0.15) !important;
+        color: #94ADC7 !important;
+        border-color: #28a745 !important;
+    }
+
+    body.dark-mode .alert-warning {
+        background-color: rgba(255, 193, 7, 0.15) !important;
+        color: #94ADC7 !important;
+        border-color: #ffc107 !important;
+    }
+
+    body.dark-mode .alert-danger {
+        background-color: rgba(220, 53, 69, 0.15) !important;
+        color: #94ADC7 !important;
+        border-color: #dc3545 !important;
+    }
+
+    /* Form styling */
+    body.dark-mode .form-label {
+        color: #E5E8EB !important;
+    }
+
+    body.dark-mode .form-label.fw-bold {
+        color: #E5E8EB !important;
+    }
+
+    body.dark-mode .form-control {
+        background-color: #121A21 !important;
+        border: 1px solid #263645 !important;
+        color: #E5E8EB !important;
+    }
+
+    body.dark-mode .form-control:focus {
+        background-color: #121A21 !important;
+        border-color: #1C7DD6 !important;
+        box-shadow: 0 0 0 3px rgba(28, 125, 214, 0.25) !important;
+        color: #E5E8EB !important;
+    }
+
+    body.dark-mode .form-control::placeholder {
+        color: #94ADC7 !important;
+    }
+
+    body.dark-mode small.text-muted {
+        color: #94ADC7 !important;
+    }
+
+    /* Button styling */
+    body.dark-mode .btn-primary {
+        background-color: #1C7DD6 !important;
+        color: #FFFFFF !important;
+        border: 1px solid #1C7DD6 !important;
+    }
+
+    body.dark-mode .btn-primary:hover {
+        background-color: #2E78C6 !important;
+        border-color: #2E78C6 !important;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(28, 125, 214, 0.3) !important;
+    }
+
+    /* Table styling */
+    body.dark-mode .table-responsive {
+        border: 1px solid #121A21 !important;
+    }
+
+    body.dark-mode .table {
+        background-color: #263645 !important;
+        color: #E5E8EB !important;
+    }
+
+    body.dark-mode .table-light {
+        background-color: #121A21 !important;
+    }
+
+    body.dark-mode .table-light th {
+        background-color: #121A21 !important;
+        color: #E5E8EB !important;
+        border-bottom: 2px solid #263645 !important;
+    }
+
+    body.dark-mode .table-light th i {
+        color: #1C7DD6 !important;
+    }
+
+    body.dark-mode .table td {
+        color: #94ADC7 !important;
+        border-bottom: 1px solid #121A21 !important;
+        background-color: #263645 !important;
+    }
+
+    body.dark-mode .table-hover tbody tr:hover {
+        background-color: #1a2635 !important;
+    }
+
+    body.dark-mode .table-hover tbody tr:hover td {
+        background-color: #1a2635 !important;
+    }
+
+    /* Text colors */
+    body.dark-mode .text-white {
+        color: #E5E8EB !important;
+    }
+
+    /* Scrollbar styling for dark mode */
+    body.dark-mode ::-webkit-scrollbar-track {
+        background: #121A21 !important;
+    }
+
+    body.dark-mode ::-webkit-scrollbar-thumb {
+        background-color: #263645 !important;
+        border: 3px solid #121A21 !important;
+    }
+
+    body.dark-mode ::-webkit-scrollbar-thumb:hover {
+        background-color: #1C7DD6 !important;
+    }
+
+    /* Password toggle button */
+    body.dark-mode .password-toggle {
+        color: #94ADC7 !important;
+        background: none !important;
+    }
+
+    body.dark-mode .password-toggle:hover {
+        color: #E5E8EB !important;
+    }
+
+    /* Input group styling */
+    body.dark-mode .input-group .form-control {
+        background-color: #121A21 !important;
+        color: #E5E8EB !important;
+    }
+
+    /* Close button for alerts */
+    body.dark-mode .btn-close {
+        filter: invert(1) grayscale(100%) brightness(200%) !important;
+    }
+
+    /* Container background */
+    body.dark-mode .container-fluid.py-4 {
+        background-color: transparent !important;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 767px) {
+        body.dark-mode .main-content-wrapper {
+            background-color: #121A21 !important;
+        }
+
+        body.dark-mode .card-body {
+            background-color: #263645 !important;
+        }
+    }
+
+    @media (min-width: 768px) and (max-width: 1023px) {
+        body.dark-mode .main-content-wrapper {
+            background-color: #121A21 !important;
+        }
+    }
+
+    @media (min-width: 1024px) {
+        body.dark-mode .main-content-wrapper {
+            background-color: #121A21 !important;
+        }
+    }
+
+    /* Text selection */
+    body.dark-mode ::selection {
+        background-color: #1C7DD6 !important;
+        color: #FFFFFF !important;
+    }
+
+    body.dark-mode ::-moz-selection {
+        background-color: #1C7DD6 !important;
+        color: #FFFFFF !important;
+    }
+
+    /* Link colors */
+    body.dark-mode a {
+        color: #1C7DD6 !important;
+    }
+
+    body.dark-mode a:hover {
+        color: #2E78C6 !important;
+    }
+
+    /* Table cell specific styling */
+    body.dark-mode .table td:first-child {
+        color: #E5E8EB !important;
+        font-weight: 500;
+    }
+
+    /* Empty state alert */
+    body.dark-mode .alert-warning[role="alert"] {
+        background-color: rgba(255, 193, 7, 0.1) !important;
+        color: #94ADC7 !important;
+        border: 1px solid rgba(255, 193, 7, 0.3) !important;
+    }
+
+    /* Icon colors */
+    body.dark-mode .fas,
+    body.dark-mode .fa-eye,
+    body.dark-mode .fa-eye-slash {
+        color: inherit !important;
+    }
+
+    /* Border colors */
+    body.dark-mode .border {
+        border-color: #263645 !important;
+    }
+
+    /* Row spacing */
+    body.dark-mode .row {
+        background-color: transparent !important;
+    }
+
+    /* Form input validation styling (if added later) */
+    body.dark-mode .form-control.is-valid {
+        border-color: #28a745 !important;
+        background-color: rgba(40, 167, 69, 0.1) !important;
+    }
+
+    body.dark-mode .form-control.is-invalid {
+        border-color: #dc3545 !important;
+        background-color: rgba(220, 53, 69, 0.1) !important;
+    }
+
+    /* Focus states for accessibility */
+    body.dark-mode .btn:focus {
+        box-shadow: 0 0 0 0.2rem rgba(28, 125, 214, 0.5) !important;
+    }
+
+    body.dark-mode .form-control:focus {
+        box-shadow: 0 0 0 0.2rem rgba(28, 125, 214, 0.25) !important;
+    }
+
+    /* Print styles for dark mode */
+    @media print {
+        body.dark-mode {
+            background-color: white !important;
+            color: black !important;
+        }
+
+        body.dark-mode .card,
+        body.dark-mode .table,
+        body.dark-mode .table th,
+        body.dark-mode .table td {
+            background-color: white !important;
+            color: black !important;
+            border-color: #000 !important;
+        }
+
+        body.dark-mode .card-header {
+            background-color: #f8f9fa !important;
+            color: black !important;
+        }
+
+        body.dark-mode .btn-primary {
+            display: none !important;
+        }
+    }
+
+    /* Modal styling (if any modals are used) */
+    body.dark-mode .modal-content {
+        background-color: #263645 !important;
+        border: 1px solid #121A21 !important;
+        color: #E5E8EB !important;
+    }
+
+    body.dark-mode .modal-header {
+        background-color: #121A21 !important;
+        border-bottom: 1px solid #263645 !important;
+    }
+
+    body.dark-mode .modal-header .modal-title {
+        color: #E5E8EB !important;
+    }
+
+    /* Password toggle icon visibility */
+    body.dark-mode .password-toggle i {
+        color: #94ADC7 !important;
+    }
+
+    body.dark-mode .password-toggle:hover i {
+        color: #E5E8EB !important;
+    }
+
+    /* Form group spacing */
+    body.dark-mode .mb-3 {
+        background-color: transparent !important;
+    }
+
+    /* Table header icon colors */
+    body.dark-mode .table-light th i.fa-id-card,
+    body.dark-mode .table-light th i.fa-user,
+    body.dark-mode .table-light th i.fa-envelope,
+    body.dark-mode .table-light th i.fa-calendar {
+        color: #1C7DD6 !important;
+    }
+
+    /* Card header icon colors */
+    body.dark-mode .card-header .fas.fa-user-plus,
+    body.dark-mode .card-header .fas.fa-list {
+        color: #FFFFFF !important;
+    }
 </style>
 
 <div class="main-content-wrapper">

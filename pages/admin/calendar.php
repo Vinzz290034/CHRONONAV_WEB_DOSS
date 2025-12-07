@@ -411,6 +411,475 @@ uksort($grouped_events, function ($a, $b) {
                 width: 100%;
             }
         }
+
+
+
+
+        /* ====================================================================== */
+        /* Dark Mode Overrides for Calendar Page                                  */
+        /* ====================================================================== */
+        body.dark-mode {
+            background-color: #121A21 !important;
+            color: #E5E8EB !important;
+        }
+
+        body.dark-mode .sched.main-content-wrapper {
+            background-color: #121A21 !important;
+        }
+
+        body.dark-mode .main-dashboard-content {
+            background-color: #121A21 !important;
+            color: #E5E8EB !important;
+        }
+
+        /* Dashboard header */
+        body.dark-mode .dashboard-header h2 {
+            color: #E5E8EB !important;
+        }
+
+        /* Cards */
+        body.dark-mode .card {
+            background-color: #263645 !important;
+            border: 1px solid #121A21 !important;
+            color: #E5E8EB !important;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important;
+        }
+
+        body.dark-mode .card-header {
+            background-color: #121A21 !important;
+            border-bottom: 1px solid #263645 !important;
+        }
+
+        body.dark-mode .card-header h5 {
+            color: #E5E8EB !important;
+        }
+
+        body.dark-mode .card-body {
+            color: #E5E8EB !important;
+        }
+
+        /* Table styling */
+        body.dark-mode .table {
+            background-color: #263645 !important;
+            color: #E5E8EB !important;
+        }
+
+        body.dark-mode .table th {
+            background-color: #121A21 !important;
+            color: #E5E8EB !important;
+            border-bottom: 1px solid #263645 !important;
+        }
+
+        body.dark-mode .table td {
+            color: #94ADC7 !important;
+            border-bottom: 1px solid #121A21 !important;
+        }
+
+        body.dark-mode .table-hover tbody tr:hover {
+            background-color: rgba(28, 125, 214, 0.1) !important;
+        }
+
+        /* Buttons */
+        body.dark-mode .btn-primary {
+            background-color: #1C7DD6 !important;
+            border-color: #1C7DD6 !important;
+            color: #FFFFFF !important;
+        }
+
+        body.dark-mode .btn-primary:hover {
+            background-color: #1a6fc0 !important;
+            border-color: #1a6fc0 !important;
+        }
+
+        body.dark-mode .btn-warning {
+            background-color: #ffc107 !important;
+            border-color: #ffc107 !important;
+            color: #000000 !important;
+        }
+
+        body.dark-mode .btn-warning:hover {
+            background-color: #e0a800 !important;
+            border-color: #e0a800 !important;
+            color: #000000 !important;
+        }
+
+        body.dark-mode .btn-danger {
+            background-color: #dc3545 !important;
+            border-color: #dc3545 !important;
+            color: #ffffff !important;
+        }
+
+        body.dark-mode .btn-danger:hover {
+            background-color: #bb2d3b !important;
+            border-color: #bb2d3b !important;
+        }
+
+        body.dark-mode .btn-secondary {
+            background-color: #263645 !important;
+            border-color: #263645 !important;
+            color: #94ADC7 !important;
+        }
+
+        body.dark-mode .btn-secondary:hover {
+            background-color: #121A21 !important;
+            border-color: #121A21 !important;
+            color: #E5E8EB !important;
+        }
+
+        /* Alerts */
+        body.dark-mode .alert {
+            background-color: #263645 !important;
+            border: 1px solid #121A21 !important;
+            color: #E5E8EB !important;
+        }
+
+        body.dark-mode .alert-info {
+            background-color: #0D47A1 !important;
+            color: #BBDEFB !important;
+            border-color: #1565C0 !important;
+        }
+
+        body.dark-mode .alert-success {
+            background-color: #1B5E20 !important;
+            color: #C8E6C9 !important;
+            border-color: #2E7D32 !important;
+        }
+
+        body.dark-mode .alert-danger {
+            background-color: #B71C1C !important;
+            color: #FFCDD2 !important;
+            border-color: #C62828 !important;
+        }
+
+        body.dark-mode .alert-warning {
+            background-color: #E65100 !important;
+            color: #FFECB3 !important;
+            border-color: #F57C00 !important;
+        }
+
+        /* Calendar event items */
+        body.dark-mode .calendar-event-item {
+            background-color: #263645 !important;
+            border-bottom: 1px solid #121A21 !important;
+        }
+
+        body.dark-mode .calendar-event-item:hover {
+            background-color: rgba(28, 125, 214, 0.1) !important;
+        }
+
+        body.dark-mode .event-details h6 {
+            color: #E5E8EB !important;
+        }
+
+        body.dark-mode .text-muted {
+            color: #94ADC7 !important;
+        }
+
+        /* Badges */
+        body.dark-mode .badge.Academic {
+            background-color: #1C7DD6 !important;
+            color: #FFFFFF !important;
+        }
+
+        body.dark-mode .badge.Holiday {
+            background-color: #28a745 !important;
+            color: #FFFFFF !important;
+        }
+
+        body.dark-mode .badge.Workshop {
+            background-color: #6f42c1 !important;
+            color: #FFFFFF !important;
+        }
+
+        body.dark-mode .badge.Personal {
+            background-color: #fd7e14 !important;
+            color: #000000 !important;
+        }
+
+        body.dark-mode .badge.Other {
+            background-color: #6c757d !important;
+            color: #FFFFFF !important;
+        }
+
+        /* Form controls */
+        body.dark-mode .form-control {
+            background-color: #121A21 !important;
+            border: 1px solid #263645 !important;
+            color: #E5E8EB !important;
+        }
+
+        body.dark-mode .form-control:focus {
+            background-color: #121A21 !important;
+            border-color: #1C7DD6 !important;
+            color: #E5E8EB !important;
+            box-shadow: 0 0 0 0.2rem rgba(28, 125, 214, 0.25) !important;
+        }
+
+        body.dark-mode .form-control::placeholder {
+            color: #94ADC7 !important;
+        }
+
+        body.dark-mode textarea.form-control {
+            background-color: #121A21 !important;
+            border: 1px solid #263645 !important;
+            color: #E5E8EB !important;
+        }
+
+        /* Modal styling */
+        body.dark-mode .modal-content {
+            background-color: #263645 !important;
+            border: 1px solid #121A21 !important;
+            color: #E5E8EB !important;
+        }
+
+        body.dark-mode .modal-header {
+            background-color: #121A21 !important;
+            border-bottom: 1px solid #263645 !important;
+        }
+
+        body.dark-mode .modal-title {
+            color: #E5E8EB !important;
+        }
+
+        body.dark-mode .modal-body {
+            color: #E5E8EB !important;
+        }
+
+        body.dark-mode .modal-footer {
+            background-color: #121A21 !important;
+            border-top: 1px solid #263645 !important;
+        }
+
+        /* Form labels */
+        body.dark-mode .form-label {
+            color: #E5E8EB !important;
+        }
+
+        /* Scrollbar for dark mode */
+        body.dark-mode ::-webkit-scrollbar-track {
+            background: #121A21 !important;
+        }
+
+        body.dark-mode ::-webkit-scrollbar-thumb {
+            background-color: #263645 !important;
+            border: 3px solid #121A21 !important;
+        }
+
+        body.dark-mode ::-webkit-scrollbar-thumb:hover {
+            background-color: #1C7DD6 !important;
+        }
+
+        /* Close button */
+        body.dark-mode .btn-close {
+            filter: invert(1) grayscale(100%) brightness(200%) !important;
+        }
+
+        /* List group */
+        body.dark-mode .list-group-item {
+            background-color: #263645 !important;
+            border-color: #121A21 !important;
+            color: #E5E8EB !important;
+        }
+
+        body.dark-mode .list-group-flush .list-group-item {
+            border-color: #121A21 !important;
+        }
+
+        /* Event actions */
+        body.dark-mode .event-actions .btn {
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Text colors */
+        body.dark-mode p {
+            color: #94ADC7 !important;
+        }
+
+        /* Focus states */
+        body.dark-mode .btn:focus,
+        body.dark-mode .form-control:focus,
+        body.dark-mode .form-select:focus {
+            box-shadow: 0 0 0 0.2rem rgba(28, 125, 214, 0.25) !important;
+        }
+
+        /* Select dropdown */
+        body.dark-mode .form-select {
+            background-color: #121A21 !important;
+            border: 1px solid #263645 !important;
+            color: #E5E8EB !important;
+        }
+
+        body.dark-mode .form-select option {
+            background-color: #263645 !important;
+            color: #E5E8EB !important;
+        }
+
+        /* Disabled button state */
+        body.dark-mode .btn:disabled {
+            background-color: #263645 !important;
+            color: #94ADC7 !important;
+            border: 1px solid #121A21 !important;
+            opacity: 0.6;
+        }
+
+        /* Mobile-specific dark mode adjustments */
+        @media (max-width: 768px) {
+            body.dark-mode .sched.main-content-wrapper {
+                background-color: #121A21 !important;
+            }
+
+            body.dark-mode .calendar-event-item {
+                background-color: #263645 !important;
+            }
+
+            body.dark-mode .event-actions .btn {
+                background-color: #263645 !important;
+                border: 1px solid #121A21 !important;
+                color: #94ADC7 !important;
+            }
+        }
+
+        /* Tablet dark mode adjustments */
+        @media (min-width: 769px) and (max-width: 1023px) {
+            body.dark-mode .sched.main-content-wrapper {
+                background-color: #121A21 !important;
+            }
+
+            body.dark-mode .card {
+                background-color: #263645 !important;
+            }
+        }
+
+        /* Desktop dark mode adjustments */
+        @media (min-width: 1024px) {
+            body.dark-mode .sched.main-content-wrapper {
+                background-color: #121A21 !important;
+            }
+
+            body.dark-mode .card {
+                background-color: #263645 !important;
+            }
+        }
+
+        /* Sidebar toggle button in dark mode */
+        body.dark-mode .sidebar-toggle {
+            background: #263645 !important;
+            color: #94ADC7 !important;
+            border: 1px solid #121A21 !important;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3) !important;
+        }
+
+        body.dark-mode .sidebar-toggle:hover {
+            background-color: #1C7DD6 !important;
+            color: #FFFFFF !important;
+        }
+
+        /* Form validation states */
+        body.dark-mode .form-control.is-valid {
+            border-color: #28a745 !important;
+            background-color: rgba(40, 167, 69, 0.1) !important;
+        }
+
+        body.dark-mode .form-control.is-invalid {
+            border-color: #dc3545 !important;
+            background-color: rgba(220, 53, 69, 0.1) !important;
+        }
+
+        /* Dropdown styling */
+        body.dark-mode .dropdown-menu {
+            background-color: #263645 !important;
+            border: 1px solid #121A21 !important;
+            color: #E5E8EB !important;
+        }
+
+        body.dark-mode .dropdown-item {
+            color: #E5E8EB !important;
+        }
+
+        body.dark-mode .dropdown-item:hover {
+            background-color: rgba(28, 125, 214, 0.2) !important;
+            color: #FFFFFF !important;
+        }
+
+        /* Tooltip styling */
+        body.dark-mode .tooltip-inner {
+            background-color: #263645 !important;
+            color: #E5E8EB !important;
+        }
+
+        body.dark-mode .tooltip-arrow::before {
+            border-top-color: #263645 !important;
+        }
+
+        /* Popover styling */
+        body.dark-mode .popover {
+            background-color: #263645 !important;
+            border: 1px solid #121A21 !important;
+            color: #E5E8EB !important;
+        }
+
+        body.dark-mode .popover-header {
+            background-color: #121A21 !important;
+            border-bottom: 1px solid #263645 !important;
+            color: #E5E8EB !important;
+        }
+
+        /* Shadow adjustments */
+        body.dark-mode .shadow-sm {
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important;
+        }
+
+        /* Icon colors */
+        body.dark-mode .fas.fa-plus,
+        body.dark-mode .fas.fa-edit,
+        body.dark-mode .fas.fa-trash-alt,
+        body.dark-mode .far.fa-calendar-alt,
+        body.dark-mode .fas.fa-map-marker-alt {
+            color: #94ADC7 !important;
+        }
+
+        /* Button icon colors */
+        body.dark-mode .btn-primary .fas,
+        body.dark-mode .btn-primary .far {
+            color: #FFFFFF !important;
+        }
+
+        body.dark-mode .btn-warning .fas,
+        body.dark-mode .btn-warning .far {
+            color: #000000 !important;
+        }
+
+        body.dark-mode .btn-danger .fas,
+        body.dark-mode .btn-danger .far {
+            color: #FFFFFF !important;
+        }
+
+        /* Container backgrounds */
+        body.dark-mode .container,
+        body.dark-mode .container-fluid {
+            background-color: transparent !important;
+        }
+
+        /* Calendar event details */
+        body.dark-mode .event-details p.mb-1 {
+            color: #94ADC7 !important;
+        }
+
+        /* Hover effects */
+        body.dark-mode .list-group-item:hover {
+            background-color: rgba(28, 125, 214, 0.1) !important;
+        }
+
+        /* Form text helper */
+        body.dark-mode .form-text {
+            color: #94ADC7 !important;
+        }
+
+        /* Time input styling */
+        body.dark-mode input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+            filter: invert(1) brightness(1.5);
+        }
     </style>
 </head>
 
@@ -626,7 +1095,8 @@ uksort($grouped_events, function ($a, $b) {
     </div>
 
     <!-- Bootstrap JS Bundle with Popper -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- JQuery Library -->
+    <script src="../../assets/js/jquery.min.js"></script>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -672,3 +1142,8 @@ uksort($grouped_events, function ($a, $b) {
 </body>
 
 </html>
+
+
+<script>
+    document.body.style.backgroundColor = "#ffffff";
+</script>

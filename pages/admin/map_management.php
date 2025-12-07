@@ -403,7 +403,9 @@ require_once $header_path;
             gap: 8px;
         }
 
-        .btn-edit, .btn-toggle, .btn-delete {
+        .btn-edit,
+        .btn-toggle,
+        .btn-delete {
             padding: 8px 16px;
             border: none;
             border-radius: 0.375rem;
@@ -457,7 +459,7 @@ require_once $header_path;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.5);
+            background: rgba(0, 0, 0, 0.5);
             z-index: 1000;
             align-items: center;
             justify-content: center;
@@ -473,7 +475,7 @@ require_once $header_path;
             border-radius: 0.75rem;
             width: 90%;
             max-width: 500px;
-            box-shadow: 0 5px 30px rgba(0,0,0,0.3);
+            box-shadow: 0 5px 30px rgba(0, 0, 0, 0.3);
             border: 1px solid var(--border-color);
         }
 
@@ -700,7 +702,9 @@ require_once $header_path;
                 width: 100%;
             }
 
-            .btn-edit, .btn-toggle, .btn-delete {
+            .btn-edit,
+            .btn-toggle,
+            .btn-delete {
                 width: 100%;
                 justify-content: center;
             }
@@ -754,6 +758,498 @@ require_once $header_path;
         body.dark-mode .rooms-table tr:hover {
             background: #1C7DD6;
         }
+
+
+
+
+        /* ====================================================================== */
+        /* Dark Mode Overrides for Map Management Page - Custom Colors           */
+        /* ====================================================================== */
+        body.dark-mode {
+            background-color: #121A21 !important;
+            /* Primary dark background */
+            color: #E5E8EB !important;
+            /* Primary light text */
+        }
+
+        /* Main layout containers */
+        body.dark-mode .map-management-main-container {
+            background-color: #121A21 !important;
+        }
+
+        body.dark-mode .map-management-container {
+            background-color: #121A21 !important;
+            color: #E5E8EB !important;
+        }
+
+        /* Header section */
+        body.dark-mode .management-header {
+            background-color: transparent !important;
+            border-bottom: 1px solid #263645 !important;
+            /* Secondary dark border */
+        }
+
+        body.dark-mode .page-title h1 {
+            color: #E5E8EB !important;
+            /* Light text for page title */
+        }
+
+        body.dark-mode .page-title .subtitle {
+            color: #94ADC7 !important;
+            /* Secondary text for subtitle */
+        }
+
+        /* Back button */
+        body.dark-mode .btn-back {
+            background: #263645 !important;
+            /* Secondary dark background */
+            color: #E5E8EB !important;
+            border: 1px solid #121A21 !important;
+        }
+
+        body.dark-mode .btn-back:hover {
+            background: #1C7DD6 !important;
+            /* Active blue on hover */
+            color: #FFFFFF !important;
+            border-color: #1C7DD6 !important;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+        }
+
+        /* Add Room button */
+        body.dark-mode .btn-add-room {
+            background: #1C7DD6 !important;
+            /* Active blue */
+            color: #FFFFFF !important;
+            border: none !important;
+        }
+
+        body.dark-mode .btn-add-room:hover {
+            background: #1565C0 !important;
+            /* Darker blue on hover */
+            box-shadow: 0 4px 12px rgba(28, 125, 214, 0.3) !important;
+        }
+
+        /* Map Viewer Section */
+        body.dark-mode .map-viewer-section {
+            background-color: #263645 !important;
+            /* Secondary dark background */
+            border: 1px solid #121A21 !important;
+            color: #E5E8EB !important;
+        }
+
+        body.dark-mode .map-viewer-header {
+            background-color: #121A21 !important;
+            /* Primary dark */
+            border-bottom: 1px solid #263645 !important;
+            color: #E5E8EB !important;
+        }
+
+        body.dark-mode .map-viewer-header h5 {
+            color: #E5E8EB !important;
+        }
+
+        body.dark-mode .map-viewer-header h5 i {
+            color: #1C7DD6 !important;
+            /* Active blue for icon */
+        }
+
+        /* Zoom controls */
+        body.dark-mode .zoom-btn {
+            background-color: #263645 !important;
+            /* Secondary dark */
+            border: 1px solid #121A21 !important;
+            color: #E5E8EB !important;
+        }
+
+        body.dark-mode .zoom-btn:hover {
+            background-color: #1C7DD6 !important;
+            /* Active blue on hover */
+            border-color: #1C7DD6 !important;
+            color: #FFFFFF !important;
+        }
+
+        /* Map container */
+        body.dark-mode .map-display-container {
+            background-color: #121A21 !important;
+        }
+
+        body.dark-mode #mapContainer {
+            background-color: #263645 !important;
+            border: 1px solid #121A21 !important;
+        }
+
+        body.dark-mode .map-info-panel {
+            background-color: #121A21 !important;
+            /* Primary dark */
+            border-top: 1px solid #263645 !important;
+            color: #94ADC7 !important;
+            /* Secondary text */
+        }
+
+        /* Rooms Table Container */
+        body.dark-mode .rooms-table-container {
+            background-color: #263645 !important;
+            /* Secondary dark */
+            border: 1px solid #121A21 !important;
+        }
+
+        body.dark-mode .table-header {
+            background-color: #121A21 !important;
+            border-bottom: 1px solid #263645 !important;
+        }
+
+        body.dark-mode .table-header h3 {
+            color: #E5E8EB !important;
+        }
+
+        body.dark-mode .table-header h3 i {
+            color: #1C7DD6 !important;
+            /* Active blue for icon */
+        }
+
+        /* Table styling */
+        body.dark-mode .rooms-table {
+            background-color: #263645 !important;
+            color: #E5E8EB !important;
+        }
+
+        body.dark-mode .rooms-table thead {
+            background-color: #121A21 !important;
+            border-bottom: 2px solid #263645 !important;
+        }
+
+        body.dark-mode .rooms-table th {
+            color: #E5E8EB !important;
+            border-bottom: 1px solid #263645 !important;
+            background-color: #121A21 !important;
+        }
+
+        body.dark-mode .rooms-table td {
+            color: #E5E8EB !important;
+            border-bottom: 1px solid #263645 !important;
+            background-color: transparent !important;
+        }
+
+        body.dark-mode .rooms-table tr:hover {
+            background-color: rgba(28, 125, 214, 0.2) !important;
+            /* Semi-transparent blue on hover */
+        }
+
+        body.dark-mode .rooms-table tr:last-child td {
+            border-bottom: none !important;
+        }
+
+        /* Status badges */
+        body.dark-mode .status-available {
+            background: #1B5E20 !important;
+            /* Dark green */
+            color: #C8E6C9 !important;
+            /* Light green text */
+        }
+
+        body.dark-mode .status-unavailable {
+            background: #B71C1C !important;
+            /* Dark red */
+            color: #FFCDD2 !important;
+            /* Light red text */
+        }
+
+        /* Action buttons */
+        body.dark-mode .btn-edit {
+            background-color: #1C7DD6 !important;
+            /* Active blue */
+            color: #FFFFFF !important;
+            border: none !important;
+        }
+
+        body.dark-mode .btn-edit:hover {
+            background-color: #1565C0 !important;
+            /* Darker blue on hover */
+            box-shadow: 0 4px 8px rgba(28, 125, 214, 0.3) !important;
+        }
+
+        body.dark-mode .btn-toggle {
+            background-color: #F57C00 !important;
+            /* Dark orange */
+            color: #FFFFFF !important;
+            border: none !important;
+        }
+
+        body.dark-mode .btn-toggle:hover {
+            background-color: #EF6C00 !important;
+            /* Darker orange on hover */
+            box-shadow: 0 4px 8px rgba(245, 124, 0, 0.3) !important;
+        }
+
+        body.dark-mode .btn-delete {
+            background-color: #C62828 !important;
+            /* Dark red */
+            color: #FFFFFF !important;
+            border: none !important;
+        }
+
+        body.dark-mode .btn-delete:hover {
+            background-color: #B71C1C !important;
+            /* Darker red on hover */
+            box-shadow: 0 4px 8px rgba(198, 40, 40, 0.3) !important;
+        }
+
+        /* Modal Styles */
+        body.dark-mode .modal {
+            background: rgba(0, 0, 0, 0.7) !important;
+            /* Darker overlay */
+        }
+
+        body.dark-mode .modal-content {
+            background-color: #263645 !important;
+            /* Secondary dark background */
+            border: 1px solid #121A21 !important;
+            color: #E5E8EB !important;
+        }
+
+        body.dark-mode .modal-header {
+            background-color: #121A21 !important;
+            border-bottom: 1px solid #263645 !important;
+        }
+
+        body.dark-mode .modal-header h3 {
+            color: #E5E8EB !important;
+        }
+
+        body.dark-mode .modal-header h3 i {
+            color: #1C7DD6 !important;
+            /* Active blue for icon */
+        }
+
+        body.dark-mode .modal-close {
+            color: #94ADC7 !important;
+            /* Secondary text color */
+        }
+
+        body.dark-mode .modal-close:hover {
+            color: #E5E8EB !important;
+            /* Light text on hover */
+        }
+
+        /* Form elements */
+        body.dark-mode .form-group label {
+            color: #E5E8EB !important;
+            /* Light text for labels */
+        }
+
+        body.dark-mode .form-group input,
+        body.dark-mode .form-group select,
+        body.dark-mode .form-group textarea {
+            background-color: #121A21 !important;
+            /* Primary dark */
+            border: 1px solid #263645 !important;
+            /* Secondary border */
+            color: #E5E8EB !important;
+            /* Light text */
+        }
+
+        body.dark-mode .form-group input:focus,
+        body.dark-mode .form-group select:focus,
+        body.dark-mode .form-group textarea:focus {
+            background-color: #121A21 !important;
+            border-color: #1C7DD6 !important;
+            /* Blue focus */
+            color: #E5E8EB !important;
+            box-shadow: 0 0 0 3px rgba(28, 125, 214, 0.2) !important;
+        }
+
+        /* Checkbox */
+        body.dark-mode .checkbox-group input[type="checkbox"] {
+            filter: brightness(0.8) contrast(1.2);
+        }
+
+        body.dark-mode .checkbox-group label {
+            color: #E5E8EB !important;
+        }
+
+        /* Modal buttons */
+        body.dark-mode .btn-save {
+            background-color: #1C7DD6 !important;
+            /* Active blue */
+            color: #FFFFFF !important;
+            border: none !important;
+        }
+
+        body.dark-mode .btn-save:hover {
+            background-color: #1565C0 !important;
+            /* Darker blue on hover */
+            box-shadow: 0 4px 12px rgba(28, 125, 214, 0.3) !important;
+        }
+
+        body.dark-mode .btn-cancel {
+            background-color: #263645 !important;
+            /* Secondary dark */
+            color: #E5E8EB !important;
+            border: 1px solid #121A21 !important;
+        }
+
+        body.dark-mode .btn-cancel:hover {
+            background-color: #121A21 !important;
+            /* Primary dark on hover */
+            color: #E5E8EB !important;
+            border-color: #263645 !important;
+        }
+
+        /* Alert Styles */
+        body.dark-mode .alert {
+            background-color: #263645 !important;
+            /* Secondary dark background */
+            border: 1px solid #121A21 !important;
+        }
+
+        body.dark-mode .alert-success {
+            background-color: #1B5E20 !important;
+            /* Dark green */
+            color: #C8E6C9 !important;
+            /* Light green text */
+            border-color: #2E7D32 !important;
+        }
+
+        body.dark-mode .alert-error {
+            background-color: #B71C1C !important;
+            /* Dark red */
+            color: #FFCDD2 !important;
+            /* Light red text */
+            border-color: #C62828 !important;
+        }
+
+        /* Scrollbar Styling for Dark Mode */
+        body.dark-mode ::-webkit-scrollbar {
+            width: 12px;
+            height: 12px;
+        }
+
+        body.dark-mode ::-webkit-scrollbar-track {
+            background: #121A21 !important;
+            /* Primary dark track */
+        }
+
+        body.dark-mode ::-webkit-scrollbar-thumb {
+            background-color: #263645 !important;
+            /* Secondary dark thumb */
+            border-radius: 6px;
+            border: 3px solid #121A21 !important;
+        }
+
+        body.dark-mode ::-webkit-scrollbar-thumb:hover {
+            background-color: #1C7DD6 !important;
+            /* Blue on hover */
+        }
+
+        /* Map container scrollbar specific */
+        body.dark-mode #mapContainer::-webkit-scrollbar-track {
+            background: #121A21 !important;
+        }
+
+        body.dark-mode #mapContainer::-webkit-scrollbar-thumb {
+            background-color: #263645 !important;
+            border: 2px solid #121A21 !important;
+        }
+
+        body.dark-mode #mapContainer::-webkit-scrollbar-thumb:hover {
+            background-color: #1C7DD6 !important;
+        }
+
+        /* For Firefox dark mode */
+        body.dark-mode #mapContainer {
+            scrollbar-color: #263645 #121A21 !important;
+        }
+
+        /* Responsive adjustments for dark mode */
+        @media (max-width: 767px) {
+            body.dark-mode .map-management-container {
+                background-color: #121A21 !important;
+            }
+
+            body.dark-mode .management-header {
+                background-color: #121A21 !important;
+            }
+        }
+
+        @media (min-width: 768px) and (max-width: 1023px) {
+            body.dark-mode .map-management-container {
+                background-color: #121A21 !important;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            body.dark-mode .map-management-container {
+                background-color: #121A21 !important;
+            }
+        }
+
+        /* Icon colors in dark mode */
+        body.dark-mode .fa-map,
+        body.dark-mode .fa-building,
+        body.dark-mode .fa-door-open {
+            color: #1C7DD6 !important;
+            /* Active blue for icons */
+        }
+
+        body.dark-mode .status-available i,
+        body.dark-mode .alert-success i {
+            color: #C8E6C9 !important;
+            /* Light green for success icons */
+        }
+
+        body.dark-mode .status-unavailable i,
+        body.dark-mode .alert-error i {
+            color: #FFCDD2 !important;
+            /* Light red for error icons */
+        }
+
+        /* Hover effects for dark mode */
+        body.dark-mode .btn-add-room:hover i,
+        body.dark-mode .btn-edit:hover i,
+        body.dark-mode .btn-save:hover i {
+            color: #FFFFFF !important;
+            /* White icons on hover for primary buttons */
+        }
+
+        /* Map info panel icon */
+        body.dark-mode .map-info-panel i {
+            color: #1C7DD6 !important;
+            /* Active blue for info icon */
+        }
+
+        /* Action button icons in table */
+        body.dark-mode .btn-toggle i,
+        body.dark-mode .btn-delete i {
+            color: #FFFFFF !important;
+            /* White icons for action buttons */
+        }
+
+        /* Disabled states in dark mode (if needed) */
+        body.dark-mode input:disabled,
+        body.dark-mode select:disabled,
+        body.dark-mode textarea:disabled {
+            background-color: #263645 !important;
+            color: #94ADC7 !important;
+            cursor: not-allowed;
+        }
+
+        /* Placeholder text in dark mode */
+        body.dark-mode ::placeholder {
+            color: #94ADC7 !important;
+            /* Secondary text for placeholders */
+        }
+
+        body.dark-mode ::-webkit-input-placeholder {
+            color: #94ADC7 !important;
+        }
+
+        body.dark-mode ::-moz-placeholder {
+            color: #94ADC7 !important;
+        }
+
+        body.dark-mode :-ms-input-placeholder {
+            color: #94ADC7 !important;
+        }
     </style>
 </head>
 
@@ -805,18 +1301,16 @@ require_once $header_path;
 
                 <div class="map-display-container">
                     <div id="mapContainer">
-                        <iframe id="campusMap" 
-                                src="../../assets/img/UC-MAIN-UPDATED%20(WITH%20DIMENSIONS)-1.svg" 
-                                title="University Campus Map" 
-                                loading="lazy" 
-                                referrerpolicy="no-referrer">
+                        <iframe id="campusMap" src="../../assets/img/UC-MAIN-UPDATED%20(WITH%20DIMENSIONS)-1.svg"
+                            title="University Campus Map" loading="lazy" referrerpolicy="no-referrer">
                         </iframe>
                     </div>
                 </div>
 
                 <div class="map-info-panel">
                     <i class="fas fa-info-circle me-1"></i>
-                    <span>Use zoom buttons or scroll with mouse to navigate. Click on rooms or manage them in the table below.</span>
+                    <span>Use zoom buttons or scroll with mouse to navigate. Click on rooms or manage them in the table
+                        below.</span>
                 </div>
             </div>
 
@@ -839,30 +1333,33 @@ require_once $header_path;
                     </thead>
                     <tbody id="roomsTableBody">
                         <?php foreach ($rooms as $room): ?>
-                                <tr data-room-id="<?= $room['id'] ?>">
-                                    <td><?= htmlspecialchars($room['room_name']) ?></td>
-                                    <td><?= $room['room_type'] ?></td>
-                                    <td><?= $room['capacity'] ?? 'N/A' ?></td>
-                                    <td><?= htmlspecialchars(substr($room['location_description'] ?? '', 0, 30)) ?></td>
-                                    <td>
-                                        <span class="status-badge <?= $room['is_available'] ? 'status-available' : 'status-unavailable' ?>">
-                                            <i class="fas fa-<?= $room['is_available'] ? 'check-circle' : 'times-circle' ?>"></i>
-                                            <?= $room['is_available'] ? 'Available' : 'Unavailable' ?>
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <div class="action-buttons">
-                                            <button class="btn-edit" onclick="openEditRoomModal(<?= $room['id'] ?>)">
-                                                <i class="fas fa-edit"></i>
-                                                <span>Edit</span>
-                                            </button>
-                                            <button class="btn-toggle" onclick="toggleRoomStatus(<?= $room['id'] ?>, <?= $room['is_available'] ? 1 : 0 ?>)">
-                                                <i class="fas fa-exchange-alt"></i>
-                                                <span><?= $room['is_available'] ? 'Mark Unavailable' : 'Mark Available' ?></span>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
+                            <tr data-room-id="<?= $room['id'] ?>">
+                                <td><?= htmlspecialchars($room['room_name']) ?></td>
+                                <td><?= $room['room_type'] ?></td>
+                                <td><?= $room['capacity'] ?? 'N/A' ?></td>
+                                <td><?= htmlspecialchars(substr($room['location_description'] ?? '', 0, 30)) ?></td>
+                                <td>
+                                    <span
+                                        class="status-badge <?= $room['is_available'] ? 'status-available' : 'status-unavailable' ?>">
+                                        <i
+                                            class="fas fa-<?= $room['is_available'] ? 'check-circle' : 'times-circle' ?>"></i>
+                                        <?= $room['is_available'] ? 'Available' : 'Unavailable' ?>
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn-edit" onclick="openEditRoomModal(<?= $room['id'] ?>)">
+                                            <i class="fas fa-edit"></i>
+                                            <span>Edit</span>
+                                        </button>
+                                        <button class="btn-toggle"
+                                            onclick="toggleRoomStatus(<?= $room['id'] ?>, <?= $room['is_available'] ? 1 : 0 ?>)">
+                                            <i class="fas fa-exchange-alt"></i>
+                                            <span><?= $room['is_available'] ? 'Mark Unavailable' : 'Mark Available' ?></span>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
                         <?php endforeach; ?>
                     </tbody>
                 </table>
@@ -901,7 +1398,8 @@ require_once $header_path;
 
                 <div class="form-group">
                     <label for="location">Location Description</label>
-                    <textarea id="location" name="location_description" placeholder="e.g., 3rd Floor, Main Building, Wing A"></textarea>
+                    <textarea id="location" name="location_description"
+                        placeholder="e.g., 3rd Floor, Main Building, Wing A"></textarea>
                 </div>
 
                 <div class="form-group checkbox-group">
@@ -918,7 +1416,6 @@ require_once $header_path;
     </div>
 
     <!-- JavaScript -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../../assets/js/jquery.min.js"></script>
 
     <script>
@@ -936,7 +1433,7 @@ require_once $header_path;
             currentRoomId = roomId;
             document.getElementById('modalTitle').textContent = 'Edit Room';
             document.getElementById('roomModal').classList.add('active');
-            
+
             // Find the room data from the table
             const row = document.querySelector(`tr[data-room-id="${roomId}"]`);
             // In a real implementation, you'd fetch this data via AJAX
@@ -951,7 +1448,7 @@ require_once $header_path;
             event.preventDefault();
             const formData = new FormData(document.getElementById('roomForm'));
             const action = currentRoomId ? 'update_room_details' : 'add_room';
-            
+
             formData.append('action', action);
             if (currentRoomId) {
                 formData.append('room_id', currentRoomId);
@@ -961,19 +1458,19 @@ require_once $header_path;
                 method: 'POST',
                 body: formData
             })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    showAlert(data.message, 'success');
-                    closeRoomModal();
-                    setTimeout(() => location.reload(), 1500);
-                } else {
-                    showAlert(data.message, 'error');
-                }
-            })
-            .catch(error => {
-                showAlert('Error saving room: ' + error, 'error');
-            });
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showAlert(data.message, 'success');
+                        closeRoomModal();
+                        setTimeout(() => location.reload(), 1500);
+                    } else {
+                        showAlert(data.message, 'error');
+                    }
+                })
+                .catch(error => {
+                    showAlert('Error saving room: ' + error, 'error');
+                });
         }
 
         function toggleRoomStatus(roomId, currentStatus) {
@@ -987,32 +1484,32 @@ require_once $header_path;
                 method: 'POST',
                 body: formData
             })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    showAlert(data.message, 'success');
-                    setTimeout(() => location.reload(), 1000);
-                } else {
-                    showAlert(data.message, 'error');
-                }
-            })
-            .catch(error => {
-                showAlert('Error updating room status: ' + error, 'error');
-            });
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showAlert(data.message, 'success');
+                        setTimeout(() => location.reload(), 1000);
+                    } else {
+                        showAlert(data.message, 'error');
+                    }
+                })
+                .catch(error => {
+                    showAlert('Error updating room status: ' + error, 'error');
+                });
         }
 
         function showAlert(message, type) {
             const alertContainer = document.getElementById('alertContainer');
             const alertClass = type === 'success' ? 'alert-success' : 'alert-error';
             const icon = type === 'success' ? 'check-circle' : 'exclamation-circle';
-            
+
             alertContainer.innerHTML = `
                 <div class="alert ${alertClass}">
                     <i class="fas fa-${icon}"></i>
                     <span>${message}</span>
                 </div>
             `;
-            
+
             setTimeout(() => {
                 alertContainer.innerHTML = '';
             }, 5000);
@@ -1046,20 +1543,20 @@ require_once $header_path;
         function applyZoom() {
             const mapContainer = document.getElementById('mapContainer');
             const campusMap = document.getElementById('campusMap');
-            
+
             // Apply zoom to the container
             mapContainer.style.transform = `scale(${currentZoom})`;
             mapContainer.style.transformOrigin = '0 0';
-            
+
             // Adjust height based on zoom level
             const baseHeight = 500;
             mapContainer.style.height = (baseHeight * currentZoom) + 'px';
         }
 
         // Mouse wheel zoom support
-        document.getElementById('mapContainer').addEventListener('wheel', function(e) {
+        document.getElementById('mapContainer').addEventListener('wheel', function (e) {
             e.preventDefault();
-            
+
             if (e.deltaY < 0) {
                 // Scroll up - zoom in
                 zoomIn();
@@ -1070,7 +1567,7 @@ require_once $header_path;
         }, { passive: false });
 
         // Close modal when clicking outside
-        document.getElementById('roomModal').addEventListener('click', function(e) {
+        document.getElementById('roomModal').addEventListener('click', function (e) {
             if (e.target === this) {
                 closeRoomModal();
             }
