@@ -4,7 +4,7 @@ session_start();
 require_once '../../middleware/auth_check.php';
 require_once '../../config/db_connect.php';
 
-/** @var \mysqli $conn */
+/** @var \mysqli $conn */ // FIX: Resolves "Undefined method/property" IntelliSense errors on $conn.
 
 // Check if the user is a regular user or faculty
 if (!isset($_SESSION['user']) || ($_SESSION['user']['role'] !== 'user' && $_SESSION['user']['role'] !== 'faculty')) {
@@ -1276,14 +1276,14 @@ require_once $header_path;
             // Prepare events for FullCalendar from PHP data
             const calendarEvents = [
                 <?php foreach ($all_daily_events as $event): ?>
-                                                                                                                                                                                                                                    {
+                    {
                         title: '<?= addslashes($event['title']) ?>',
                         start: '<?= $selected_date ?>T<?= $event['time'] ?>',
                         <?php if ($event['type'] === 'schedule' && !empty($event['end_time'])): ?>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                            end: '<?= $selected_date ?>T<?= $event['end_time'] ?>',
+                            end: '<?= $selected_date ?>T<?= $event['end_time'] ?>',
                         <?php endif; ?>
-                                                                                                                                                                                                                                        description: '<?= addslashes($event['type'] === 'schedule' ? $event['location'] : $event['description']) ?>',
-                        color: '<?= $event['type'] === 'schedule' ? '   ' : '#ffc107' ?>'
+                            description: '<?= addslashes($event['type'] === 'schedule' ? $event['location'] : $event['description']) ?>',
+                        color: '<?= $event['type'] === 'schedule' ? '   ' : '#ffc107' ?>'   
                     },
                 <?php endforeach; ?>
             ];
@@ -1418,3 +1418,7 @@ require_once $header_path;
 <?php include('../../includes/semantics/footer.php'); ?>
 
 </html>
+
+<script>
+    document.body.style.backgroundColor = "#ffffff";
+</script>

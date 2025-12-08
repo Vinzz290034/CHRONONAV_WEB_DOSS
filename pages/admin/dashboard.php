@@ -105,7 +105,7 @@ require_once '../../templates/admin/header_admin.php';
 <style>
     /* CSS code remains unchanged */
     body {
-        background-color: white
+        background-color: #ffffff
     }
 
     .main-dashboard-content {
@@ -670,6 +670,251 @@ require_once '../../templates/admin/header_admin.php';
             height: 320px;
         }
     }
+
+
+
+
+    /* ====== ENHANCED DATA VISUALIZATION STYLES ====== */
+
+    /* Analytics section header */
+    .px-3.pt-3.pb-1 .section-title {
+        font-size: 26px;
+        font-weight: 700;
+        color: #0e151b;
+        margin-bottom: 30px;
+        position: relative;
+        padding-left: 14px;
+        letter-spacing: -0.5px;
+    }
+
+    .px-3.pt-3.pb-1 .section-title::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 4px;
+        height: 28px;
+        background: linear-gradient(180deg, #2E78C6 0%, #1C7DD6 100%);
+        border-radius: 2px;
+        box-shadow: 0 4px 12px rgba(46, 120, 198, 0.25);
+    }
+
+    /* Chart container improvements */
+    .row.mb-4.px-3 .col-md-6 {
+        margin-bottom: 0;
+    }
+
+    /* Enhanced chart cards */
+    .row.mb-4.px-3 .card {
+        border: none;
+        border-radius: 20px;
+        background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06), 0 8px 24px rgba(46, 120, 198, 0.08);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        overflow: hidden;
+        height: 100%;
+        border: 1px solid rgba(225, 232, 245, 0.6);
+        position: relative;
+    }
+
+    .row.mb-4.px-3 .card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #2E78C6 0%, #1C7DD6 50%, transparent 100%);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .row.mb-4.px-3 .card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1), 0 12px 40px rgba(46, 120, 198, 0.2);
+        border-color: rgba(225, 232, 245, 1);
+    }
+
+    .row.mb-4.px-3 .card:hover::before {
+        opacity: 1;
+    }
+
+    .row.mb-4.px-3 .card-body {
+        padding: 28px;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        gap: 16px;
+    }
+
+    /* Chart titles */
+    .row.mb-4.px-3 .card-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: #0e151b;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 0;
+        border: none;
+        letter-spacing: -0.3px;
+    }
+
+    .row.mb-4.px-3 .card-title i {
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #2E78C6;
+        font-size: 18px;
+    }
+
+    /* Chart canvas containers */
+    .row.mb-4.px-3 .card-body canvas {
+        flex: 1;
+        min-height: 320px;
+        width: 100% !important;
+        height: auto !important;
+    }
+
+    /* Chart specific height adjustments */
+    #dashboardPieChart,
+    #userRolePieChart,
+    #departmentPieChart {
+        max-height: 320px !important;
+    }
+
+    #dashboardBarChart {
+        max-height: 320px !important;
+    }
+
+    /* Legend improvements */
+    .chart-legend-container {
+        margin-top: 16px;
+        padding: 14px;
+        background: linear-gradient(135deg, #f8fafc 0%, #f0f4f8 100%);
+        border-radius: 12px;
+        border: 1px solid #e1e8f5;
+    }
+
+    .chart-legend-container .legend-item {
+        display: flex;
+        align-items: center;
+        padding: 8px 0;
+        font-size: 14px;
+        color: #4a5568;
+        font-weight: 500;
+    }
+
+    .chart-legend-container .legend-color {
+        width: 14px;
+        height: 14px;
+        border-radius: 4px;
+        margin-right: 10px;
+        flex-shrink: 0;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Data labels styling */
+    .data-label {
+        font-weight: 700;
+        color: #0e151b;
+        font-size: 14px;
+        letter-spacing: -0.2px;
+    }
+
+    /* Responsive adjustments for charts */
+    @media (max-width: 991px) {
+        .row.mb-4.px-3 .card-body {
+            padding: 24px;
+        }
+
+        .row.mb-4.px-3 .card-title {
+            font-size: 16px;
+        }
+
+        .row.mb-4.px-3 .card-body canvas {
+            min-height: 280px;
+        }
+    }
+
+    @media (max-width: 767px) {
+        .px-3.pt-3.pb-1 .section-title {
+            font-size: 22px;
+            margin-bottom: 20px;
+        }
+
+        .row.mb-4.px-3 {
+            gap: 12px;
+        }
+
+        .row.mb-4.px-3 .card {
+            border-radius: 16px;
+        }
+
+        .row.mb-4.px-3 .card-body {
+            padding: 20px;
+            gap: 12px;
+        }
+
+        .row.mb-4.px-3 .card-title {
+            font-size: 15px;
+        }
+
+        .row.mb-4.px-3 .card-body canvas {
+            min-height: 260px;
+        }
+    }
+
+    /* Animation for chart loading */
+    @keyframes chartFadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(12px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .row.mb-4.px-3 .card {
+        animation: chartFadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .row.mb-4.px-3 .card:nth-child(n+1) {
+        animation-delay: calc(0.08s * var(--card-index, 1));
+    }
+
+    /* No data state for charts */
+    .no-data-message {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 320px;
+        color: #cbd5e1;
+        text-align: center;
+        padding: 30px 20px;
+    }
+
+    .no-data-message i {
+        font-size: 56px;
+        margin-bottom: 16px;
+        opacity: 0.4;
+        color: #b0bac9;
+    }
+
+    .no-data-message p {
+        font-size: 15px;
+        margin: 0;
+        color: #8a94a6;
+        font-weight: 500;
+    }
 </style>
 
 <link rel="icon" type="image/x-icon"
@@ -977,7 +1222,8 @@ require_once '../../templates/admin/header_admin.php';
                             OCR Management Panel
                         </a>
                         <small class="text-muted d-block mt-1">
-                            defines templates for precise data extraction and tracks the processing history of scanned documents.
+                            defines templates for precise data extraction and tracks the processing history of scanned
+                            documents.
                         </small>
                     </li>
                 </ul>
@@ -1082,6 +1328,8 @@ require_once '../../templates/admin/header_admin.php';
     </div>
 </div>
 
+<?php include('../../includes/semantics/footer.php'); ?>
+
 <?php require_once '../../templates/common/onboarding_modal.php'; ?>
 
 <script id="tour-data" type="application/json">
@@ -1089,7 +1337,10 @@ require_once '../../templates/admin/header_admin.php';
 </script>
 
 <?php require_once '../../templates/footer.php'; ?>
+
+<!-- JQuery Library -->
 <script src="../../assets/js/jquery.min.js"></script>
+
 <script src="../../assets/js/script.js"></script>
 <script src="../../assets/js/onboarding_tour.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -1113,170 +1364,261 @@ require_once '../../templates/admin/header_admin.php';
         const departmentLabels = Object.keys(departmentCounts);
         const departmentData = Object.values(departmentCounts);
 
-        // Set fixed height for all chart containers
-        const chartHeight = '350px'; 
-        
-        // Dynamic colors array creation for departments
-        const deptColors = departmentLabels.map((_, index) => {
-            const colors = ['#dc3545', '#007bff', '#17a2b8', '#ffc107', '#28a745', '#6f42c1', '#fd7e14', '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'];
-            return colors[index % colors.length];
-        });
+        // --- UI/UX Theme & Configuration ---
+        const primaryColor = '#1C7DD6'; // A strong, consistent blue (from hover/active states)
+        const secondaryColor = '#263645'; // Darker theme color for contrast/background
+        const successColor = '#28a745';
+        const warningColor = '#ffc107';
+        const infoColor = '#17a2b8';
+        const textColor = '#101518'; // Dark text for light mode
+        const fontStyle = 'Space Grotesk, Noto Sans, sans-serif';
+        const chartHeight = '350px';
 
-        // ----------------------------------------------------------------------
-        // Chart: Overall System Metrics (PIE - Total Users vs Active Tickets)
-        // ----------------------------------------------------------------------
-        const pieCtx = document.getElementById('dashboardPieChart');
+        // Helper function for dynamic department colors
+        const colorPalette = [
+            primaryColor, '#17a2b8', '#fd7e14', '#6f42c1', '#dc3545',
+            '#20c997', '#e83e8c', '#6c757d', '#007bff', '#ffc107',
+        ];
+        const deptColors = departmentLabels.map((_, index) => colorPalette[index % colorPalette.length]);
 
-        if (pieCtx) {
-            pieCtx.parentElement.style.height = chartHeight; 
-            pieCtx.style.height = '100%';
+        // Global Chart Options for UI/UX consistency
+        Chart.defaults.font.family = fontStyle;
+        Chart.defaults.color = textColor;
+        Chart.defaults.font.weight = '600';
 
-            new Chart(pieCtx, {
-                type: 'pie',
-                data: {
-                    labels: ['Total Users', 'Active Tickets'],
-                    datasets: [{
-                        data: [totalUsers, activeTickets],
-                        backgroundColor: ['#007bff', '#17a2b8'],
-                        hoverOffset: 4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: true,
-                    aspectRatio: 1, // FIX: Use 1 for circular pie chart
-                    plugins: {
-                        legend: {
-                            position: 'top',
-                        },
-                        title: {
-                            display: false, 
-                        }
-                    }
-                }
-            });
+        // --- FUNCTION TO CREATE CHARTS ---
+        function setupChart(ctxId, config) {
+            const ctx = document.getElementById(ctxId);
+            if (ctx) {
+                ctx.parentElement.style.height = 'auto';
+                new Chart(ctx, config);
+            }
         }
-        
-        // ----------------------------------------------------------------------
-        // Chart: Activity Metrics (BAR)
-        // ----------------------------------------------------------------------
-        const barCtx = document.getElementById('dashboardBarChart');
 
-        if (barCtx) {
-            barCtx.parentElement.style.height = chartHeight;
-            barCtx.style.height = '100%';
-            
-            new Chart(barCtx, {
-                type: 'bar',
-                data: {
-                    // Correct labels for the 4 data points fetched
-                    labels: ['Active Tickets', 'Announcements', 'Total Feedback', 'Total Rooms'],
-                    datasets: [{
-                        label: 'Counts',
-                        data: [activeTickets, announcements, totalFeedbacks, totalRooms],
-                        backgroundColor: [
-                            'rgba(23, 162, 184, 0.6)',
-                            'rgba(253, 126, 20, 0.6)',
-                            'rgba(111, 66, 193, 0.6)',
-                            'rgba(40, 167, 69, 0.6)'
-                        ],
-                        borderColor: [
-                            '#17a2b8',
-                            '#fd7e14',
-                            '#6f42c1',
-                            '#28a745'
-                        ],
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: true,
-                    aspectRatio: 2, 
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: { precision: 0 }
+        // Enhanced tooltip styling
+        const tooltipOptions = {
+            backgroundColor: 'rgba(14, 21, 27, 0.95)',
+            titleColor: '#ffffff',
+            bodyColor: '#e5e8eb',
+            borderColor: 'rgba(46, 120, 198, 0.3)',
+            borderWidth: 1,
+            padding: 12,
+            cornerRadius: 8,
+            usePointStyle: true,
+            titleFont: { weight: '700', size: 14 },
+            bodyFont: { weight: '600', size: 13 },
+            boxPadding: 8
+        };
+
+        // ----------------------------------------------------------------------
+        // 📈 Chart 1: System Metrics (DOUGHNUT) - Total Users vs Active Tickets
+        // ----------------------------------------------------------------------
+        const systemMetricsConfig = {
+            type: 'doughnut',
+            data: {
+                labels: ['Total Users', 'Active Tickets'],
+                datasets: [{
+                    data: [totalUsers, activeTickets],
+                    backgroundColor: ['#2E78C6', '#0fa3b1'],
+                    borderColor: '#ffffff',
+                    borderWidth: 3,
+                    hoverOffset: 10,
+                    hoverBorderWidth: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '65%',
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 16,
+                            usePointStyle: true,
+                            pointStyle: 'circle',
+                            font: { size: 13, weight: '600' },
+                            color: textColor,
+                            generateLabels(chart) {
+                                const data = chart.data;
+                                return data.labels.map((label, i) => ({
+                                    text: `${label}: ${data.datasets[0].data[i]}`,
+                                    fillStyle: data.datasets[0].backgroundColor[i],
+                                    hidden: false,
+                                    index: i
+                                }));
+                            }
                         }
                     },
-                    plugins: {
-                        legend: { display: false }
-                    }
+                    tooltip: tooltipOptions,
+                    title: { display: false }
                 }
-            });
-        }
+            }
+        };
+        setupChart('dashboardPieChart', systemMetricsConfig);
 
         // ----------------------------------------------------------------------
-        // Chart: User Role Distribution (PIE)
+        // 📊 Chart 2: Activity Metrics (BAR - Vertical)
         // ----------------------------------------------------------------------
-        const userRoleCtx = document.getElementById('userRolePieChart');
-        if (userRoleCtx) {
-            userRoleCtx.parentElement.style.height = chartHeight;
-            userRoleCtx.style.height = '100%';
-
-            new Chart(userRoleCtx, {
-                type: 'pie',
-                data: {
-                    labels: ['Admin', 'Faculty', 'Student (User)'],
-                    datasets: [{
-                        data: [adminCount, facultyCount, studentCount],
-                        backgroundColor: [
-                            '#007bff',
-                            '#ffc107',
-                            '#28a745'
-                        ],
-                        hoverOffset: 4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: true,
-                    aspectRatio: 1, // FIX: Changed to 1 for circular display
-                    plugins: {
-                        legend: {
-                            position: 'right',
+        const activityMetricsConfig = {
+            type: 'bar',
+            data: {
+                labels: ['Active\nTickets', 'New\nAnnouncements', 'Total\nFeedback', 'Total\nRooms'],
+                datasets: [{
+                    label: 'Count',
+                    data: [activeTickets, announcements, totalFeedbacks, totalRooms],
+                    backgroundColor: [
+                        '#0fa3b1', '#f77f00', '#2E78C6', '#06a77d'
+                    ],
+                    borderColor: 'transparent',
+                    borderWidth: 0,
+                    borderRadius: 8,
+                    borderSkipped: false,
+                    hoverBackgroundColor: ['#0d8a96', '#e07000', '#1c5aa8', '#058567'],
+                    hoverBorderRadius: 10
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            precision: 0,
+                            color: textColor,
+                            font: { weight: '600', size: 12 }
                         },
-                        title: {
-                            display: false,
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.06)',
+                            drawBorder: false
                         }
-                    }
-                }
-            });
-        }
-
-        // ----------------------------------------------------------------------
-        // Chart: User Distribution by Department (PIE)
-        // ----------------------------------------------------------------------
-        const departmentCtx = document.getElementById('departmentPieChart');
-
-        if (departmentCtx && departmentLabels.length > 0 && departmentData.some(count => count > 0)) {
-            departmentCtx.parentElement.style.height = chartHeight;
-            departmentCtx.style.height = '100%';
-
-            new Chart(departmentCtx, {
-                type: 'pie',
-                data: {
-                    labels: departmentLabels,
-                    datasets: [{
-                        data: departmentData,
-                        backgroundColor: deptColors, // Using dynamic colors
-                        hoverOffset: 4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: true,
-                    aspectRatio: 1, // FIX: Changed to 1 for circular display
-                    plugins: {
-                        legend: {
-                            position: 'right',
+                    },
+                    x: {
+                        ticks: {
+                            color: textColor,
+                            font: { weight: '600', size: 12 }
                         },
-                        title: {
-                            display: false,
-                        }
+                        grid: { display: false, drawBorder: false }
                     }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: tooltipOptions
                 }
-            });
+            }
+        };
+        setupChart('dashboardBarChart', activityMetricsConfig);
+
+        // ----------------------------------------------------------------------
+        // 🧑‍💻 Chart 3: User Role Distribution (PIE)
+        // ----------------------------------------------------------------------
+        const userRoleConfig = {
+            type: 'pie',
+            data: {
+                labels: ['Admin', 'Faculty', 'Student (User)'],
+                datasets: [{
+                    data: [adminCount, facultyCount, studentCount],
+                    backgroundColor: ['#2E78C6', '#f77f00', '#06a77d'],
+                    borderColor: '#ffffff',
+                    borderWidth: 3,
+                    hoverOffset: 12,
+                    hoverBorderWidth: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: {
+                            padding: 16,
+                            usePointStyle: true,
+                            pointStyle: 'circle',
+                            font: { size: 13, weight: '600' },
+                            color: textColor,
+                            generateLabels(chart) {
+                                const data = chart.data;
+                                return data.labels.map((label, i) => ({
+                                    text: `${label}: ${data.datasets[0].data[i]}`,
+                                    fillStyle: data.datasets[0].backgroundColor[i],
+                                    hidden: false,
+                                    index: i
+                                }));
+                            }
+                        }
+                    },
+                    tooltip: tooltipOptions,
+                    title: { display: false }
+                }
+            }
+        };
+        setupChart('userRolePieChart', userRoleConfig);
+
+        // ----------------------------------------------------------------------
+        // 🏢 Chart 4: User Distribution by Department (DOUGHNUT)
+        // ----------------------------------------------------------------------
+        const departmentConfig = {
+            type: 'doughnut',
+            data: {
+                labels: departmentLabels,
+                datasets: [{
+                    data: departmentData,
+                    backgroundColor: deptColors,
+                    borderColor: '#ffffff',
+                    borderWidth: 3,
+                    hoverOffset: 12,
+                    hoverBorderWidth: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '60%',
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: {
+                            padding: 16,
+                            usePointStyle: true,
+                            pointStyle: 'circle',
+                            font: { size: 13, weight: '600' },
+                            color: textColor,
+                            generateLabels(chart) {
+                                const data = chart.data;
+                                return data.labels.map((label, i) => ({
+                                    text: `${label}: ${data.datasets[0].data[i]}`,
+                                    fillStyle: data.datasets[0].backgroundColor[i],
+                                    hidden: false,
+                                    index: i
+                                }));
+                            }
+                        }
+                    },
+                    tooltip: tooltipOptions,
+                    title: { display: false }
+                }
+            }
+        };
+
+        // Only render the department chart if data is present
+        if (departmentLabels.length > 0 && departmentData.some(count => count > 0)) {
+            setupChart('departmentPieChart', departmentConfig);
+        } else {
+            const departmentCtx = document.getElementById('departmentPieChart');
+            if (departmentCtx && departmentCtx.parentElement) {
+                departmentCtx.parentElement.innerHTML = `
+                    <div class="no-data-message">
+                        <i class="fas fa-inbox"></i>
+                        <p>No department data available</p>
+                    </div>
+                `;
+            }
         }
     });
+</script>
+
+<script>
+    document.body.style.backgroundColor = "#ffffff";
 </script>

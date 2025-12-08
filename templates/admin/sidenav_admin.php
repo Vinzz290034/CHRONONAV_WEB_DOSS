@@ -577,11 +577,10 @@ if (!isset($current_page)) {
             <li class="nav-item">
                 <a class="nav-link <?= ($current_page === 'map_management') ? 'active' : '' ?>"
                     href="<?= $base_path ?>pages/admin/map_management.php">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor"
-                        viewBox="0 0 256 256">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" transform="scale(0.8)"
+                        fill="currentColor" class="bi bi-map" viewBox="0 0 16 16">
                         <path
-                            d="M128,16a48,48,0,1,0,48,48A48.05,48.05,0,0,0,128,16Zm0,80a32,32,0,1,1,32-32A32,32,0,0,1,128,96Zm119.07,103.31L237.26,98.91a24,24,0,0,0-41.51-9.13L169.18,172.2a32,32,0,0,1-52.36,0L60.25,89.78a24,24,0,0,0-41.51,9.13L8.93,199.31A23.88,23.88,0,0,0,32,232a24.1,24.1,0,0,0,6-0.77l73-18.27a32,32,0,0,1,14,0l73,18.27a24,24,0,0,0,30.07-32.92Z">
-                        </path>
+                            d="M15.817.113A.5.5 0 0 1 16 .5v14a.5.5 0 0 1-.402.49l-5 1a.5.5 0 0 1-.196 0L5.5 15.01l-4.902.98A.5.5 0 0 1 0 15.5v-14a.5.5 0 0 1 .402-.49l5-1a.5.5 0 0 1 .196 0L10.5.99l4.902-.98a.5.5 0 0 1 .415.103M10 1.91l-4-.8v12.98l4 .8zm1 12.98 4-.8V1.11l-4 .8zm-6-.8V1.11l-4 .8v12.96z" />
                     </svg>
                     <span class="nav-link-text fs-6">Navigate Map</span>
                 </a>
@@ -599,18 +598,6 @@ if (!isset($current_page)) {
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link <?= ($current_page === 'profile') ? 'active' : '' ?>"
-                    href="<?= $base_path ?>pages/admin/view_profile.php">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor"
-                        viewBox="0 0 256 256">
-                        <path
-                            d="M230.92,212c-15.23-26.33-38.7-45.21-66.09-54.16a72,72,0,1,0-73.66,0C63.78,166.78,40.31,185.66,25.08,212a8,8,0,1,0,13.85,8c18.84-32.56,52.14-52,89.07-52s70.23,19.44,89.07,52a8,8,0,1,0,13.85-8ZM72,96a56,56,0,1,1,56,56A56.06,56.06,0,0,1,72,96Z">
-                        </path>
-                    </svg>
-                    <span class="nav-link-text fs-6">Profile</span>
-                </a>
-            </li>
-            <li class="nav-item">
                 <a class="nav-link <?= ($current_page === 'report_generator') ? 'active' : '' ?>"
                     href="<?= $base_path ?>pages/admin/report_generator.php">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor"
@@ -625,11 +612,12 @@ if (!isset($current_page)) {
             <li class="nav-item">
                 <a class="nav-link <?= ($current_page === 'faculty_verification_codes') ? 'active' : '' ?>"
                     href="<?= $base_path ?>pages/admin/faculty_verification_codes.php">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor"
-                        viewBox="0 0 256 256">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" transform="scale(0.8)"
+                        fill="currentColor" class="bi bi-code-square" viewBox="0 0 16 16">
                         <path
-                            d="M224,120a8,8,0,0,1-8,8H216v12a32,32,0,0,1-64,0V128h-8a8,8,0,0,1,0-16h8V96a32,32,0,0,1,64,0v16h0a8,8,0,0,1,0,16Zm-16-12V96a16,16,0,0,0-32,0v12Zm-32,44a16,16,0,0,0,32,0V136h-32ZM104,32A72,72,0,1,0,176,104,72.08,72.08,0,0,0,104,32Zm0,128a56,56,0,1,1,56-56A56.06,56.06,0,0,1,104,160ZM43.39,113.61a8,8,0,1,1,11.31-11.31,8,8,0,0,1-11.31,11.31Z">
-                        </path>
+                            d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z" />
+                        <path
+                            d="M6.854 4.646a.5.5 0 0 1 0 .708L4.207 8l2.647 2.646a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 0 1 .708 0m2.292 0a.5.5 0 0 0 0 .708L11.793 8l-2.647 2.646a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708 0" />
                     </svg>
                     <span class="nav-link-text fs-6">Faculty Codes</span>
                 </a>
@@ -637,13 +625,26 @@ if (!isset($current_page)) {
             <li class="nav-item">
                 <a class="nav-link <?= ($current_page === 'manage_admins') ? 'active' : '' ?>"
                     href="<?= $base_path ?>pages/admin/manage_admins.php">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" transform="scale(0.8)"
+                        fill="currentColor" class="bi bi-kanban" viewBox="0 0 16 16">
+                        <path
+                            d="M13.5 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1h-11a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zm-11-1a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z" />
+                        <path
+                            d="M6.5 3a1 1 0 0 1 1-1h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1a1 1 0 0 1-1-1zm-4 0a1 1 0 0 1 1-1h1a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1h-1a1 1 0 0 1-1-1zm8 0a1 1 0 0 1 1-1h1a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1h-1a1 1 0 0 1-1-1z" />
+                    </svg>
+                    <span class="nav-link-text fs-6">Admin Management</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link <?= ($current_page === 'profile') ? 'active' : '' ?>"
+                    href="<?= $base_path ?>pages/admin/view_profile.php">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor"
                         viewBox="0 0 256 256">
                         <path
-                            d="M117.25,157.92a60,60,0,1,0-74.5,0,95.83,95.83,0,0,0,60.2,35.27,8,8,0,0,0,2.55-15.73c-16-5.3-31.65-14.6-35.7-26.17a60.22,60.22,0,0,1-2.29-10.66H104a8,8,0,0,0,0-16H55.87a57.8,57.8,0,0,1,.16-8H104a8,8,0,0,0,0-16H52.85a60.27,60.27,0,0,1,2.24-10.5c4.05-11.57,19.75-20.87,35.7-26.17a8,8,0,0,0-2.55-15.73,95.83,95.83,0,0,0-60.2,35.27,60,60,0,1,0,74.5,0ZM140,128a12,12,0,1,1,12-12A12,12,0,0,1,140,128Zm60-12a8,8,0,0,0-8,8v40a8,8,0,0,0,16,0V124A8,8,0,0,0,200,116Zm40,0a8,8,0,0,0-8,8v40a8,8,0,0,0,16,0V124A8,8,0,0,0,240,116Z">
+                            d="M230.92,212c-15.23-26.33-38.7-45.21-66.09-54.16a72,72,0,1,0-73.66,0C63.78,166.78,40.31,185.66,25.08,212a8,8,0,1,0,13.85,8c18.84-32.56,52.14-52,89.07-52s70.23,19.44,89.07,52a8,8,0,1,0,13.85-8ZM72,96a56,56,0,1,1,56,56A56.06,56.06,0,0,1,72,96Z">
                         </path>
                     </svg>
-                    <span class="nav-link-text fs-6">Admin Management</span>
+                    <span class="nav-link-text fs-6">Profile</span>
                 </a>
             </li>
         </ul>

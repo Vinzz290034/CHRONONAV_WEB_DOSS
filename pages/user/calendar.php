@@ -6,6 +6,7 @@ require_once '../../includes/functions.php';
 
 // Ensure only users can access this page
 requireRole(['user']);
+/** @var \mysqli $conn */
 
 $user = $_SESSION['user'];
 $current_user_id = $user['id'];
@@ -187,6 +188,7 @@ require_once '../../templates/user/sidenav_user.php';
         margin-left: 20%;
         padding: 20px 35px;
         min-height: 100vh;
+        font-family: "Space Grotesk", "Noto Sans", sans-serif;
     }
 
     /* Header styling to match dashboard */
@@ -476,6 +478,7 @@ require_once '../../templates/user/sidenav_user.php';
         .main-dashboard-content {
             margin-left: 0;
             padding: 15px;
+            font-family: "Space Grotesk", "Noto Sans", sans-serif;
         }
 
         .dashboard-header {
@@ -513,6 +516,7 @@ require_once '../../templates/user/sidenav_user.php';
         .main-dashboard-content {
             margin-left: 80px;
             padding: 20px 25px;
+            font-family: "Space Grotesk", "Noto Sans", sans-serif;
         }
 
         .dashboard-header h2 {
@@ -524,6 +528,7 @@ require_once '../../templates/user/sidenav_user.php';
         .main-dashboard-content {
             margin-left: 20%;
             padding: 20px 35px;
+            font-family: "Space Grotesk", "Noto Sans", sans-serif;
         }
     }
 
@@ -542,6 +547,7 @@ require_once '../../templates/user/sidenav_user.php';
     body.dark-mode .main-dashboard-content {
         background-color: #121A21 !important;
         color: #E5E8EB !important;
+        font-family: "Space Grotesk", "Noto Sans", sans-serif;
     }
 
     /* Header and titles */
@@ -866,6 +872,7 @@ require_once '../../templates/user/sidenav_user.php';
     @media (max-width: 767px) {
         body.dark-mode .main-dashboard-content {
             background-color: #121A21 !important;
+            font-family: "Space Grotesk", "Noto Sans", sans-serif;
         }
 
         body.dark-mode .calendar-event-item {
@@ -880,12 +887,14 @@ require_once '../../templates/user/sidenav_user.php';
     @media (min-width: 768px) and (max-width: 1023px) {
         body.dark-mode .main-dashboard-content {
             background-color: #121A21 !important;
+            font-family: "Space Grotesk", "Noto Sans", sans-serif;
         }
     }
 
     @media (min-width: 1024px) {
         body.dark-mode .main-dashboard-content {
             background-color: #121A21 !important;
+            font-family: "Space Grotesk", "Noto Sans", sans-serif;
         }
     }
 

@@ -6,7 +6,7 @@ require_once '../../config/db_connect.php'; // Using mysqli connection (assumed)
 require_once '../../includes/onboarding_functions.php';
 require_once '../../includes/onboarding_module.php';
 
-/** @var \mysqli $conn */
+/** @var \mysqli $conn */ // FIX: Resolves "Undefined method/property" IntelliSense errors on $conn.
 
 $user = $_SESSION['user'];
 $page_title = "User Dashboard";
@@ -248,20 +248,16 @@ require_once $header_path;
 
     ::-webkit-scrollbar-track {
         background: #ffffff;
-
     }
 
     ::-webkit-scrollbar-thumb {
         background-color: #737373;
-
         border-radius: 6px;
         border: 3px solid #ffffff;
-
     }
 
     ::-webkit-scrollbar-thumb:hover {
         background-color: #2e78c6;
-
     }
 
 
@@ -303,21 +299,13 @@ require_once $header_path;
         }
 
         .class-item-custom {
-
             display: flex;
-
             align-items: center;
-
             justify-content: space-between;
-
             margin-bottom: 12px;
-
             padding: 12px 16px;
-
             gap: 10px;
-
             min-width: 100%;
-
         }
 
         .class-image-custom {
@@ -590,42 +578,33 @@ require_once $header_path;
 
     body.dark-mode .study-load-card-custom p.text-muted {
         color: #94ADC7 !important;
-
     }
-
 
     body.dark-mode .class-item-custom {
         background-color: #121A21 !important;
-
         border: 1px solid #263645 !important;
     }
 
     body.dark-mode .class-item-custom:hover {
         background-color: rgba(28, 125, 214, 0.1) !important;
-
     }
 
     body.dark-mode .class-item-custom p.text-dark {
         color: #E5E8EB !important;
-
     }
 
     body.dark-mode .class-item-custom p.text-muted {
         color: #94ADC7 !important;
-
     }
-
 
     body.dark-mode .modal-content {
         background-color: #263645 !important;
-
         border: 1px solid #121A21 !important;
         color: #E5E8EB !important;
     }
 
     body.dark-mode .modal-header {
         background-color: #121A21 !important;
-
         border-bottom: 1px solid #263645 !important;
     }
 
@@ -637,10 +616,8 @@ require_once $header_path;
         color: #E5E8EB !important;
     }
 
-
     body.dark-mode .form-control {
         background-color: #121A21 !important;
-
         border: 1px solid #263645 !important;
         color: #E5E8EB !important;
     }
@@ -648,11 +625,9 @@ require_once $header_path;
     body.dark-mode .form-control:focus {
         background-color: #121A21 !important;
         border-color: #1C7DD6 !important;
-
         color: #E5E8EB !important;
         box-shadow: 0 0 0 0.2rem rgba(28, 125, 214, 0.25) !important;
     }
-
 
     body.dark-mode .table {
         color: #E5E8EB !important;
@@ -660,111 +635,84 @@ require_once $header_path;
 
     body.dark-mode .table-striped tbody tr:nth-of-type(odd) {
         background-color: #121A21 !important;
-
     }
 
     body.dark-mode .table-striped tbody tr:nth-of-type(even) {
         background-color: #263645 !important;
-
     }
 
     body.dark-mode .table-hover tbody tr:hover {
         background-color: rgba(28, 125, 214, 0.2) !important;
-
     }
 
     body.dark-mode thead {
         background-color: #121A21 !important;
-
     }
-
 
     body.dark-mode .alert {
         background-color: #263645 !important;
-
         border: 1px solid #121A21 !important;
     }
 
     body.dark-mode .alert-info {
         background-color: #0D47A1 !important;
-
         color: #BBDEFB !important;
-
         border-color: #1565C0 !important;
     }
 
     body.dark-mode .alert-success {
         background-color: #1B5E20 !important;
-
         color: #C8E6C9 !important;
-
         border-color: #2E7D32 !important;
     }
 
     body.dark-mode .alert-danger {
         background-color: #B71C1C !important;
-
         color: #FFCDD2 !important;
-
         border-color: #C62828 !important;
     }
 
-
     body.dark-mode .text-dark {
         color: #E5E8EB !important;
-
     }
 
     body.dark-mode .text-muted {
         color: #94ADC7 !important;
-
     }
-
 
     body.dark-mode ::-webkit-scrollbar-track {
         background: #121A21 !important;
-
     }
 
     body.dark-mode ::-webkit-scrollbar-thumb {
         background-color: #263645 !important;
-
         border: 3px solid #121A21 !important;
     }
 
     body.dark-mode ::-webkit-scrollbar-thumb:hover {
         background-color: #1C7DD6 !important;
-
     }
-
 
     body.dark-mode .demo-content {
         background-color: #263645 !important;
-
         color: #E5E8EB !important;
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
     }
 
     body.dark-mode .screen-size-indicator {
         background: #1C7DD6 !important;
-
         color: #FFFFFF !important;
     }
-
 
     body.dark-mode .btn-close {
         filter: invert(1) grayscale(100%) brightness(200%) !important;
     }
 
-
     body.dark-mode .input-group-text {
         background-color: #121A21 !important;
-
         border: 1px solid #263645 !important;
         color: #94ADC7 !important;
-
     }
-
 
     @media (max-width: 767px) {
         body.dark-mode .main-dashboard-content {
@@ -793,10 +741,8 @@ require_once $header_path;
         }
     }
 
-
     body.dark-mode #searchResults {
         background-color: #263645 !important;
-
         border: 1px solid #121A21 !important;
     }
 
@@ -808,7 +754,6 @@ require_once $header_path;
 
     body.dark-mode .list-group-item:hover {
         background-color: #1C7DD6 !important;
-
         color: #FFFFFF !important;
     }
 
@@ -816,7 +761,6 @@ require_once $header_path;
         color: #94ADC7 !important;
     }
 </style>
-
 
 <link rel="icon" type="image/x-icon"
     href="https://res.cloudinary.com/deua2yipj/image/upload/v1758917007/ChronoNav_logo_muon27.png">
@@ -838,11 +782,9 @@ require_once $header_path;
 
     <div class="main-dashboard-content-wrapper" id="page-content-wrapper">
         <div class="main-dashboard-content">
-
             <div class="d-flex flex-column px-3 pt-4 pb-2">
                 <h2 class="welcome-title mb-0">Welcome, <?= htmlspecialchars($user['name']) ?></h2>
             </div>
-
 
 
             <div class="search-bar position-relative mb-4">
@@ -857,7 +799,6 @@ require_once $header_path;
                     style="z-index:1000; display: none;"></div>
 
             </div>
-
 
             <div class="card p-4 mb-4 border-0">
                 <p class="text-dark mb-3">This is your personal space in ChronoNav. Keep an eye on your upcoming
@@ -880,7 +821,6 @@ require_once $header_path;
                 </div>
                 <div id="onboardingContent" class="mt-3"></div>
             </div>
-
 
             <div class="dashboard-widgets-grid mb-4 px-3">
                 <div class="card study-load-card-custom p-0 w-100">
@@ -911,11 +851,9 @@ require_once $header_path;
                 </div>
             </div>
 
-
             <div class="px-3 pt-3 pb-1">
                 <h3 class="section-title mb-0">Upcoming Classes</h3>
             </div>
-
 
             <div class="px-3">
                 <?php if (!empty($user_schedule)): ?>
@@ -948,6 +886,7 @@ require_once $header_path;
                     </div>
                 <?php endif; ?>
             </div>
+
         </div>
     </div>
 </div>
@@ -957,8 +896,6 @@ require_once $header_path;
 <script id="tour-data" type="application/json">
     <?= json_encode($onboarding_steps); ?>
 </script>
-
-
 
 
 <div class="modal fade" id="ocrModal" tabindex="-1" aria-labelledby="ocrModalLabel" aria-hidden="true">

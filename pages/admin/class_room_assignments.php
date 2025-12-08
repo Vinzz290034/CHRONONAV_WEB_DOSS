@@ -6,6 +6,8 @@ require_once '../../config/db_connect.php';
 require_once '../../includes/functions.php';
 require_once '../../backend/admin/class_room_assignments_logic.php';
 
+/** @var \mysqli $conn */ // FIX: Resolves "Undefined method/property" IntelliSense errors on $conn.
+
 requireRole(['admin']);
 
 $user_id = $_SESSION['user']['id'];
@@ -595,3 +597,8 @@ require_once '../../templates/admin/header_admin.php';
 </body>
 
 </html>
+
+
+<script>
+    document.body.style.backgroundColor = "#ffffff";
+</script>

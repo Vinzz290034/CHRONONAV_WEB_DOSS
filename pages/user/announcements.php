@@ -8,6 +8,8 @@ require_once '../../includes/functions.php'; // Assuming functions.php exists fo
 // Ensure only logged-in users (or admins who can view user pages) can access this page
 requireRole(['user', 'admin']); // Allows both users and admins to view this page.
 
+/** @var \mysqli $conn */
+
 $user = $_SESSION['user'];
 $user_role = $user['role'] ?? 'guest'; // Get user role
 $user_id = $user['id'] ?? null;

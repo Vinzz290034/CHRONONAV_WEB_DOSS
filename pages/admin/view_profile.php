@@ -465,7 +465,7 @@ require_once '../../templates/admin/header_admin.php';
             }
         }
     </style>
-    </head>
+</head>
 
 <body>
     <?php require_once '../../templates/admin/sidenav_admin.php'; ?>
@@ -580,7 +580,7 @@ require_once '../../templates/admin/header_admin.php';
                 </div>
             </div>
 
-            
+
             <div class="preference-item d-flex align-items-center justify-content-between">
                 <p class="text-dark mb-0 flex-grow-1 text-truncate">Font Size</p>
                 <div class="flex-shrink-0">
@@ -796,8 +796,8 @@ require_once '../../templates/admin/header_admin.php';
         </div>
     </div>
 
-    
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- JQuery Library -->
+    <script src="../../assets/js/jquery.min.js"></script>
 
     <script>
         // Toggle switch functionality
@@ -842,7 +842,7 @@ require_once '../../templates/admin/header_admin.php';
             <?php endif; ?>
             profileImagePreview.src = "<?= $profile_img_src ?>";
         });
-        
+
         // --- Remaining JS (Moved from HEAD to BODY for efficiency and to preserve scope) ---
 
         // Enhanced file input functionality
@@ -982,3 +982,7 @@ require_once '../../templates/admin/header_admin.php';
 <?php include('../../includes/semantics/footer.php'); ?>
 
 </html>
+
+<script>
+    document.body.style.backgroundColor = "#ffffff";
+</script>

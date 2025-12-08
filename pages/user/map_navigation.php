@@ -31,377 +31,1034 @@ if (isset($user['role'])) {
 require_once $header_path;
 ?>
 
-<link rel="stylesheet" href="../../assets/css/user_css/map_navigation.css">
+<!DOCTYPE html>
+<html lang="en">
 
-<style>
-    .map-container {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 20px;
-    }
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><?= $page_title ?></title>
 
-    .map-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 30px;
-    }
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-    .map-content {
-        display: grid;
-        grid-template-columns: 1fr 300px;
-        gap: 20px;
-    }
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
+    <link rel="stylesheet" as="style" onload="this.rel='stylesheet'"
+        href="https://fonts.googleapis.com/css2?display=swap&family=Noto+Sans:wght@400;500;700;900&family=Space+Grotesk:wght@400;500;700">
 
-    .map-viewer {
-        background: white;
-        border-radius: 8px;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        padding: 20px;
-        position: relative;
-    }
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon"
+        href="https://res.cloudinary.com/deua2yipj/image/upload/v1758917007/ChronoNav_logo_muon27.png">
 
-    .map-svg {
-        width: 100%;
-        height: auto;
-        border: 1px solid #eee;
-        border-radius: 4px;
-    }
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    .map-sidebar {
-        background: white;
-        border-radius: 8px;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        padding: 20px;
-        max-height: 600px;
-        overflow-y: auto;
-    }
+    <style>
+        :root {
+            --primary-dark: #101518;
+            --secondary-text: #5c748a;
+            --border-color: #e5e7eb;
+            --accent-blue: #2e78c6;
+            --light-bg: #f9fafb;
+            --available-color: #10b981;
+            --unavailable-color: #ef4444;
+        }
 
-    .room-item {
-        padding: 12px;
-        margin-bottom: 10px;
-        border-radius: 4px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        border-left: 4px solid #007bff;
-    }
+        body {
+            background-color: #ffffff;
+            background: #ffff;
+            font-family: "Space Grotesk", "Noto Sans", sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
 
-    .room-item:hover {
-        background: #f0f0f0;
-        transform: translateX(5px);
-    }
+        .map-main-container {
+            display: flex;
+            min-height: 100vh;
+        }
 
-    .room-item.unavailable {
-        border-left-color: #dc3545;
-        opacity: 0.6;
-    }
+        .map-container {
+            flex: 1;
+            padding: 30px 40px;
+            min-height: 100vh;
+            max-width: 1600px;
+            margin: 0 auto;
+            width: 100%;
+            box-sizing: border-box;
+            margin-left: 20%;
+            background-color: #ffffff;
+        }
 
-    .room-item-name {
-        font-weight: 600;
-        color: #333;
-        margin-bottom: 5px;
-    }
+        .map-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
 
-    .room-item-type {
-        font-size: 12px;
-        color: #666;
-    }
-
-    .room-item-capacity {
-        font-size: 12px;
-        color: #999;
-    }
-
-    .room-status {
-        display: inline-block;
-        padding: 3px 8px;
-        border-radius: 3px;
-        font-size: 11px;
-        font-weight: 600;
-        margin-top: 5px;
-    }
-
-    .room-status.available {
-        background: #d4edda;
-        color: #155724;
-    }
-
-    .room-status.unavailable {
-        background: #f8d7da;
-        color: #721c24;
-    }
-
-    .search-box {
-        width: 100%;
-        padding: 10px;
-        margin-bottom: 15px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        font-size: 14px;
-    }
-
-    .legend {
-        margin-top: 20px;
-        padding-top: 15px;
-        border-top: 1px solid #eee;
-    }
-
-    .legend-item {
-        display: flex;
-        align-items: center;
-        margin-bottom: 10px;
-        font-size: 13px;
-    }
-
-    .legend-color {
-        width: 20px;
-        height: 20px;
-        border-radius: 3px;
-        margin-right: 10px;
-    }
-
-    @media (max-width: 768px) {
         .map-content {
-            grid-template-columns: 1fr;
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 30px;
+            height: calc(100vh - 180px);
+            min-height: 600px;
+        }
+
+        .map-viewer {
+            background: white;
+            border-radius: 0.75rem;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .map-viewer-header {
+            padding: 20px 25px;
+            border-bottom: 1px solid var(--border-color);
+            background: var(--light-bg);
+        }
+
+        .map-viewer-header h2 {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .map-viewer-header h2 i {
+            color: var(--accent-blue);
+        }
+
+        .map-display-container {
+            flex: 1;
+            padding: 25px;
+            position: relative;
+            overflow: hidden;
+            background: #f8fafc;
+        }
+
+        #mapWrapper {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            background: white;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            overflow: auto;
+        }
+
+        #mapContainer {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transform-origin: 0 0;
+            transition: transform 0.3s ease;
+        }
+
+        #campusMap {
+            width: 100%;
+            height: 100%;
+            min-height: 500px;
+            border: none;
+            display: block;
+            background: white;
+        }
+
+        .map-controls {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 100;
+        }
+
+        .map-control-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 0.5rem;
+            background: white;
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: var(--primary-dark);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .map-control-btn:hover {
+            background: var(--accent-blue);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(46, 120, 198, 0.2);
+        }
+
+        .map-control-btn:active {
+            transform: translateY(0);
+        }
+
+        .map-info-panel {
+            padding: 15px 25px;
+            background: var(--light-bg);
+            border-top: 1px solid var(--border-color);
+            font-size: 14px;
+            color: var(--secondary-text);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .map-info-panel strong {
+            color: var(--primary-dark);
+            font-weight: 600;
         }
 
         .map-sidebar {
-            max-height: 300px;
+            background: white;
+            border-radius: 0.75rem;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .sidebar-header {
+            padding: 20px 25px;
+            border-bottom: 1px solid var(--border-color);
+            background: var(--light-bg);
+        }
+
+        .sidebar-header h3 {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sidebar-header h3 i {
+            color: var(--accent-blue);
+        }
+
+        .sidebar-content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .search-container {
+            margin-bottom: 20px;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            font-size: 14px;
+            color: var(--primary-dark);
+            background-color: white;
+            transition: all 0.3s ease;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 3px rgba(46, 120, 198, 0.1);
+        }
+
+        .search-box::placeholder {
+            color: #94a3b8;
+        }
+
+        #roomsList {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .room-item {
+            padding: 18px;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-left: 4px solid var(--accent-blue);
+            background-color: white;
+            border: 1px solid var(--border-color);
+        }
+
+        .room-item:hover {
+            background: #f0f7ff;
+            transform: translateX(3px);
+            border-color: var(--accent-blue);
+            box-shadow: 0 2px 8px rgba(46, 120, 198, 0.1);
+        }
+
+        .room-item.selected-room {
+            background: #e0f2fe;
+            border-left-color: #0284c7;
+            box-shadow: 0 2px 8px rgba(2, 132, 199, 0.15);
+        }
+
+        .room-item.unavailable {
+            border-left-color: var(--unavailable-color);
+            background-color: #fef2f2;
+            opacity: 0.9;
+        }
+
+        .room-item-name {
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin-bottom: 6px;
+            font-size: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .room-item-type {
+            font-size: 13px;
+            color: var(--secondary-text);
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .room-item-type i {
+            font-size: 12px;
+        }
+
+        .room-item-capacity {
+            font-size: 12px;
+            color: #737373;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .room-item-capacity i {
+            font-size: 11px;
+        }
+
+        .room-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 9999px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+
+        .room-status i {
+            font-size: 10px;
+        }
+
+        .room-status.available {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .room-status.unavailable {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .sidebar-footer {
+            padding: 20px;
+            border-top: 1px solid var(--border-color);
+            background: var(--light-bg);
+        }
+
+        .legend-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .legend-title i {
+            color: var(--accent-blue);
+        }
+
+        .legend-items {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            font-size: 13px;
+            color: #374151;
+        }
+
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 0.25rem;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Page Header Styles */
+        .page-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 5px;
+        }
+
+        .btn-back {
+            background: #eaedf1;
+            color: #101518;
+            width: 48px;
+            height: 48px;
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            border: none;
+            padding: 0;
+            flex-shrink: 0;
+        }
+
+        .btn-back:hover {
+            background: #dce8f3;
+            transform: translateX(-3px);
+            color: var(--accent-blue);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .page-title h1 {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--primary-dark);
+            margin: 0;
+            line-height: 1.2;
+        }
+
+        .page-title .subtitle {
+            font-size: 15px;
+            color: var(--secondary-text);
+            margin-top: 4px;
+        }
+
+        .zoom-indicator {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--light-bg);
+            padding: 8px 16px;
+            border-radius: 0.5rem;
+            font-size: 14px;
+            color: var(--secondary-text);
+        }
+
+        .zoom-indicator strong {
+            color: var(--primary-dark);
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 12px;
+            height: 12px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #ffffff;
+            /* white track */
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background-color: #737373;
+            /* gray thumb */
+            border-radius: 6px;
+            border: 3px solid #ffffff;
+            /* padding effect with white border */
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background-color: #2e78c6;
+            /* blue on hover */
+        }
+
+        /* Scrollbar styling to match dashboard */
+        .sidebar-content::-webkit-scrollbar,
+        #mapWrapper::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+
+        .sidebar-content::-webkit-scrollbar-track,
+        #mapWrapper::-webkit-scrollbar-track {
+            background: #ffffff;
+            border-radius: 4px;
+        }
+
+        .sidebar-content::-webkit-scrollbar-thumb,
+        #mapWrapper::-webkit-scrollbar-thumb {
+            background-color: #737373;
+            border-radius: 5px;
+            border: 2px solid #ffffff;
+        }
+
+        .sidebar-content::-webkit-scrollbar-thumb:hover,
+        #mapWrapper::-webkit-scrollbar-thumb:hover {
+            background-color: var(--accent-blue);
+        }
+
+        /* For Firefox */
+        .sidebar-content,
+        #mapWrapper {
+            scrollbar-width: thin;
+            scrollbar-color: #737373 #ffffff;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 767px) {
+            .map-container {
+                padding: 15px;
+            }
+
+            .map-content {
+                grid-template-columns: 1fr;
+                height: auto;
+                gap: 20px;
+            }
+
+            .map-viewer,
+            .map-sidebar {
+                height: 500px;
+            }
+
+            .map-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .page-header {
+                width: 100%;
+            }
+
+            .zoom-indicator {
+                align-self: flex-start;
+            }
+        }
+
+        @media (min-width: 768px) and (max-width: 1023px) {
+            .map-container {
+                padding: 20px 25px;
+            }
+
+            .map-content {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+
+            .map-viewer,
+            .map-sidebar {
+                height: 500px;
+            }
+        }
+
+        @media (min-width: 1024px) and (max-width: 1279px) {
+            .map-content {
+                grid-template-columns: 1fr 280px;
+            }
+        }
+
+        @media (min-width: 1280px) {
+            .map-content {
+                grid-template-columns: 1fr 320px;
+            }
+        }
+
+        /* Dark mode support */
+        body.dark-mode .map-viewer,
+        body.dark-mode .map-sidebar,
+        body.dark-mode #mapWrapper {
+            background: #263645;
+            border-color: #121A21;
+            color: #E5E8EB;
+        }
+
+        body.dark-mode .map-viewer-header,
+        body.dark-mode .sidebar-header,
+        body.dark-mode .sidebar-footer {
+            background: #121A21;
+            border-color: #263645;
+        }
+
+        body.dark-mode .search-box {
+            background: #121A21;
+            border-color: #263645;
+            color: #E5E8EB;
+        }
+
+        body.dark-mode .room-item {
+            background: #121A21;
+            border-color: #263645;
+            color: #E5E8EB;
+        }
+
+        body.dark-mode .room-item:hover {
+            background: #1C7DD6;
+        }
+
+        body.dark-mode .room-item-name {
+            color: #E5E8EB;
+        }
+
+        body.dark-mode .room-item-type {
+            color: #94ADC7;
+        }
+    </style>
+</head>
+
+<body>
+    <?php
+    $sidenav_path = '../../templates/user/sidenav_user.php';
+    if (isset($user['role'])) {
+        if ($user['role'] === 'admin') {
+            $sidenav_path = '../../templates/admin/sidenav_admin.php';
+        } elseif ($user['role'] === 'faculty') {
+            $sidenav_path = '../../templates/faculty/sidenav_faculty.php';
         }
     }
+    require_once $sidenav_path;
+    ?>
 
-    .selected-room {
-        background: #e3f2fd;
-        border-left-color: #2196F3;
-    }
-
-    .btn-back {
-        background: #6c757d;
-        color: white;
-        width: 40px;
-        height: 40px;
-        border-radius: 6px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        text-decoration: none;
-        border: none;
-        padding: 0;
-    }
-
-    .btn-back:hover {
-        background: #5a6268;
-        transform: translateX(-3px);
-    }
-
-    .zoom-controls {
-        display: flex;
-        gap: 8px;
-    }
-
-    .zoom-btn {
-        background: #007bff;
-        color: white;
-        width: 40px;
-        height: 40px;
-        border: none;
-        border-radius: 6px;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: all 0.3s ease;
-        padding: 0;
-    }
-
-    .zoom-btn:hover {
-        background: #0056b3;
-        transform: scale(1.1);
-    }
-
-    .zoom-btn:active {
-        transform: scale(0.95);
-    }
-</style>
-
-<div class="map-container">
-    <div class="map-header">
-        <div style="display: flex; align-items: center; gap: 15px;">
-            <a href="../../pages/user/dashboard.php" class="btn-back" title="Back to Dashboard">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256">
-                    <path d="M224,128a8,8,0,0,1-8,8H59.31l58.35,58.34a8,8,0,1,1-11.32,11.32l-72-72a8,8,0,0,1,0-11.32l72-72a8,8,0,0,1,11.32,11.32L59.31,120H216A8,8,0,0,1,224,128Z"></path>
-                </svg>
-            </a>
-            <h1 class="mb-0">Campus Map Navigation</h1>
-        </div>
-        <div class="zoom-controls">
-            <button class="zoom-btn" onclick="zoomIn()" title="Zoom In">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 256 256">
-                    <path d="M228.24,219.76l-51.38-51.38a104.06,104.06,0,1,0-11.31,11.31l51.38,51.38a8,8,0,0,0,11.31-11.31ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Zm60-12a8,8,0,0,0-8,8v28H72a8,8,0,0,0,0,16h20v20a8,8,0,0,0,16,0V140h20a8,8,0,0,0,0-16H108V108A8,8,0,0,0,100,100Z"></path>
-                </svg>
-            </button>
-            <button class="zoom-btn" onclick="zoomOut()" title="Zoom Out">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 256 256">
-                    <path d="M228.24,219.76l-51.38-51.38a104.06,104.06,0,1,0-11.31,11.31l51.38,51.38a8,8,0,0,0,11.31-11.31ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Zm56-8a8,8,0,0,0-8,8v20a8,8,0,0,0,16,0V112A8,8,0,0,0,96,104Zm32,0a8,8,0,0,0-8,8v20a8,8,0,0,0,16,0V112A8,8,0,0,0,128,104Z"></path>
-                </svg>
-            </button>
-            <button class="zoom-btn" onclick="resetZoom()" title="Reset Zoom">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 256 256">
-                    <path d="M240,128a112,112,0,0,1-183.36,80.88,8,8,0,0,1,11.2-11.38A96,96,0,1,0,38.75,85.75a8.07,8.07,0,0,1-5.66-3.34,8,8,0,0,1,0-11.32A112,112,0,0,1,240,128Z"></path>
-                </svg>
-            </button>
-        </div>
-    </div>
-
-    <div class="map-header">
-        <p class="text-muted mb-0">Find your classrooms and facilities</p>
-
-    <div class="map-content">
-        <!-- Map Viewer -->
-        <div class="map-viewer">
-            <div id="mapContainer" style="position: relative; width: 100%; border: 1px solid #ddd; border-radius: 4px; overflow: auto; background: white; transform-origin: 0 0;">
-                <!-- SVG map embedded directly -->
-                <iframe id="campusMap" 
-                        src="../../assets/img/UC-MAIN-UPDATED%20(WITH%20DIMENSIONS)-1.svg" 
-                        style="width: 100%; height: 600px; border: none; border-radius: 4px; display: block; min-width: 100%;"
-                        allowfullscreen>
-                </iframe>
-            </div>
-            <div style="margin-top: 15px; padding: 10px; background: #f0f7ff; border-radius: 4px;">
-                <p class="mb-0" style="font-size: 13px; color: #666;">
-                    <strong>Selected Room:</strong> <span id="selectedRoomInfo">None</span> | <span id="zoomLevel">Zoom: 100%</span>
-                </p>
-            </div>
-        </div>
-
-        <!-- Sidebar with Room List -->
-        <div class="map-sidebar">
-            <h5 class="mb-3">Available Rooms</h5>
-            <input type="text" id="searchRooms" class="search-box" placeholder="Search rooms...">
-            
-            <div id="roomsList">
-                <?php foreach ($rooms as $room): ?>
-                    <div class="room-item <?= !$room['is_available'] ? 'unavailable' : '' ?>" 
-                         data-room-id="<?= $room['id'] ?>" 
-                         data-room-name="<?= htmlspecialchars($room['room_name']) ?>">
-                        <div class="room-item-name"><?= htmlspecialchars($room['room_name']) ?></div>
-                        <div class="room-item-type"><?= $room['room_type'] ?></div>
-                        <div class="room-item-capacity">Capacity: <?= $room['capacity'] ?? 'N/A' ?></div>
-                        <span class="room-status <?= $room['is_available'] ? 'available' : 'unavailable' ?>">
-                            <?= $room['is_available'] ? 'Available' : 'Unavailable' ?>
-                        </span>
+    <div class="map-main-container">
+        <div class="map-container">
+            <!-- Page Header -->
+            <div class="map-header">
+                <div class="page-header">
+                    <a href="../../pages/user/dashboard.php" class="btn-back" title="Back to Dashboard">
+                        <i class="fas fa-arrow-left"></i>
+                    </a>
+                    <div class="page-title">
+                        <h1>Campus Map Navigation</h1>
+                        <div class="subtitle">Interactive campus map with room information and navigation</div>
                     </div>
-                <?php endforeach; ?>
+                </div>
+
+                <div class="zoom-indicator">
+                    <i class="fas fa-search"></i>
+                    <span>Zoom: <strong id="zoomLevel">100%</strong></span>
+                </div>
             </div>
 
-            <div class="legend">
-                <strong style="font-size: 13px;">Legend</strong>
-                <div class="legend-item">
-                    <div class="legend-color" style="background: #4CAF50;"></div>
-                    <span>Available Room</span>
+            <!-- Main Content Area -->
+            <div class="map-content">
+                <!-- Map Viewer -->
+                <div class="map-viewer">
+                    <div class="map-viewer-header">
+                        <h2><i class="fas fa-map"></i> Campus Map</h2>
+                    </div>
+
+                    <div class="map-display-container">
+                        <div id="mapWrapper">
+                            <div id="mapContainer">
+                                <iframe id="campusMap"
+                                    src="../../assets/img/UC-MAIN-UPDATED%20(WITH%20DIMENSIONS)-1.svg"
+                                    title="University Campus Map" loading="lazy" referrerpolicy="no-referrer"></iframe>
+                            </div>
+                        </div>
+
+                        <div class="map-controls">
+                            <button class="map-control-btn" onclick="zoomIn()" title="Zoom In">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                            <button class="map-control-btn" onclick="zoomOut()" title="Zoom Out">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <button class="map-control-btn" onclick="resetZoom()" title="Reset Zoom">
+                                <i class="fas fa-sync-alt"></i>
+                            </button>
+                            <button class="map-control-btn" onclick="fitToScreen()" title="Fit to Screen">
+                                <i class="fas fa-expand"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="map-info-panel">
+                        <div>
+                            <strong>Selected Room:</strong>
+                            <span id="selectedRoomInfo" class="ms-1">None</span>
+                        </div>
+                        <div>
+                            <i class="fas fa-mouse-pointer me-1"></i>
+                            <span>Click on rooms in the sidebar to highlight them</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="legend-item">
-                    <div class="legend-color" style="background: #f44336;"></div>
-                    <span>Unavailable/Renovation</span>
+
+                <!-- Sidebar with Room List -->
+                <div class="map-sidebar">
+                    <div class="sidebar-header">
+                        <h3><i class="fas fa-building"></i> Available Rooms</h3>
+                    </div>
+
+                    <div class="sidebar-content">
+                        <div class="search-container">
+                            <input type="text" id="searchRooms" class="search-box"
+                                placeholder="Search rooms by name or type...">
+                        </div>
+
+                        <div id="roomsList">
+                            <?php if (empty($rooms)): ?>
+                                <div class="text-center py-4 text-muted">
+                                    <i class="fas fa-door-closed fa-2x mb-3"></i>
+                                    <p>No rooms available at the moment.</p>
+                                </div>
+                            <?php else: ?>
+                                <?php foreach ($rooms as $room): ?>
+                                    <div class="room-item <?= !$room['is_available'] ? 'unavailable' : '' ?>"
+                                        data-room-id="<?= $room['id'] ?>"
+                                        data-room-name="<?= htmlspecialchars($room['room_name']) ?>"
+                                        data-room-type="<?= htmlspecialchars($room['room_type']) ?>"
+                                        data-room-capacity="<?= $room['capacity'] ?? 0 ?>"
+                                        data-room-location="<?= htmlspecialchars($room['location_description'] ?? '') ?>">
+                                        <div class="room-item-name">
+                                            <span><?= htmlspecialchars($room['room_name']) ?></span>
+                                            <?php if ($room['capacity']): ?>
+                                                <small class="text-muted"><?= $room['capacity'] ?> seats</small>
+                                            <?php endif; ?>
+                                        </div>
+                                        <div class="room-item-type">
+                                            <i
+                                                class="fas fa-<?= $room['room_type'] === 'Classroom' ? 'chalkboard-teacher' :
+                                                    ($room['room_type'] === 'Laboratory' ? 'flask' :
+                                                        ($room['room_type'] === 'Office' ? 'user-tie' : 'building')) ?>"></i>
+                                            <?= htmlspecialchars($room['room_type']) ?>
+                                        </div>
+                                        <?php if ($room['location_description']): ?>
+                                            <div class="room-item-capacity">
+                                                <i class="fas fa-map-marker-alt"></i>
+                                                <span><?= htmlspecialchars($room['location_description']) ?></span>
+                                            </div>
+                                        <?php endif; ?>
+                                        <span class="room-status <?= $room['is_available'] ? 'available' : 'unavailable' ?>">
+                                            <i
+                                                class="fas fa-<?= $room['is_available'] ? 'check-circle' : 'times-circle' ?>"></i>
+                                            <?= $room['is_available'] ? 'Available' : 'Unavailable' ?>
+                                        </span>
+                                    </div>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+
+                    <div class="sidebar-footer">
+                        <div class="legend-title">
+                            <i class="fas fa-key"></i>
+                            <span>Legend</span>
+                        </div>
+                        <div class="legend-items">
+                            <div class="legend-item">
+                                <div class="legend-color" style="background: var(--available-color);"></div>
+                                <span>Available Room</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color" style="background: var(--unavailable-color);"></div>
+                                <span>Unavailable / Under Renovation</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color"
+                                    style="background: var(--accent-blue); border: 2px solid #ffffff;"></div>
+                                <span>Selected Room</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
+
+    <!-- JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../../assets/js/jquery.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Initialize variables
+            let currentZoom = 1;
+            const minZoom = 0.3;
+            const maxZoom = 3;
+            const zoomStep = 0.2;
+            let selectedRoom = null;
+
+            // DOM Elements
+            const roomsList = document.getElementById('roomsList');
+            const searchBox = document.getElementById('searchRooms');
+            const selectedRoomInfo = document.getElementById('selectedRoomInfo');
+            const zoomLevel = document.getElementById('zoomLevel');
+            const mapContainer = document.getElementById('mapContainer');
+            const mapWrapper = document.getElementById('mapWrapper');
+
+            // Apply initial zoom
+            applyZoom();
+
+            // Search functionality
+            searchBox.addEventListener('input', function () {
+                const searchTerm = this.value.toLowerCase().trim();
+                const roomItems = roomsList.querySelectorAll('.room-item');
+
+                roomItems.forEach(item => {
+                    const roomName = item.dataset.roomName.toLowerCase();
+                    const roomType = item.dataset.roomType.toLowerCase();
+                    const location = item.dataset.roomLocation.toLowerCase();
+
+                    if (searchTerm === '' ||
+                        roomName.includes(searchTerm) ||
+                        roomType.includes(searchTerm) ||
+                        location.includes(searchTerm)) {
+                        item.style.display = 'flex';
+                        item.style.flexDirection = 'column';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            });
+
+            // Room selection
+            roomsList.addEventListener('click', function (e) {
+                const roomItem = e.target.closest('.room-item');
+                if (roomItem) {
+                    // Remove previous selection
+                    roomsList.querySelectorAll('.room-item').forEach(item => {
+                        item.classList.remove('selected-room');
+                    });
+
+                    // Add selection to clicked room
+                    roomItem.classList.add('selected-room');
+                    selectedRoom = roomItem.dataset.roomId;
+
+                    // Update info panel
+                    selectedRoomInfo.textContent = roomItem.dataset.roomName;
+
+                    // Scroll to show selected room
+                    roomItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+                    // TODO: Highlight room on map (if coordinates are available)
+                    highlightRoomOnMap(roomItem.dataset.roomName);
+                }
+            });
+
+            // Zoom functionality
+            window.zoomIn = function () {
+                if (currentZoom < maxZoom) {
+                    currentZoom += zoomStep;
+                    applyZoom();
+                }
+            };
+
+            window.zoomOut = function () {
+                if (currentZoom > minZoom) {
+                    currentZoom -= zoomStep;
+                    applyZoom();
+                }
+            };
+
+            window.resetZoom = function () {
+                currentZoom = 1;
+                applyZoom();
+            };
+
+            window.fitToScreen = function () {
+                const wrapperRect = mapWrapper.getBoundingClientRect();
+                const containerRect = mapContainer.getBoundingClientRect();
+
+                // Calculate zoom to fit container within wrapper
+                const scaleX = wrapperRect.width / containerRect.width;
+                const scaleY = wrapperRect.height / containerRect.height;
+                currentZoom = Math.min(scaleX, scaleY) * 0.95; // 95% to add some padding
+
+                // Ensure zoom stays within bounds
+                currentZoom = Math.max(minZoom, Math.min(currentZoom, maxZoom));
+                applyZoom();
+
+                // Center the map
+                mapWrapper.scrollLeft = (containerRect.width * currentZoom - wrapperRect.width) / 2;
+                mapWrapper.scrollTop = (containerRect.height * currentZoom - wrapperRect.height) / 2;
+            };
+
+            function applyZoom() {
+                mapContainer.style.transform = `scale(${currentZoom})`;
+                zoomLevel.textContent = `${Math.round(currentZoom * 100)}%`;
+
+                // Update wrapper scroll behavior
+                updateWrapperScroll();
+            }
+
+            function updateWrapperScroll() {
+                // Adjust scroll position to maintain center-ish view
+                const scrollLeft = mapWrapper.scrollLeft;
+                const scrollTop = mapWrapper.scrollTop;
+                const scaleChange = currentZoom / (parseFloat(mapContainer.style.transform?.replace('scale(', '') || 1));
+
+                if (scaleChange !== 1) {
+                    const newScrollLeft = scrollLeft * scaleChange;
+                    const newScrollTop = scrollTop * scaleChange;
+
+                    // Use requestAnimationFrame for smooth transition
+                    requestAnimationFrame(() => {
+                        mapWrapper.scrollLeft = newScrollLeft;
+                        mapWrapper.scrollTop = newScrollTop;
+                    });
+                }
+            }
+
+            // Mouse wheel zoom support
+            mapWrapper.addEventListener('wheel', function (e) {
+                if (e.ctrlKey || e.metaKey) {
+                    e.preventDefault();
+
+                    const rect = mapWrapper.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+
+                    const oldScale = currentZoom;
+
+                    if (e.deltaY < 0) {
+                        // Zoom in
+                        if (currentZoom < maxZoom) {
+                            currentZoom += zoomStep;
+                        }
+                    } else {
+                        // Zoom out
+                        if (currentZoom > minZoom) {
+                            currentZoom -= zoomStep;
+                        }
+                    }
+
+                    if (oldScale !== currentZoom) {
+                        // Calculate new scroll position to zoom around cursor
+                        const scaleChange = currentZoom / oldScale;
+                        mapWrapper.scrollLeft = x * scaleChange - (x - mapWrapper.scrollLeft);
+                        mapWrapper.scrollTop = y * scaleChange - (y - mapWrapper.scrollTop);
+
+                        applyZoom();
+                    }
+                }
+            }, { passive: false });
+
+            // Touch gesture support for mobile
+            let initialDistance = null;
+
+            mapWrapper.addEventListener('touchstart', function (e) {
+                if (e.touches.length === 2) {
+                    e.preventDefault();
+                    initialDistance = getTouchDistance(e.touches[0], e.touches[1]);
+                }
+            }, { passive: false });
+
+            mapWrapper.addEventListener('touchmove', function (e) {
+                if (e.touches.length === 2 && initialDistance !== null) {
+                    e.preventDefault();
+                    const currentDistance = getTouchDistance(e.touches[0], e.touches[1]);
+                    const scaleChange = currentDistance / initialDistance;
+
+                    const newZoom = currentZoom * scaleChange;
+                    if (newZoom >= minZoom && newZoom <= maxZoom) {
+                        currentZoom = newZoom;
+                        applyZoom();
+                    }
+                }
+            }, { passive: false });
+
+            mapWrapper.addEventListener('touchend', function (e) {
+                if (e.touches.length < 2) {
+                    initialDistance = null;
+                }
+            });
+
+            function getTouchDistance(touch1, touch2) {
+                const dx = touch1.clientX - touch2.clientX;
+                const dy = touch1.clientY - touch2.clientY;
+                return Math.sqrt(dx * dx + dy * dy);
+            }
+
+            // Highlight room on map (placeholder function)
+            function highlightRoomOnMap(roomName) {
+                console.log(`Highlighting room: ${roomName}`);
+                // This function would need to interface with the SVG map
+                // For now, we'll just show a message
+                selectedRoomInfo.textContent = `${roomName} (Click to navigate)`;
+            }
+
+            // Initialize with first available room selected
+            const firstAvailableRoom = roomsList.querySelector('.room-item:not(.unavailable)');
+            if (firstAvailableRoom) {
+                firstAvailableRoom.click();
+            }
+
+            // Fit map to screen on initial load
+            setTimeout(() => {
+                fitToScreen();
+            }, 500);
+        });
+    </script>
+
+
+
+    <!-- Favicon Script -->
+    <script>
+        (function () {
+            const faviconUrl = "https://res.cloudinary.com/deua2yipj/image/upload/v1758917007/ChronoNav_logo_muon27.png";
+
+            // Remove any existing favicons
+            document.querySelectorAll('link[rel="icon"], link[rel="shortcut icon"]').forEach(link => link.remove());
+
+            // Create a new favicon link
+            const link = document.createElement("link");
+            link.rel = "icon";
+            link.type = "image/png";
+            link.href = faviconUrl;
+
+            // Append to head
+            document.head.appendChild(link);
+        })();
+    </script>
+
+    <?php require_once '../../templates/footer.php'; ?>
+
+    <?php include('../../includes/semantics/footer.php'); ?>
+</body>
+
+</html>
+
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const roomsList = document.getElementById('roomsList');
-    const searchBox = document.getElementById('searchRooms');
-    const selectedRoomInfo = document.getElementById('selectedRoomInfo');
-
-    // Search functionality
-    searchBox.addEventListener('keyup', function() {
-        const searchTerm = this.value.toLowerCase();
-        const roomItems = roomsList.querySelectorAll('.room-item');
-        
-        roomItems.forEach(item => {
-            const roomName = item.dataset.roomName.toLowerCase();
-            if (roomName.includes(searchTerm)) {
-                item.style.display = 'block';
-            } else {
-                item.style.display = 'none';
-            }
-        });
-    });
-
-    // Room selection
-    roomsList.addEventListener('click', function(e) {
-        const roomItem = e.target.closest('.room-item');
-        if (roomItem) {
-            // Remove previous selection
-            roomsList.querySelectorAll('.room-item').forEach(item => {
-                item.classList.remove('selected-room');
-            });
-            
-            // Add selection to clicked room
-            roomItem.classList.add('selected-room');
-            selectedRoomInfo.textContent = roomItem.dataset.roomName;
-        }
-    });
-});
-
-// Map Zoom Functionality
-let currentZoom = 1;
-const minZoom = 0.5;
-const maxZoom = 3;
-const zoomStep = 0.2;
-
-function zoomIn() {
-    if (currentZoom < maxZoom) {
-        currentZoom += zoomStep;
-        applyZoom();
-    }
-}
-
-function zoomOut() {
-    if (currentZoom > minZoom) {
-        currentZoom -= zoomStep;
-        applyZoom();
-    }
-}
-
-function resetZoom() {
-    currentZoom = 1;
-    applyZoom();
-}
-
-function applyZoom() {
-    const mapContainer = document.getElementById('mapContainer');
-    const campusMap = document.getElementById('campusMap');
-    const zoomLevel = document.getElementById('zoomLevel');
-    
-    // Apply zoom to the container
-    mapContainer.style.transform = `scale(${currentZoom})`;
-    mapContainer.style.transformOrigin = '0 0';
-    
-    // Adjust height based on zoom level
-    const baseHeight = 600;
-    mapContainer.style.height = (baseHeight * currentZoom) + 'px';
-    
-    // Update zoom display
-    zoomLevel.textContent = `Zoom: ${Math.round(currentZoom * 100)}%`;
-}
-
-// Mouse wheel zoom support
-document.getElementById('mapContainer').addEventListener('wheel', function(e) {
-    e.preventDefault();
-    
-    if (e.deltaY < 0) {
-        // Scroll up - zoom in
-        zoomIn();
-    } else {
-        // Scroll down - zoom out
-        zoomOut();
-    }
-}, { passive: false });
+    document.body.style.backgroundColor = "#ffffff";
 </script>
-
-<?php require_once '../../templates/footer.php'; ?>

@@ -41,7 +41,6 @@ if ($stmt) {
     $profile_img_src = '../../uploads/profiles/default-avatar.png';
 }
 
-
 // Set variables for header and sidenav
 $page_title = "Report Generator";
 $current_page = "report_generator"; // For sidenav highlighting
@@ -86,7 +85,6 @@ if (!empty($end_date)) {
     $expected_sessions_end_condition = "CONCAT(cs_sub.session_date, ' 23:59:59') <= '" . $conn->real_escape_string($end_date) . "'";
     // If it was meant to be bound, the condition would be `?` and you'd add to main params for binding.
 }
-
 
 // SQL query to fetch report data
 $sql = "
@@ -140,7 +138,6 @@ if (!empty($end_date)) {
 $sql .= " GROUP BY u.id, u.name, c.class_id, c.class_code, c.class_name, c.semester, c.academic_year
           ORDER BY u.name, c.class_name";
 
-
 // Prepare and execute the main report query
 $stmt_report = $conn->prepare($sql);
 if ($stmt_report === false) {
@@ -170,6 +167,345 @@ require_once '../../templates/admin/sidenav_admin.php'; // Sidenav is included h
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 <link rel="stylesheet" href="../../assets/css/admin_css/report_generator.css">
+
+<style>
+    body {
+        padding-top: 0px;
+        background-color: #ffffff;
+        font-family: "Space Grotesk", "Noto Sans", sans-serif;
+    }
+
+    .main-content-wrapper {
+        margin-left: 20%;
+        padding: 20px 35px;
+        min-height: 100vh;
+        background-color: #ffffff;
+    }
+
+    /* Header styling */
+    h2 {
+        font-size: 28px;
+        font-weight: bold;
+        color: #101518;
+        margin-bottom: 20px;
+    }
+
+    h4 {
+        font-size: 20px;
+        font-weight: 600;
+        color: #101518;
+        margin-bottom: 20px;
+    }
+
+    /* Card styling */
+    .card {
+        border: none;
+        border-radius: 0.75rem;
+        background: white;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        margin-bottom: 25px;
+    }
+
+    .card.p-4 {
+        padding: 25px !important;
+    }
+
+    /* Alert styling */
+    .alert {
+        border-radius: 0.75rem;
+        border: none;
+        padding: 16px 20px;
+        margin-bottom: 20px;
+    }
+
+    .alert-info {
+        background-color: #dbeafe;
+        color: #1e40af;
+    }
+
+    .alert-success {
+        background-color: #d1fae5;
+        color: #065f46;
+    }
+
+    .alert-warning {
+        background-color: #fef3c7;
+        color: #92400e;
+    }
+
+    .alert-danger {
+        background-color: #fee2e2;
+        color: #991b1b;
+    }
+
+    /* Form styling */
+    .form-label {
+        font-size: 14px;
+        font-weight: 500;
+        color: #374151;
+        margin-bottom: 6px;
+    }
+
+    .form-select,
+    .form-control {
+        border-radius: 0.5rem;
+        border: 1px solid #d1d5db;
+        padding: 10px 12px;
+        font-size: 14px;
+        color: #101518;
+        background-color: white;
+    }
+
+    .form-select:focus,
+    .form-control:focus {
+        border-color: #2e78c6;
+        box-shadow: 0 0 0 3px rgba(46, 120, 198, 0.1);
+        outline: none;
+    }
+
+    /* Button styling */
+    .btn {
+        border-radius: 9999px;
+        font-weight: 500;
+        font-size: 0.875rem;
+        padding: 10px 20px;
+        border: none;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary {
+        background-color: #2e78c6;
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background-color: #2563eb;
+        transform: translateY(-1px);
+    }
+
+    .btn-danger {
+        background-color: #dc3545;
+        color: white;
+    }
+
+    .btn-danger:hover {
+        background-color: #c82333;
+        transform: translateY(-1px);
+    }
+
+    /* Table styling */
+    .table-responsive {
+        border-radius: 0.75rem;
+        overflow: hidden;
+        border: 1px solid #e5e7eb;
+    }
+
+    .report-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .report-table thead th {
+        background-color: #eaedf1;
+        color: #101518;
+        font-weight: 600;
+        font-size: 14px;
+        padding: 16px 12px;
+        border-bottom: 2px solid #d1d5db;
+        text-align: left;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+    }
+
+    .report-table tbody td {
+        padding: 14px 12px;
+        font-size: 14px;
+        color: #374151;
+        border-bottom: 1px solid #f1f3f4;
+    }
+
+    .report-table tbody tr {
+        transition: background-color 0.2s ease;
+    }
+
+    .report-table tbody tr:hover {
+        background-color: #f9fafb;
+    }
+
+    .report-table tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    /* Filter section styling */
+    .report-filters .row {
+        margin-bottom: 0;
+    }
+
+    .report-filters .col-md-2 {
+        display: flex;
+        align-items: flex-end;
+    }
+
+    /* Header actions */
+    .d-flex.justify-content-between.align-items-center {
+        margin-bottom: 20px;
+    }
+
+    /* Scrollbar styling */
+    ::-webkit-scrollbar {
+        width: 12px;
+        height: 12px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: #ffffff;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background-color: #737373;
+        border-radius: 6px;
+        border: 3px solid #ffffff;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background-color: #2e78c6;
+    }
+
+    /* Responsive styles */
+    @media (max-width: 767px) {
+        .main-content-wrapper {
+            margin-left: 0;
+            padding: 15px;
+        }
+
+        h2 {
+            font-size: 22px;
+        }
+
+        h4 {
+            font-size: 18px;
+        }
+
+        .card.p-4 {
+            padding: 20px !important;
+        }
+
+        .report-filters .row {
+            gap: 15px;
+        }
+
+        .report-filters .col-md-4,
+        .report-filters .col-md-3,
+        .report-filters .col-md-2 {
+            width: 100%;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .report-table thead th,
+        .report-table tbody td {
+            padding: 12px 8px;
+            font-size: 13px;
+        }
+
+        .d-flex.justify-content-between.align-items-center {
+            flex-direction: column;
+            gap: 15px;
+            align-items: flex-start;
+        }
+
+        .btn {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+
+    @media (min-width: 768px) and (max-width: 1023px) {
+        .main-content-wrapper {
+            margin-left: 80px;
+            padding: 20px 25px;
+        }
+
+        h2 {
+            font-size: 24px;
+        }
+
+        h4 {
+            font-size: 19px;
+        }
+
+        .report-table thead th,
+        .report-table tbody td {
+            padding: 14px 10px;
+            font-size: 13.5px;
+        }
+    }
+
+    @media (min-width: 1024px) {
+        .main-content-wrapper {
+            margin-left: 20%;
+            padding: 20px 35px;
+        }
+    }
+
+    /* Additional utility classes */
+    .text-center {
+        text-align: center;
+    }
+
+    .m-0 {
+        margin: 0;
+    }
+
+    .mb-3 {
+        margin-bottom: 20px !important;
+    }
+
+    .mb-4 {
+        margin-bottom: 25px !important;
+    }
+
+    .py-4 {
+        padding-top: 25px;
+        padding-bottom: 25px;
+    }
+
+    /* Icon styling */
+    .fas {
+        font-size: 16px;
+    }
+
+    .me-2 {
+        margin-right: 8px;
+    }
+
+    /* Table row highlighting for percentages */
+    .report-table tbody td:contains("%") {
+        font-weight: 600;
+    }
+
+    /* Percentage colors */
+    .attendance-high {
+        color: #28a745;
+        font-weight: 600;
+    }
+
+    .attendance-medium {
+        color: #ffc107;
+        font-weight: 600;
+    }
+
+    .attendance-low {
+        color: #dc3545;
+        font-weight: 600;
+    }
+</style>
+
 <div class="main-content-wrapper">
     <div class="container-fluid py-4">
         <h2 class="mb-4"><?= $page_title ?></h2>
@@ -249,6 +585,16 @@ require_once '../../templates/admin/sidenav_admin.php'; // Sidenav is included h
                                         $attendance_percentage = ($row['total_attendance_marked'] / $possible_records) * 100;
                                     }
                                 }
+                                
+                                // Determine attendance percentage class
+                                $attendance_class = '';
+                                if ($attendance_percentage >= 80) {
+                                    $attendance_class = 'attendance-high';
+                                } elseif ($attendance_percentage >= 60) {
+                                    $attendance_class = 'attendance-medium';
+                                } elseif ($attendance_percentage > 0) {
+                                    $attendance_class = 'attendance-low';
+                                }
                                 ?>
                                 <tr>
                                     <td><?php echo htmlspecialchars($row['faculty_name']); ?></td>
@@ -257,7 +603,7 @@ require_once '../../templates/admin/sidenav_admin.php'; // Sidenav is included h
                                     <td><?php echo htmlspecialchars($row['semester'] ?? 'N/A') . ' (' . htmlspecialchars($row['academic_year'] ?? 'N/A') . ')'; ?></td>
                                     <td><?php echo htmlspecialchars($row['total_sessions_recorded']); ?></td>
                                     <td><?php echo htmlspecialchars($row['total_expected_sessions']); ?></td>
-                                    <td><?php echo number_format($attendance_percentage, 2); ?>%</td>
+                                    <td class="<?= $attendance_class ?>"><?php echo number_format($attendance_percentage, 2); ?>%</td>
                                     <td><?php echo htmlspecialchars($row['total_students_in_class']); ?></td>
                                     <td><?php echo htmlspecialchars($row['total_present']); ?></td>
                                     <td><?php echo htmlspecialchars($row['total_absent']); ?></td>
@@ -274,6 +620,26 @@ require_once '../../templates/admin/sidenav_admin.php'; // Sidenav is included h
 
 <script src="../../assets/js/jquery.min.js"></script>
 <script src="../../assets/js/script.js"></script>
+
+<script>
+    // Add percentage color highlighting dynamically
+    document.addEventListener('DOMContentLoaded', function() {
+        const percentageCells = document.querySelectorAll('.report-table td');
+        percentageCells.forEach(cell => {
+            if (cell.textContent.includes('%')) {
+                const percentage = parseFloat(cell.textContent);
+                if (percentage >= 80) {
+                    cell.classList.add('attendance-high');
+                } else if (percentage >= 60) {
+                    cell.classList.add('attendance-medium');
+                } else if (percentage > 0) {
+                    cell.classList.add('attendance-low');
+                }
+            }
+        });
+    });
+</script>
+
 <?php
 // Include the common footer which closes <body> and <html> and includes common JS
 include_once '../../templates/footer.php';
