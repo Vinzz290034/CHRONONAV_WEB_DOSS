@@ -283,6 +283,469 @@ require_once '../../templates/admin/header_admin.php';
                 width: 100%;
             }
         }
+
+
+
+        /* ====================================================================== */
+        /* Dark Mode Overrides for Office Hours Requests Page                     */
+        /* ====================================================================== */
+        body.dark-mode {
+            background-color: #121A21 !important;
+            color: #E5E8EB !important;
+        }
+
+        body.dark-mode .layout-container {
+            background-color: #121A21 !important;
+        }
+
+        body.dark-mode .layout-content-container {
+            background-color: #121A21 !important;
+        }
+
+        /* Page titles */
+        body.dark-mode .page-title {
+            color: #E5E8EB !important;
+        }
+
+        body.dark-mode .section-title {
+            color: #E5E8EB !important;
+            border-bottom: 1px solid #263645 !important;
+        }
+
+        /* Cards */
+        body.dark-mode .card {
+            background-color: #263645 !important;
+            border: 1px solid #121A21 !important;
+            color: #E5E8EB !important;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important;
+        }
+
+        /* Form labels and inputs */
+        body.dark-mode .form-label {
+            color: #E5E8EB !important;
+        }
+
+        body.dark-mode .form-control,
+        body.dark-mode .form-select,
+        body.dark-mode textarea.form-control {
+            background-color: #121A21 !important;
+            border: 1px solid #263645 !important;
+            color: #E5E8EB !important;
+        }
+
+        body.dark-mode .form-control:focus,
+        body.dark-mode .form-select:focus,
+        body.dark-mode textarea.form-control:focus {
+            background-color: #121A21 !important;
+            border-color: #1C7DD6 !important;
+            color: #E5E8EB !important;
+            box-shadow: 0 0 0 0.2rem rgba(28, 125, 214, 0.25) !important;
+        }
+
+        body.dark-mode .form-control::placeholder {
+            color: #94ADC7 !important;
+        }
+
+        /* Input group */
+        body.dark-mode .input-group-text {
+            background-color: #121A21 !important;
+            border: 1px solid #263645 !important;
+            color: #94ADC7 !important;
+        }
+
+        /* Buttons */
+        body.dark-mode .btn-primary {
+            background-color: #1C7DD6 !important;
+            border-color: #1C7DD6 !important;
+            color: #FFFFFF !important;
+        }
+
+        body.dark-mode .btn-primary:hover {
+            background-color: #1a6fc0 !important;
+            border-color: #1a6fc0 !important;
+        }
+
+        body.dark-mode .btn-success {
+            background-color: #28a745 !important;
+            border-color: #28a745 !important;
+            color: #ffffff !important;
+        }
+
+        body.dark-mode .btn-success:hover {
+            background-color: #218838 !important;
+            border-color: #218838 !important;
+        }
+
+        body.dark-mode .btn-info {
+            background-color: #0dcaf0 !important;
+            border-color: #0dcaf0 !important;
+            color: #000000 !important;
+        }
+
+        body.dark-mode .btn-info:hover {
+            background-color: #31d2f2 !important;
+            border-color: #31d2f2 !important;
+            color: #000000 !important;
+        }
+
+        body.dark-mode .btn-danger {
+            background-color: #dc3545 !important;
+            border-color: #dc3545 !important;
+            color: #ffffff !important;
+        }
+
+        body.dark-mode .btn-danger:hover {
+            background-color: #bb2d3b !important;
+            border-color: #bb2d3b !important;
+        }
+
+        body.dark-mode .btn-secondary {
+            background-color: #263645 !important;
+            border-color: #263645 !important;
+            color: #94ADC7 !important;
+        }
+
+        body.dark-mode .btn-secondary:hover {
+            background-color: #121A21 !important;
+            border-color: #121A21 !important;
+            color: #E5E8EB !important;
+        }
+
+        /* Text colors */
+        body.dark-mode .info-text {
+            color: #E5E8EB !important;
+        }
+
+        body.dark-mode .empty-state-text {
+            background-color: #0D47A1 !important;
+            color: #BBDEFB !important;
+            border: 1px solid #1565C0 !important;
+        }
+
+        body.dark-mode .text-muted {
+            color: #94ADC7 !important;
+        }
+
+        /* Table styling */
+        body.dark-mode .table {
+            background-color: #263645 !important;
+            color: #E5E8EB !important;
+        }
+
+        body.dark-mode .table th {
+            background-color: #121A21 !important;
+            color: #E5E8EB !important;
+            border-bottom: 1px solid #263645 !important;
+        }
+
+        body.dark-mode .table td {
+            color: #E5E8EB !important;
+            border-bottom: 1px solid #121A21 !important;
+        }
+
+        body.dark-mode .table-hover tbody tr:hover {
+            background-color: rgba(28, 125, 214, 0.1) !important;
+        }
+
+        /* Badges */
+        body.dark-mode .badge {
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+        }
+
+        body.dark-mode .badge.bg-success {
+            background-color: #1B5E20 !important;
+            color: #C8E6C9 !important;
+            border: 1px solid #2E7D32 !important;
+        }
+
+        body.dark-mode .badge.bg-warning {
+            background-color: #E65100 !important;
+            color: #FFECB3 !important;
+            border: 1px solid #F57C00 !important;
+        }
+
+        body.dark-mode .badge.bg-info {
+            background-color: #0D47A1 !important;
+            color: #BBDEFB !important;
+            border: 1px solid #1565C0 !important;
+        }
+
+        body.dark-mode .badge.bg-danger {
+            background-color: #B71C1C !important;
+            color: #FFCDD2 !important;
+            border: 1px solid #C62828 !important;
+        }
+
+        /* Alerts */
+        body.dark-mode .alert {
+            background-color: #263645 !important;
+            border: 1px solid #121A21 !important;
+            color: #E5E8EB !important;
+        }
+
+        body.dark-mode .alert-success {
+            background-color: #1B5E20 !important;
+            color: #C8E6C9 !important;
+            border-color: #2E7D32 !important;
+        }
+
+        body.dark-mode .alert-warning {
+            background-color: #E65100 !important;
+            color: #FFECB3 !important;
+            border-color: #F57C00 !important;
+        }
+
+        body.dark-mode .alert-danger {
+            background-color: #B71C1C !important;
+            color: #FFCDD2 !important;
+            border-color: #C62828 !important;
+        }
+
+        body.dark-mode .alert-info {
+            background-color: #0D47A1 !important;
+            color: #BBDEFB !important;
+            border-color: #1565C0 !important;
+        }
+
+        /* Modal styling */
+        body.dark-mode .modal-content {
+            background-color: #263645 !important;
+            border: 1px solid #121A21 !important;
+            color: #E5E8EB !important;
+        }
+
+        body.dark-mode .modal-header {
+            background-color: #121A21 !important;
+            border-bottom: 1px solid #263645 !important;
+        }
+
+        body.dark-mode .modal-title {
+            color: #E5E8EB !important;
+        }
+
+        body.dark-mode .modal-body {
+            color: #E5E8EB !important;
+        }
+
+        body.dark-mode .modal-footer {
+            background-color: #121A21 !important;
+            border-top: 1px solid #263645 !important;
+        }
+
+        /* Close button */
+        body.dark-mode .btn-close {
+            filter: invert(1) grayscale(100%) brightness(200%) !important;
+        }
+
+        /* Scrollbar for dark mode */
+        body.dark-mode ::-webkit-scrollbar-track {
+            background: #121A21 !important;
+        }
+
+        body.dark-mode ::-webkit-scrollbar-thumb {
+            background-color: #263645 !important;
+            border: 3px solid #121A21 !important;
+        }
+
+        body.dark-mode ::-webkit-scrollbar-thumb:hover {
+            background-color: #1C7DD6 !important;
+        }
+
+        /* Button group actions */
+        body.dark-mode .btn-group-action .btn {
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        body.dark-mode .btn-group-action .btn:last-child {
+            margin-right: 0;
+        }
+
+        /* Strong text */
+        body.dark-mode strong {
+            color: #E5E8EB !important;
+        }
+
+        /* Small text */
+        body.dark-mode small {
+            color: #94ADC7 !important;
+        }
+
+        /* Container backgrounds */
+        body.dark-mode .container-fluid {
+            background-color: #121A21 !important;
+        }
+
+        /* Focus states */
+        body.dark-mode .btn:focus,
+        body.dark-mode .form-control:focus,
+        body.dark-mode .form-select:focus {
+            box-shadow: 0 0 0 0.2rem rgba(28, 125, 214, 0.25) !important;
+        }
+
+        /* Links */
+        body.dark-mode a {
+            color: #1C7DD6 !important;
+        }
+
+        body.dark-mode a:hover {
+            color: #94ADC7 !important;
+        }
+
+        /* Table responsive container */
+        body.dark-mode .table-responsive {
+            border-color: #121A21 !important;
+        }
+
+        /* SVG icons in buttons */
+        body.dark-mode .btn-success i {
+            color: #ffffff !important;
+        }
+
+        body.dark-mode .btn-danger i {
+            color: #ffffff !important;
+        }
+
+        body.dark-mode .btn-info i {
+            color: #000000 !important;
+        }
+
+        body.dark-mode .btn-primary i {
+            color: #ffffff !important;
+        }
+
+        /* Modal submit button states */
+        body.dark-mode #modalSubmitBtn.btn-success {
+            background-color: #28a745 !important;
+            border-color: #28a745 !important;
+            color: #ffffff !important;
+        }
+
+        body.dark-mode #modalSubmitBtn.btn-danger {
+            background-color: #dc3545 !important;
+            border-color: #dc3545 !important;
+            color: #ffffff !important;
+        }
+
+        body.dark-mode #modalSubmitBtn.btn-info {
+            background-color: #0dcaf0 !important;
+            border-color: #0dcaf0 !important;
+            color: #000000 !important;
+        }
+
+        /* Readonly inputs */
+        body.dark-mode .form-control[readonly] {
+            background-color: #121A21 !important;
+            color: #94ADC7 !important;
+            border-color: #263645 !important;
+        }
+
+        /* Time inputs */
+        body.dark-mode input[type="time"]::-webkit-calendar-picker-indicator {
+            filter: invert(1) brightness(1.5);
+        }
+
+        /* Placeholder text */
+        body.dark-mode ::placeholder {
+            color: #94ADC7 !important;
+        }
+
+        /* Textarea specific */
+        body.dark-mode textarea.form-control {
+            min-height: 144px;
+            resize: none;
+            background-color: #121A21 !important;
+            border: 1px solid #263645 !important;
+            color: #E5E8EB !important;
+        }
+
+        /* Button sizes */
+        body.dark-mode .btn-sm {
+            height: 32px;
+            padding: 4px 12px;
+            font-size: 0.875rem;
+        }
+
+        /* Media query adjustments */
+        @media (max-width: 768px) {
+            body.dark-mode .layout-content-container {
+                margin-left: 0 !important;
+                padding: 1rem !important;
+            }
+
+            body.dark-mode .card {
+                padding: 1rem !important;
+            }
+
+            body.dark-mode .btn-group-action .btn {
+                width: 100% !important;
+                margin-right: 0 !important;
+                margin-bottom: 0.5rem !important;
+            }
+
+            body.dark-mode .table-responsive {
+                margin: 0 -1rem !important;
+                width: calc(100% + 2rem) !important;
+            }
+        }
+
+        /* Form validation states */
+        body.dark-mode .is-valid {
+            border-color: #28a745 !important;
+            background-color: rgba(40, 167, 69, 0.1) !important;
+        }
+
+        body.dark-mode .is-invalid {
+            border-color: #dc3545 !important;
+            background-color: rgba(220, 53, 69, 0.1) !important;
+        }
+
+        /* Dropdowns */
+        body.dark-mode .dropdown-menu {
+            background-color: #263645 !important;
+            border: 1px solid #121A21 !important;
+            color: #E5E8EB !important;
+        }
+
+        body.dark-mode .dropdown-item {
+            color: #E5E8EB !important;
+        }
+
+        body.dark-mode .dropdown-item:hover {
+            background-color: rgba(28, 125, 214, 0.2) !important;
+            color: #FFFFFF !important;
+        }
+
+        /* Tooltips */
+        body.dark-mode .tooltip-inner {
+            background-color: #263645 !important;
+            color: #E5E8EB !important;
+        }
+
+        body.dark-mode .tooltip-arrow::before {
+            border-top-color: #263645 !important;
+        }
+
+        /* Form groups */
+        body.dark-mode .mb-3 {
+            margin-bottom: 1rem !important;
+        }
+
+        /* Modal form styling */
+        body.dark-mode #proposedScheduleDisplay {
+            color: #E5E8EB !important;
+        }
+
+        body.dark-mode #proposedScheduleDisplay strong {
+            color: #94ADC7 !important;
+        }
+
+        /* H6 headings in modal */
+        body.dark-mode h6 {
+            color: #E5E8EB !important;
+            margin-bottom: 1rem !important;
+        }
     </style>
 </head>
 
@@ -456,7 +919,8 @@ require_once '../../templates/admin/header_admin.php';
     </div>
 
     <!-- Bootstrap JS Bundle with Popper -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- JQuery Library -->
+    <script src="../../assets/js/jquery.min.js"></script>
 
     <script>
         var approveRejectModal = document.getElementById('approveRejectModal');
@@ -539,3 +1003,7 @@ require_once '../../templates/admin/header_admin.php';
 </body>
 
 </html>
+
+<script>
+    document.body.style.backgroundColor = "#ffffff";
+</script>

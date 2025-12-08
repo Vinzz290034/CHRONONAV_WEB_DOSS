@@ -52,7 +52,8 @@ if (isset($_SESSION['message'])) {
 }
 
 // --- Helper function from class_room_assignments_logic.php to fetch faculty ---
-function getFacultyUsers($conn) {
+function getFacultyUsers($conn)
+{
     $sql = "SELECT id, name FROM users WHERE role = 'faculty' AND is_active = 1 ORDER BY name ASC";
     $result = $conn->query($sql);
     $faculty = [];
@@ -65,7 +66,7 @@ function getFacultyUsers($conn) {
 }
 
 // Fetch all faculty and rooms for the new schedule form dropdowns
-$faculty_users = getFacultyUsers($conn); 
+$faculty_users = getFacultyUsers($conn);
 
 // --- Handle Add/Update Room (Existing Logic) ---
 // ... (existing room handling logic remains unchanged) ...
@@ -103,7 +104,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_room'])) {
                     $message_type = 'success';
                 } else {
                     $message = "Error adding room: " . $stmt->error;
-                    if ($conn->errno == 1062) { 
+                    if ($conn->errno == 1062) {
                         $message = "Error: A room with this name already exists.";
                     }
                     $message_type = 'danger';
@@ -139,7 +140,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['link_schedule'])) {
     $schedule_id_to_link = $_POST['schedule_id_to_link'] ?? null;
     $selected_room_id = $_POST['selected_room_id'] ?? null;
 
-    if ($schedule_id_to_link && ($selected_room_id !== null)) { 
+    if ($schedule_id_to_link && ($selected_room_id !== null)) {
         $stmt = $conn->prepare("UPDATE schedules SET room_id = ? WHERE schedule_id = ?");
         if ($stmt) {
 
@@ -997,6 +998,484 @@ require_once '../../templates/admin/sidenav_admin.php'; // Sidenav is included h
             justify-content: flex-start !important;
         }
     }
+
+
+
+
+    /* ====================================================================== */
+    /* Dark Mode Overrides for Room Manager Page                              */
+    /* ====================================================================== */
+    body.dark-mode {
+        background-color: #121A21 !important;
+        color: #E5E8EB !important;
+    }
+
+    body.dark-mode .main-dashboard-content-wrapper {
+        background-color: #121A21 !important;
+    }
+
+    body.dark-mode .main-dashboard-content {
+        background-color: #121A21 !important;
+    }
+
+    /* Page titles */
+    body.dark-mode .page-title {
+        color: #E5E8EB !important;
+    }
+
+    body.dark-mode .section-title {
+        color: #E5E8EB !important;
+    }
+
+    /* Form labels and inputs */
+    body.dark-mode .form-label-custom {
+        color: #E5E8EB !important;
+    }
+
+    body.dark-mode .form-control-custom {
+        background-color: #121A21 !important;
+        border: 1px solid #263645 !important;
+        color: #E5E8EB !important;
+    }
+
+    body.dark-mode .form-control-custom:focus {
+        background-color: #121A21 !important;
+        border-color: #1C7DD6 !important;
+        color: #E5E8EB !important;
+        box-shadow: 0 0 0 0.2rem rgba(28, 125, 214, 0.25) !important;
+    }
+
+    body.dark-mode .form-control-custom::placeholder {
+        color: #94ADC7 !important;
+    }
+
+    body.dark-mode textarea.form-control-custom {
+        background-color: #121A21 !important;
+        border: 1px solid #263645 !important;
+        color: #E5E8EB !important;
+        min-height: 144px;
+    }
+
+    /* Select dropdowns */
+    body.dark-mode .form-select {
+        background-color: #121A21 !important;
+        border: 1px solid #263645 !important;
+        color: #E5E8EB !important;
+    }
+
+    body.dark-mode .form-select:focus {
+        background-color: #121A21 !important;
+        border-color: #1C7DD6 !important;
+        color: #E5E8EB !important;
+        box-shadow: 0 0 0 0.2rem rgba(28, 125, 214, 0.25) !important;
+    }
+
+    body.dark-mode .form-select option {
+        background-color: #263645 !important;
+        color: #E5E8EB !important;
+    }
+
+    /* Buttons */
+    body.dark-mode .btn-primary-custom {
+        background-color: #1C7DD6 !important;
+        border: none !important;
+        color: #FFFFFF !important;
+    }
+
+    body.dark-mode .btn-primary-custom:hover {
+        background-color: #1a6fc0 !important;
+        color: #FFFFFF !important;
+    }
+
+    body.dark-mode .btn-light {
+        background-color: #263645 !important;
+        border: 1px solid #121A21 !important;
+        color: #94ADC7 !important;
+    }
+
+    body.dark-mode .btn-light:hover {
+        background-color: #1C7DD6 !important;
+        border-color: #1C7DD6 !important;
+        color: #FFFFFF !important;
+    }
+
+    body.dark-mode .btn-light-sm {
+        background-color: #263645 !important;
+        border: 1px solid #121A21 !important;
+        color: #94ADC7 !important;
+    }
+
+    body.dark-mode .btn-light-sm:hover {
+        background-color: #1C7DD6 !important;
+        border-color: #1C7DD6 !important;
+        color: #FFFFFF !important;
+    }
+
+    /* Specific button types */
+    body.dark-mode .btn-info {
+        background-color: #0dcaf0 !important;
+        border: none !important;
+        color: #000000 !important;
+    }
+
+    body.dark-mode .btn-info:hover {
+        background-color: #31d2f2 !important;
+        color: #000000 !important;
+    }
+
+    body.dark-mode .btn-danger {
+        background-color: #dc3545 !important;
+        border: none !important;
+        color: #ffffff !important;
+    }
+
+    body.dark-mode .btn-danger:hover {
+        background-color: #bb2d3b !important;
+        color: #ffffff !important;
+    }
+
+    body.dark-mode .btn-success {
+        background-color: #28a745 !important;
+        border: none !important;
+        color: #ffffff !important;
+    }
+
+    body.dark-mode .btn-success:hover {
+        background-color: #218838 !important;
+        color: #ffffff !important;
+    }
+
+    /* Table styling */
+    body.dark-mode .table-custom {
+        background-color: #263645 !important;
+        border: 1px solid #121A21 !important;
+        color: #E5E8EB !important;
+    }
+
+    body.dark-mode .table-custom thead th {
+        background-color: #121A21 !important;
+        color: #E5E8EB !important;
+        border-bottom: 1px solid #263645 !important;
+    }
+
+    body.dark-mode .table-custom tbody td {
+        color: #94ADC7 !important;
+        border-bottom: 1px solid #121A21 !important;
+    }
+
+    body.dark-mode .table-custom tbody .room-name {
+        color: #E5E8EB !important;
+    }
+
+    body.dark-mode .table-custom tbody tr:last-child td {
+        border-bottom: none !important;
+    }
+
+    body.dark-mode .table-responsive-custom {
+        background-color: #263645 !important;
+        border: 1px solid #121A21 !important;
+    }
+
+    /* Alerts */
+    body.dark-mode .alert {
+        background-color: #263645 !important;
+        border: 1px solid #121A21 !important;
+        color: #E5E8EB !important;
+    }
+
+    body.dark-mode .alert-success {
+        background-color: #1B5E20 !important;
+        color: #C8E6C9 !important;
+        border-color: #2E7D32 !important;
+    }
+
+    body.dark-mode .alert-danger {
+        background-color: #B71C1C !important;
+        color: #FFCDD2 !important;
+        border-color: #C62828 !important;
+    }
+
+    body.dark-mode .alert-info {
+        background-color: #0D47A1 !important;
+        color: #BBDEFB !important;
+        border-color: #1565C0 !important;
+    }
+
+    /* Badges */
+    body.dark-mode .badge.bg-primary {
+        background-color: #1C7DD6 !important;
+        color: #FFFFFF !important;
+    }
+
+    body.dark-mode .badge.bg-warning {
+        background-color: #ffc107 !important;
+        color: #000000 !important;
+    }
+
+    /* Scrollbar for dark mode */
+    body.dark-mode ::-webkit-scrollbar-track {
+        background: #121A21 !important;
+    }
+
+    body.dark-mode ::-webkit-scrollbar-thumb {
+        background-color: #263645 !important;
+        border: 3px solid #121A21 !important;
+    }
+
+    body.dark-mode ::-webkit-scrollbar-thumb:hover {
+        background-color: #1C7DD6 !important;
+    }
+
+    /* Button hover effects - specific */
+    body.dark-mode .btn-light-sm.bg-warning-subtle {
+        background-color: #263645 !important;
+        color: #94ADC7 !important;
+        border: 1px solid #121A21 !important;
+    }
+
+    body.dark-mode .btn-light-sm.bg-warning-subtle:hover {
+        background-color: #ffc107 !important;
+        color: #000000 !important;
+        border-color: #ffc107 !important;
+    }
+
+    /* Container backgrounds */
+    body.dark-mode .p-4 {
+        background-color: #121A21 !important;
+    }
+
+    body.dark-mode .d-flex.flex-wrap.gap-3 {
+        background-color: transparent !important;
+    }
+
+    /* Text colors */
+    body.dark-mode .text-center {
+        color: #E5E8EB !important;
+    }
+
+    /* Focus states */
+    body.dark-mode .btn:focus,
+    body.dark-mode .form-control-custom:focus,
+    body.dark-mode .form-select:focus {
+        box-shadow: 0 0 0 0.2rem rgba(28, 125, 214, 0.25) !important;
+    }
+
+    /* Links */
+    body.dark-mode a {
+        color: #1C7DD6 !important;
+    }
+
+    body.dark-mode a:hover {
+        color: #94ADC7 !important;
+    }
+
+    /* Mobile-specific dark mode adjustments */
+    @media (max-width: 767px) {
+        body.dark-mode .main-dashboard-content {
+            background-color: #121A21 !important;
+        }
+
+        body.dark-mode .table-responsive-custom {
+            border-color: #121A21 !important;
+        }
+
+        body.dark-mode .table-custom {
+            background-color: #263645 !important;
+        }
+
+        body.dark-mode .btn-light-sm {
+            background-color: #263645 !important;
+            color: #94ADC7 !important;
+            border: 1px solid #121A21 !important;
+        }
+    }
+
+    /* Tablet dark mode adjustments */
+    @media (min-width: 768px) and (max-width: 1023px) {
+        body.dark-mode .main-dashboard-content {
+            background-color: #121A21 !important;
+        }
+
+        body.dark-mode .table-custom {
+            background-color: #263645 !important;
+        }
+    }
+
+    /* Desktop dark mode adjustments */
+    @media (min-width: 1024px) {
+        body.dark-mode .main-dashboard-content {
+            background-color: #121A21 !important;
+        }
+
+        body.dark-mode .table-custom {
+            background-color: #263645 !important;
+        }
+    }
+
+    /* Sidebar toggle button in dark mode */
+    body.dark-mode .sidebar-toggle {
+        background: #263645 !important;
+        color: #94ADC7 !important;
+        border: 1px solid #121A21 !important;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3) !important;
+    }
+
+    body.dark-mode .sidebar-toggle:hover {
+        background-color: #1C7DD6 !important;
+        color: #FFFFFF !important;
+    }
+
+    /* Form validation states */
+    body.dark-mode .is-valid {
+        border-color: #28a745 !important;
+        background-color: rgba(40, 167, 69, 0.1) !important;
+    }
+
+    body.dark-mode .is-invalid {
+        border-color: #dc3545 !important;
+        background-color: rgba(220, 53, 69, 0.1) !important;
+    }
+
+    /* Dropdown styling */
+    body.dark-mode .dropdown-menu {
+        background-color: #263645 !important;
+        border: 1px solid #121A21 !important;
+        color: #E5E8EB !important;
+    }
+
+    body.dark-mode .dropdown-item {
+        color: #E5E8EB !important;
+    }
+
+    body.dark-mode .dropdown-item:hover {
+        background-color: rgba(28, 125, 214, 0.2) !important;
+        color: #FFFFFF !important;
+    }
+
+    /* Time inputs */
+    body.dark-mode input[type="time"]::-webkit-calendar-picker-indicator {
+        filter: invert(1) brightness(1.5);
+    }
+
+    /* Number inputs */
+    body.dark-mode input[type="number"]::-webkit-inner-spin-button,
+    body.dark-mode input[type="number"]::-webkit-outer-spin-button {
+        filter: invert(1) brightness(1.5);
+    }
+
+    /* Form text helper */
+    body.dark-mode .form-text {
+        color: #94ADC7 !important;
+    }
+
+    /* Placeholder text for select */
+    body.dark-mode option[value=""] {
+        color: #94ADC7 !important;
+    }
+
+    /* Active state for form controls */
+    body.dark-mode .form-control-custom:active,
+    body.dark-mode .form-select:active {
+        border-color: #1C7DD6 !important;
+        background-color: #121A21 !important;
+    }
+
+    /* Disabled form elements */
+    body.dark-mode .form-control-custom:disabled,
+    body.dark-mode .form-select:disabled {
+        background-color: #263645 !important;
+        color: #94ADC7 !important;
+        border-color: #121A21 !important;
+        opacity: 0.6;
+    }
+
+    /* Button disabled state */
+    body.dark-mode .btn:disabled {
+        background-color: #263645 !important;
+        color: #94ADC7 !important;
+        border: 1px solid #121A21 !important;
+        opacity: 0.6;
+    }
+
+    /* Form spacing in dark mode */
+    body.dark-mode .row.mb-2 {
+        background-color: transparent !important;
+    }
+
+    body.dark-mode .col-12.col-md-6 {
+        background-color: transparent !important;
+    }
+
+    /* Text area styling */
+    body.dark-mode textarea {
+        background-color: #121A21 !important;
+        color: #E5E8EB !important;
+    }
+
+    /* Tooltip styling */
+    body.dark-mode .tooltip-inner {
+        background-color: #263645 !important;
+        color: #E5E8EB !important;
+    }
+
+    body.dark-mode .tooltip-arrow::before {
+        border-top-color: #263645 !important;
+    }
+
+    /* Popover styling */
+    body.dark-mode .popover {
+        background-color: #263645 !important;
+        border: 1px solid #121A21 !important;
+        color: #E5E8EB !important;
+    }
+
+    body.dark-mode .popover-header {
+        background-color: #121A21 !important;
+        border-bottom: 1px solid #263645 !important;
+        color: #E5E8EB !important;
+    }
+
+    /* Modal styling (if any modals are used) */
+    body.dark-mode .modal-content {
+        background-color: #263645 !important;
+        border: 1px solid #121A21 !important;
+        color: #E5E8EB !important;
+    }
+
+    body.dark-mode .modal-header {
+        background-color: #121A21 !important;
+        border-bottom: 1px solid #263645 !important;
+    }
+
+    body.dark-mode .modal-title {
+        color: #E5E8EB !important;
+    }
+
+    /* Close button styling */
+    body.dark-mode .btn-close {
+        filter: invert(1) grayscale(100%) brightness(200%) !important;
+    }
+
+    /* Form section spacing */
+    body.dark-mode form.mb-5 {
+        margin-bottom: 2rem !important;
+        background-color: transparent !important;
+    }
+
+    /* Table hover effect in dark mode */
+    body.dark-mode .table-custom tbody tr:hover {
+        background-color: rgba(28, 125, 214, 0.1) !important;
+    }
+
+    /* Schedule form specific styling */
+    body.dark-mode #scheduleCreationForm {
+        background-color: transparent !important;
+    }
+
+    /* Time display in tables */
+    body.dark-mode .table-custom td:nth-child(4) {
+        color: #94ADC7 !important;
+    }
 </style>
 
 
@@ -1089,14 +1568,16 @@ require_once '../../templates/admin/sidenav_admin.php'; // Sidenav is included h
                 <button type="button" class="btn-light" onclick="clearRoomForm()">Clear Form</button>
             </div>
         </form>
-        
+
         <h2 class="section-title mb-3">🗓 Create New Faculty Schedule Entry</h2>
-        <form action="../../includes/admin_add_schedule_via_room_manager_handler.php" method="POST" class="mb-5" id="scheduleCreationForm">
+        <form action="../../includes/admin_add_schedule_via_room_manager_handler.php" method="POST" class="mb-5"
+            id="scheduleCreationForm">
             <div class="row mb-2">
                 <div class="col-12 col-md-6">
                     <div class="mb-1">
                         <label class="form-label-custom">Schedule Title</label>
-                        <input type="text" class="form-control-custom" name="title" placeholder="e.g., CS 301 Lecture" required>
+                        <input type="text" class="form-control-custom" name="title" placeholder="e.g., CS 301 Lecture"
+                            required>
                     </div>
                 </div>
                 <div class="col-12 col-md-6">
@@ -1105,7 +1586,9 @@ require_once '../../templates/admin/sidenav_admin.php'; // Sidenav is included h
                         <select class="form-control-custom" name="faculty_id" required>
                             <option value="">-- Select Faculty --</option>
                             <?php foreach ($faculty_users as $faculty): ?>
-                                <option value="<?= htmlspecialchars($faculty['id']) ?>"><?= htmlspecialchars($faculty['name']) ?></option>
+                                <option value="<?= htmlspecialchars($faculty['id']) ?>">
+                                    <?= htmlspecialchars($faculty['name']) ?>
+                                </option>
                             <?php endforeach; ?>
                         </select>
                     </div>
@@ -1133,7 +1616,10 @@ require_once '../../templates/admin/sidenav_admin.php'; // Sidenav is included h
                         <select class="form-control-custom" name="room_id">
                             <option value="">-- Unassigned --</option>
                             <?php foreach ($rooms as $room): ?>
-                                <option value="<?= htmlspecialchars($room['id']) ?>"><?= htmlspecialchars($room['room_name']) ?> (Cap: <?= htmlspecialchars($room['capacity']) ?>)</option>
+                                <option value="<?= htmlspecialchars($room['id']) ?>">
+                                    <?= htmlspecialchars($room['room_name']) ?> (Cap:
+                                    <?= htmlspecialchars($room['capacity']) ?>)
+                                </option>
                             <?php endforeach; ?>
                         </select>
                     </div>
@@ -1154,12 +1640,13 @@ require_once '../../templates/admin/sidenav_admin.php'; // Sidenav is included h
                     </div>
                 </div>
             </div>
-            
-             <div class="row mb-2">
+
+            <div class="row mb-2">
                 <div class="col-12">
                     <div class="mb-1">
                         <label class="form-label-custom">Description (Optional)</label>
-                        <textarea class="form-control-custom" name="description" placeholder="A brief description or section code"></textarea>
+                        <textarea class="form-control-custom" name="description"
+                            placeholder="A brief description or section code"></textarea>
                     </div>
                 </div>
             </div>
@@ -1172,7 +1659,7 @@ require_once '../../templates/admin/sidenav_admin.php'; // Sidenav is included h
 
         <h2 class="section-title mb-3">≡ Existing Rooms</h2>
         <?php if (!empty($rooms)): ?>
-        <div class="table-responsive-custom mb-5">
+            <div class="table-responsive-custom mb-5">
                 <table class="table table-custom mb-0">
                     <thead>
                         <tr>
@@ -1220,7 +1707,7 @@ require_once '../../templates/admin/sidenav_admin.php'; // Sidenav is included h
         <?php else: ?>
             <div class="alert alert-info text-center">No rooms defined yet. Add a new room above.</div>
         <?php endif; ?>
-        
+
         <h2 class="section-title mb-3">⛓ Link Rooms to Schedules</h2>
         <?php if (!empty($schedules)): ?>
             <div class="table-responsive-custom mb-5">
@@ -1312,3 +1799,8 @@ require_once '../../templates/admin/sidenav_admin.php'; // Sidenav is included h
 // Include the common footer which closes <body> and <html> and includes common JS
 include_once '../../templates/footer.php';
 ?>
+
+
+<script>
+    document.body.style.backgroundColor = "#ffffff";
+</script>

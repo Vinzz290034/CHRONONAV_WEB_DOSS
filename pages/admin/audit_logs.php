@@ -7,7 +7,7 @@ require_once '../../includes/functions.php';
 
 requireRole(['admin']);
 
-/** @var \mysqli $conn */ 
+/** @var \mysqli $conn */
 
 $user = $_SESSION['user'];
 $current_user_id = $user['id'];
@@ -37,7 +37,6 @@ if ($stmt_admin) {
     $display_user_role = 'Admin';
     $profile_img_src = '../../uploads/profiles/default-avatar.png';
 }
-
 
 $page_title = "System Audit Logs";
 $current_page = "audit_logs";
@@ -72,7 +71,6 @@ if (!empty($action_filter)) {
 
 $where_sql = count($where_clauses) > 0 ? " WHERE " . implode(" AND ", $where_clauses) : "";
 
-
 // --- Fetch Unique Roles and Actions for Filter Dropdowns ---
 $available_roles = [];
 $result_roles = $conn->query("SELECT DISTINCT role FROM users ORDER BY role ASC");
@@ -89,7 +87,6 @@ if ($result_actions) {
         $available_actions[] = $row['action'];
     }
 }
-
 
 // --- Audit Log Fetching Logic (Modified to include filtering) ---
 $audit_logs = [];
@@ -115,7 +112,7 @@ if ($stmt_logs) {
         }
         call_user_func_array([$stmt_logs, 'bind_param'], $bind_names);
     }
-    
+
     $stmt_logs->execute();
     $result_logs = $stmt_logs->get_result();
     while ($row = $result_logs->fetch_assoc()) {
@@ -138,162 +135,768 @@ if (!empty($user['profile_img']) && file_exists('../../' . $user['profile_img'])
 require_once '../../templates/admin/header_admin.php';
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
+<style>
+    body {
+        background-color: #ffffff;
+        font-family: "Space Grotesk", "Noto Sans", sans-serif;
+    }
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= $page_title ?? 'ChronoNav - Audit Logs' ?></title>
+    .layout-content-container {
+        margin-left: 20%;
+        padding: 20px 35px;
+        min-height: 100vh;
+        background-color: #ffffff;
+    }
 
+    /* Header styling */
+    .text-dark.fw-bold.fs-3.mb-0 {
+        font-size: 28px !important;
+        font-weight: bold !important;
+        color: #101518 !important;
+        margin-bottom: 25px !important;
+    }
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    /* Card styling */
+    .card {
+        border: none;
+        border-radius: 0.75rem;
+        background: white;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        margin-bottom: 25px;
+        overflow: hidden;
+    }
 
+    .card.shadow-sm {
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05) !important;
+    }
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    .card-header {
+        background-color: #2e78c6;
+        border-bottom: none;
+        padding: 20px 25px;
+        color: white;
+        font-weight: 600;
+        border-radius: 0.75rem 0.75rem 0 0 !important;
+    }
 
+    .card-header h5 {
+        color: white;
+        margin-bottom: 0;
+        font-size: 18px;
+        font-weight: 600;
+    }
 
-    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
-    <link rel="stylesheet" as="style" onload="this.rel='stylesheet'"
-        href="https://fonts.googleapis.com/css2?display=swap&family=Noto+Sans:wght@400;500;700;900&family=Space+Grotesk:wght@400;500;700">
+    .card-header h5 i {
+        margin-right: 8px;
+    }
 
+    .card-body {
+        padding: 25px;
+    }
 
-    <link rel="icon" type="image/x-icon"
-        href="https://res.cloudinary.com/deua2yipj/image/upload/v1758917007/ChronoNav_logo_muon27.png">
+    .card-body.p-0 {
+        padding: 0 !important;
+    }
 
-    <style>
-        body {
-            font-family: "Space Grotesk", "Noto Sans", sans-serif;
-            background-color: #fff;
-        }
+    /* Alert styling */
+    .alert {
+        border-radius: 0.75rem;
+        border: none;
+        padding: 16px 20px;
+        margin-bottom: 20px;
+    }
 
-        /* Basic Layout Styles */
+    .alert-info {
+        background-color: #dbeafe;
+        color: #1e40af;
+    }
+
+    .alert-success {
+        background-color: #d1fae5;
+        color: #065f46;
+    }
+
+    .alert-warning {
+        background-color: #fef3c7;
+        color: #92400e;
+    }
+
+    .alert-danger {
+        background-color: #fee2e2;
+        color: #991b1b;
+    }
+
+    /* Form styling */
+    .form-label {
+        font-size: 14px;
+        font-weight: 500;
+        color: #374151;
+        margin-bottom: 6px;
+    }
+
+    .form-label.fw-medium {
+        font-weight: 500;
+    }
+
+    .form-select,
+    .form-select-sm {
+        border-radius: 0.5rem;
+        border: 1px solid #d1d5db;
+        padding: 10px 12px;
+        font-size: 14px;
+        color: #101518;
+        background-color: white;
+        height: 40px;
+    }
+
+    .form-select:focus,
+    .form-select-sm:focus {
+        border-color: #2e78c6;
+        box-shadow: 0 0 0 3px rgba(46, 120, 198, 0.1);
+        outline: none;
+    }
+
+    /* Button styling */
+    .btn {
+        border-radius: 9999px;
+        font-weight: 500;
+        font-size: 0.875rem;
+        padding: 10px 20px;
+        border: none;
+        transition: all 0.3s ease;
+        height: 40px;
+    }
+
+    .btn-primary-custom {
+        background-color: #2e78c6;
+        color: white;
+    }
+
+    .btn-primary-custom:hover {
+        background-color: #2563eb;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(46, 120, 198, 0.2);
+    }
+
+    .btn-light {
+        background-color: #eaedf1;
+        color: #101518;
+    }
+
+    .btn-light:hover {
+        background-color: #dce8f3;
+        transform: translateY(-1px);
+    }
+
+    .btn i {
+        margin-right: 8px;
+    }
+
+    /* Table styling */
+    .table-responsive {
+        border-radius: 0.5rem;
+        overflow: hidden;
+        border: 1px solid #e5e7eb;
+    }
+
+    .table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        margin-bottom: 0;
+    }
+
+    .table-hover tbody tr {
+        transition: background-color 0.2s ease;
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: #f9fafb;
+    }
+
+    .table th {
+        background-color: #eaedf1;
+        color: #101518;
+        font-weight: 600;
+        font-size: 14px;
+        padding: 16px 12px;
+        border-bottom: 2px solid #d1d5db;
+    }
+
+    .table td {
+        padding: 14px 12px;
+        font-size: 14px;
+        color: #374151;
+        border-bottom: 1px solid #f1f3f4;
+        vertical-align: middle;
+    }
+
+    .table tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    /* Badge styling */
+    .badge {
+        font-size: 0.75rem;
+        font-weight: 500;
+        padding: 6px 12px;
+        border-radius: 9999px;
+        white-space: nowrap;
+    }
+
+    .bg-danger {
+        background-color: #dc3545 !important;
+        color: white;
+    }
+
+    .bg-info {
+        background-color: #17a2b8 !important;
+        color: white;
+    }
+
+    .bg-success {
+        background-color: #28a745 !important;
+        color: white;
+    }
+
+    .bg-secondary {
+        background-color: #6c757d !important;
+        color: white;
+    }
+
+    .bg-warning {
+        background-color: #ffc107 !important;
+        color: #000;
+    }
+
+    /* Text utilities */
+    .text-truncate-2 {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .d-inline-block.text-truncate {
+        max-width: 250px;
+        display: inline-block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    /* Flex utilities */
+    .d-flex.flex-wrap.gap-3 {
+        gap: 20px;
+    }
+
+    .flex-grow-1 {
+        flex-grow: 1;
+        min-width: 150px;
+    }
+
+    .justify-content-end {
+        justify-content: flex-end;
+    }
+
+    /* Floating button */
+    .floating-btn {
+        background-color: #2e78c6;
+        color: white;
+        border: none;
+        border-radius: 0.75rem;
+        padding: 12px 20px;
+        font-weight: 500;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .floating-btn:hover {
+        background-color: #2563eb;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(46, 120, 198, 0.2);
+    }
+
+    /* Scrollbar styling */
+    ::-webkit-scrollbar {
+        width: 12px;
+        height: 12px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: #ffffff;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background-color: #737373;
+        border-radius: 6px;
+        border: 3px solid #ffffff;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background-color: #2e78c6;
+    }
+
+    /* Responsive styles */
+    @media (max-width: 767px) {
         .layout-content-container {
-            max-width: 80%;
-            flex: 1;
-            margin: 0 auto;
-            margin-left: 20%;
+            margin-left: 0;
+            padding: 15px;
         }
 
-
-        .main-dashboard-content {
-            padding: 2rem 1rem;
+        .text-dark.fw-bold.fs-3.mb-0 {
+            font-size: 22px !important;
+            margin-bottom: 20px !important;
         }
 
-
-        .card {
-            border: none;
-            border-radius: 0.75rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        /* Card Header Styles */
         .card-header {
-            background-color: #2E78C6;
-            border-radius: 0.75rem 0.75rem 0 0 !important;
-            border: none;
-            padding: 1rem 1.5rem;
+            padding: 15px 20px;
         }
 
         .card-header h5 {
-            color: #fff;
+            font-size: 16px;
         }
 
-        /* Table Styles */
-        .table {
-            margin-bottom: 0;
+        .card-body {
+            padding: 20px;
         }
 
-        .table th {
-            border-top: none;
-            font-weight: 600;
-            color: #0d151c;
-            background-color: #f8fafc;
-            padding: 1rem 0.75rem;
+        .d-flex.flex-wrap.align-items-end.gap-3 {
+            flex-direction: column;
+            gap: 15px;
+            align-items: stretch;
         }
 
+        .flex-grow-1 {
+            width: 100%;
+        }
+
+        .btn-primary-custom,
+        .btn-light {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .table th,
         .table td {
-            padding: 0.75rem;
-            vertical-align: middle;
-            border-color: #e7edf4;
-        }
-
-        /* Badge Colors */
-        .badge {
-            font-size: 0.75rem;
-            font-weight: 500;
-            padding: 0.375rem 0.75rem;
-            border-radius: 0.5rem;
+            padding: 12px 8px;
+            font-size: 13px;
             white-space: nowrap;
         }
 
-        .bg-danger { background-color: #dc3545 !important; }
-        .bg-info { background-color: #0dcaf0 !important; }
-        .bg-success { background-color: #198754 !important; }
-        .bg-secondary { background-color: #6c757d !important; }
-        .bg-warning { background-color: #ffc107 !important; color: #000; }
-
-        /* Button Styles */
-        .btn-primary-custom {
-            background-color: #2E78C6;
-            color: white;
-            font-weight: bold;
-            border-radius: 0.5rem;
-            padding: 0.5rem 1rem;
-            border: none;
-            height: 38px;
-        }
-        .btn-light {
-            background-color: #f0f2f5;
-            font-weight: bold;
-            border-radius: 0.5rem;
-            padding: 0.5rem 1rem;
-            border: none;
-            height: 38px;
-        }
-        
-        /* Layout and Typography */
-        .text-truncate-2 {
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
+        .badge {
+            font-size: 0.7rem;
+            padding: 4px 8px;
         }
 
-        /* Scrollbar Styling */
-        ::-webkit-scrollbar { width: 12px; height: 12px; }
-        ::-webkit-scrollbar-track { background: #ffffff; }
-        ::-webkit-scrollbar-thumb { background-color: #737373; border-radius: 6px; border: 3px solid #ffffff; }
-        ::-webkit-scrollbar-thumb:hover { background-color: #2e78c6; }
-        
-        /* Responsive styles */
-        @media (max-width: 767px) {
-            .layout-content-container { max-width: 100% !important; margin-left: 0 !important; }
-            .table-responsive { font-size: 0.875rem; }
-            .badge { font-size: 0.7rem; padding: 0.25rem 0.5rem; }
-            .d-flex.flex-wrap.gap-3 { flex-direction: column !important; align-items: stretch; }
-            .card-body { padding: 1rem; }
-            .btn-primary-custom, .btn-light { width: 100%; margin-bottom: 0.5rem; }
-            .form-select-sm { font-size: 0.8rem !important; height: 38px !important; }
+        .d-inline-block.text-truncate {
+            max-width: 150px;
         }
 
-        @media (min-width: 768px) and (max-width: 1023px) {
-            .layout-content-container { max-width: 85% !important; margin-left: 15% !important; }
-            .form-select-sm { font-size: 0.85rem !important; }
+        .floating-btn {
+            width: 100%;
+            justify-content: center;
+            margin-top: 15px;
+        }
+    }
+
+    @media (min-width: 768px) and (max-width: 1023px) {
+        .layout-content-container {
+            margin-left: 80px;
+            padding: 20px 25px;
         }
 
-        @media (min-width: 1024px) {
-            .layout-content-container { max-width: 80% !important; margin-left: 20% !important; }
+        .text-dark.fw-bold.fs-3.mb-0 {
+            font-size: 24px !important;
         }
-    </style>
-</head>
+
+        .card-header h5 {
+            font-size: 17px;
+        }
+
+        .table th,
+        .table td {
+            padding: 14px 10px;
+            font-size: 13.5px;
+        }
+    }
+
+    @media (min-width: 1024px) {
+        .layout-content-container {
+            margin-left: 20%;
+            padding: 20px 35px;
+        }
+    }
+
+    /* Additional utility classes */
+    .mb-3 {
+        margin-bottom: 20px !important;
+    }
+
+    .mb-4 {
+        margin-bottom: 25px !important;
+    }
+
+    .pt-3 {
+        padding-top: 20px;
+    }
+
+    .p-0 {
+        padding: 0 !important;
+    }
+
+    .px-5 {
+        padding-left: 35px !important;
+        padding-right: 35px !important;
+    }
+
+    .fs-3 {
+        font-size: 28px !important;
+    }
+
+    .fw-bold {
+        font-weight: 700 !important;
+    }
+
+    .fw-medium {
+        font-weight: 500 !important;
+    }
+
+    /* Icon styling */
+    .fas {
+        font-size: 16px;
+    }
+
+    .me-2 {
+        margin-right: 8px;
+    }
+
+    /* Print button */
+    .floating-btn {
+        background-color: #2e78c6;
+        color: white;
+        border: none;
+        border-radius: 0.75rem;
+        padding: 12px 20px;
+        font-weight: 500;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .floating-btn:hover {
+        background-color: #2563eb;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(46, 120, 198, 0.2);
+    }
+
+
+
+
+    /* ====================================================================== */
+/* Dark Mode Overrides for Audit Logs Page                                */
+/* ====================================================================== */
+body.dark-mode {
+    background-color: #121A21 !important;
+    color: #E5E8EB !important;
+}
+
+body.dark-mode .layout-content-container {
+    background-color: #121A21 !important;
+    color: #E5E8EB !important;
+}
+
+/* Header styling */
+body.dark-mode .text-dark.fw-bold.fs-3.mb-0 {
+    color: #E5E8EB !important;
+}
+
+/* Card styling */
+body.dark-mode .card {
+    background-color: #263645 !important;
+    border: 1px solid #121A21 !important;
+    color: #E5E8EB !important;
+}
+
+body.dark-mode .card.shadow-sm {
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Card header */
+body.dark-mode .card-header {
+    background-color: #1C7DD6 !important;
+    color: #FFFFFF !important;
+    border-bottom: 1px solid #121A21 !important;
+}
+
+body.dark-mode .card-header h5 {
+    color: #FFFFFF !important;
+}
+
+/* Alert styling */
+body.dark-mode .alert {
+    background-color: #1a2635 !important;
+    border: 1px solid #263645 !important;
+}
+
+body.dark-mode .alert-info {
+    background-color: rgba(28, 125, 214, 0.15) !important;
+    color: #94ADC7 !important;
+    border-color: #1C7DD6 !important;
+}
+
+body.dark-mode .alert-success {
+    background-color: rgba(40, 167, 69, 0.15) !important;
+    color: #94ADC7 !important;
+    border-color: #28a745 !important;
+}
+
+body.dark-mode .alert-warning {
+    background-color: rgba(255, 193, 7, 0.15) !important;
+    color: #94ADC7 !important;
+    border-color: #ffc107 !important;
+}
+
+body.dark-mode .alert-danger {
+    background-color: rgba(220, 53, 69, 0.15) !important;
+    color: #94ADC7 !important;
+    border-color: #dc3545 !important;
+}
+
+/* Form styling */
+body.dark-mode .form-label {
+    color: #E5E8EB !important;
+}
+
+body.dark-mode .form-select,
+body.dark-mode .form-select-sm {
+    background-color: #263645 !important;
+    border: 1px solid #121A21 !important;
+    color: #E5E8EB !important;
+}
+
+body.dark-mode .form-select:focus,
+body.dark-mode .form-select-sm:focus {
+    background-color: #263645 !important;
+    border-color: #1C7DD6 !important;
+    box-shadow: 0 0 0 3px rgba(28, 125, 214, 0.25) !important;
+    color: #E5E8EB !important;
+}
+
+/* Button styling */
+body.dark-mode .btn-primary-custom {
+    background-color: #1C7DD6 !important;
+    color: #FFFFFF !important;
+    border: 1px solid #1C7DD6 !important;
+}
+
+body.dark-mode .btn-primary-custom:hover {
+    background-color: #2E78C6 !important;
+    border-color: #2E78C6 !important;
+}
+
+body.dark-mode .btn-light {
+    background-color: #263645 !important;
+    color: #94ADC7 !important;
+    border: 1px solid #121A21 !important;
+}
+
+body.dark-mode .btn-light:hover {
+    background-color: #1C7DD6 !important;
+    color: #FFFFFF !important;
+    border-color: #1C7DD6 !important;
+}
+
+/* Table styling */
+body.dark-mode .table-responsive {
+    border: 1px solid #121A21 !important;
+}
+
+body.dark-mode .table {
+    background-color: #263645 !important;
+}
+
+body.dark-mode .table th {
+    background-color: #121A21 !important;
+    color: #E5E8EB !important;
+    border-bottom: 2px solid #263645 !important;
+}
+
+body.dark-mode .table td {
+    color: #E5E8EB !important;
+    border-bottom: 1px solid #121A21 !important;
+    background-color: #263645 !important;
+}
+
+body.dark-mode .table-hover tbody tr:hover {
+    background-color: #1a2635 !important;
+}
+
+body.dark-mode .table-hover tbody tr:hover td {
+    background-color: #1a2635 !important;
+}
+
+/* Badge styling */
+body.dark-mode .bg-danger {
+    background-color: #dc3545 !important;
+    color: #FFFFFF !important;
+}
+
+body.dark-mode .bg-info {
+    background-color: #17a2b8 !important;
+    color: #FFFFFF !important;
+}
+
+body.dark-mode .bg-success {
+    background-color: #28a745 !important;
+    color: #FFFFFF !important;
+}
+
+body.dark-mode .bg-secondary {
+    background-color: #6c757d !important;
+    color: #FFFFFF !important;
+}
+
+body.dark-mode .bg-warning {
+    background-color: #ffc107 !important;
+    color: #000000 !important;
+}
+
+/* Floating button */
+body.dark-mode .floating-btn {
+    background-color: #1C7DD6 !important;
+    color: #FFFFFF !important;
+    border: 1px solid #1C7DD6 !important;
+}
+
+body.dark-mode .floating-btn:hover {
+    background-color: #2E78C6 !important;
+    border-color: #2E78C6 !important;
+}
+
+/* Scrollbar styling for dark mode */
+body.dark-mode ::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+}
+
+body.dark-mode ::-webkit-scrollbar-track {
+    background: #121A21 !important;
+}
+
+body.dark-mode ::-webkit-scrollbar-thumb {
+    background-color: #263645 !important;
+    border-radius: 6px;
+    border: 3px solid #121A21 !important;
+}
+
+body.dark-mode ::-webkit-scrollbar-thumb:hover {
+    background-color: #1C7DD6 !important;
+}
+
+/* Close button for alerts */
+body.dark-mode .btn-close {
+    filter: invert(1) grayscale(100%) brightness(200%) !important;
+}
+
+/* Form dropdown options */
+body.dark-mode .form-select option {
+    background-color: #263645 !important;
+    color: #E5E8EB !important;
+}
+
+body.dark-mode .form-select option:hover,
+body.dark-mode .form-select option:focus {
+    background-color: #1C7DD6 !important;
+    color: #FFFFFF !important;
+}
+
+/* Table text truncation */
+body.dark-mode .d-inline-block.text-truncate {
+    color: #E5E8EB !important;
+}
+
+/* No data message */
+body.dark-mode .alert-info.text-center.m-4 {
+    background-color: rgba(28, 125, 214, 0.1) !important;
+    color: #94ADC7 !important;
+    border: 1px solid rgba(28, 125, 214, 0.3) !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 767px) {
+    body.dark-mode .layout-content-container {
+        background-color: #121A21 !important;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+    body.dark-mode .layout-content-container {
+        background-color: #121A21 !important;
+    }
+}
+
+@media (min-width: 1024px) {
+    body.dark-mode .layout-content-container {
+        background-color: #121A21 !important;
+    }
+}
+
+/* Print view adjustments for dark mode */
+@media print {
+    body.dark-mode {
+        background-color: white !important;
+        color: black !important;
+    }
+    
+    body.dark-mode .card,
+    body.dark-mode .table,
+    body.dark-mode .table th,
+    body.dark-mode .table td {
+        background-color: white !important;
+        color: black !important;
+        border-color: #ccc !important;
+    }
+}
+
+/* Modal styling (if any modals are used) */
+body.dark-mode .modal-content {
+    background-color: #263645 !important;
+    border: 1px solid #121A21 !important;
+    color: #E5E8EB !important;
+}
+
+body.dark-mode .modal-header {
+    background-color: #121A21 !important;
+    border-bottom: 1px solid #263645 !important;
+}
+
+body.dark-mode .modal-header .modal-title {
+    color: #E5E8EB !important;
+}
+
+body.dark-mode .modal-header .btn-close {
+    filter: invert(1) grayscale(100%) brightness(200%) !important;
+}
+</style>
 
 <body>
     <?php require_once '../../templates/admin/sidenav_admin.php'; ?>
 
     <div class="layout-content-container d-flex flex-column p-3 px-5 justify-content-end">
-
         <div class="d-flex flex-wrap justify-content-between gap-3 mb-3">
             <p class="text-dark fw-bold fs-3 mb-0" style="min-width: 288px;">System Audit Logs</p>
         </div>
@@ -318,14 +921,12 @@ require_once '../../templates/admin/header_admin.php';
             </div>
             <div class="card-body">
                 <form action="audit_logs.php" method="GET" class="d-flex flex-wrap align-items-end gap-3 mb-3">
-                    
                     <div class="flex-grow-1" style="min-width: 150px;">
                         <label for="role_filter" class="form-label fw-medium">Filter by Role</label>
                         <select name="role_filter" id="role_filter" class="form-select form-select-sm">
                             <option value="">-- All Roles --</option>
                             <?php foreach ($available_roles as $role): ?>
-                                <option value="<?= htmlspecialchars($role) ?>"
-                                    <?= ($role_filter === $role) ? 'selected' : '' ?>>
+                                <option value="<?= htmlspecialchars($role) ?>" <?= ($role_filter === $role) ? 'selected' : '' ?>>
                                     <?= htmlspecialchars(ucfirst($role)) ?>
                                 </option>
                             <?php endforeach; ?>
@@ -337,8 +938,7 @@ require_once '../../templates/admin/header_admin.php';
                         <select name="action_filter" id="action_filter" class="form-select form-select-sm">
                             <option value="">-- All Actions --</option>
                             <?php foreach ($available_actions as $action): ?>
-                                <option value="<?= htmlspecialchars($action) ?>"
-                                    <?= ($action_filter === $action) ? 'selected' : '' ?>>
+                                <option value="<?= htmlspecialchars($action) ?>" <?= ($action_filter === $action) ? 'selected' : '' ?>>
                                     <?= htmlspecialchars($action) ?>
                                 </option>
                             <?php endforeach; ?>
@@ -348,7 +948,7 @@ require_once '../../templates/admin/header_admin.php';
                     <button type="submit" class="btn btn-primary-custom">
                         <i class="fas fa-filter"></i> Apply Filter
                     </button>
-                    
+
                     <?php if (!empty($role_filter) || !empty($action_filter)): ?>
                         <a href="audit_logs.php" class="btn btn-light">
                             <i class="fas fa-times"></i> Reset
@@ -361,13 +961,15 @@ require_once '../../templates/admin/header_admin.php';
                 </button>
             </div>
         </div>
+
         <div class="card shadow-sm mb-4">
             <div class="card-header text-white">
                 <h5 class="mb-0 fw-bold">Recent Audit Activities (<?= count($audit_logs) ?> entries)</h5>
             </div>
             <div class="card-body p-0">
                 <?php if (empty($audit_logs)): ?>
-                    <div class="alert alert-info text-center m-4">No audit logs found matching the current filter criteria.</div>
+                    <div class="alert alert-info text-center m-4">No audit logs found matching the current filter criteria.
+                    </div>
                 <?php else: ?>
                     <div class="table-responsive">
                         <table class="table table-hover">
@@ -391,10 +993,18 @@ require_once '../../templates/admin/header_admin.php';
                                             <span class="badge 
                                                 <?php
                                                 switch (htmlspecialchars($log['user_role'])) {
-                                                    case 'admin': echo 'bg-danger'; break;
-                                                    case 'faculty': echo 'bg-info'; break;
-                                                    case 'user': echo 'bg-success'; break;
-                                                    default: echo 'bg-secondary'; break;
+                                                    case 'admin':
+                                                        echo 'bg-danger';
+                                                        break;
+                                                    case 'faculty':
+                                                        echo 'bg-info';
+                                                        break;
+                                                    case 'user':
+                                                        echo 'bg-success';
+                                                        break;
+                                                    default:
+                                                        echo 'bg-secondary';
+                                                        break;
                                                 }
                                                 ?>">
                                                 <?= htmlspecialchars(ucfirst($log['user_role'] ?? 'Unknown')) ?>
@@ -418,7 +1028,6 @@ require_once '../../templates/admin/header_admin.php';
             </div>
         </div>
 
-
         <div class="d-flex justify-content-end overflow-hidden p-0 pt-3">
             <button class="floating-btn fw-bold text-white" onclick="window.print()">
                 <i class="fas fa-print"></i>
@@ -427,8 +1036,8 @@ require_once '../../templates/admin/header_admin.php';
         </div>
     </div>
 
-    
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- JQuery Library -->
+    <script src="../../assets/js/jquery.min.js"></script>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -455,14 +1064,13 @@ require_once '../../templates/admin/header_admin.php';
             });
         });
 
-
         /**
          * Function to export the audit logs, capturing current filter values.
          */
         function exportLogs() {
             const role = document.getElementById('role_filter').value;
             const action = document.getElementById('action_filter').value;
-            
+
             // Construct the URL to the export handler, passing current filters
             let exportUrl = '../../includes/export_audit_logs_handler.php?export=1';
 
@@ -472,7 +1080,7 @@ require_once '../../templates/admin/header_admin.php';
             if (action) {
                 exportUrl += '&action_filter=' + encodeURIComponent(action);
             }
-            
+
             // Redirecting the window triggers the file download
             window.location.href = exportUrl;
         }
@@ -482,3 +1090,7 @@ require_once '../../templates/admin/header_admin.php';
 </body>
 
 </html>
+
+<script>
+    document.body.style.backgroundColor = "#ffffff";
+</script>

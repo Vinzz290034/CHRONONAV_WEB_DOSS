@@ -758,6 +758,335 @@ require_once '../../templates/admin/sidenav_admin.php'; // Correct sidenav for a
             margin-top: 0.25rem;
         }
     }
+
+
+
+
+    /* ====================================================================== */
+    /* Dark Mode Overrides for Support Center Page                            */
+    /* ====================================================================== */
+    body.dark-mode {
+        background-color: #121A21 !important;
+        color: #E5E8EB !important;
+    }
+
+    body.dark-mode .main-dashboard-content-support.support-center-page {
+        background-color: #121A21 !important;
+        color: #E5E8EB !important;
+    }
+
+    body.dark-mode .main-dashboard-content-support-wrapper {
+        background-color: #121A21 !important;
+    }
+
+    /* Header styling */
+    body.dark-mode .page-title {
+        color: #E5E8EB !important;
+    }
+
+    body.dark-mode .section-title {
+        color: #E5E8EB !important;
+    }
+
+    /* Button styling */
+    body.dark-mode .btn-light-sm {
+        background-color: #263645 !important;
+        color: #94ADC7 !important;
+        border: 1px solid #121A21 !important;
+    }
+
+    body.dark-mode .btn-light-sm:hover {
+        background-color: #1C7DD6 !important;
+        color: #FFFFFF !important;
+        border-color: #1C7DD6 !important;
+    }
+
+    body.dark-mode .btn-primary {
+        background-color: #1C7DD6 !important;
+        border: 1px solid #1C7DD6 !important;
+        color: #FFFFFF !important;
+    }
+
+    body.dark-mode .btn-primary:hover {
+        background-color: #2E78C6 !important;
+        border-color: #2E78C6 !important;
+    }
+
+    /* Section and card styling */
+    body.dark-mode .support-section {
+        background-color: #263645 !important;
+        border: 1px solid #121A21 !important;
+        color: #E5E8EB !important;
+    }
+
+    body.dark-mode .card-title {
+        color: #E5E8EB !important;
+    }
+
+    /* Accordion styling */
+    body.dark-mode .accordion-item {
+        background-color: #263645 !important;
+        border: 1px solid #121A21 !important;
+    }
+
+    body.dark-mode .accordion-button {
+        background-color: #263645 !important;
+        color: #E5E8EB !important;
+        border: none !important;
+    }
+
+    body.dark-mode .accordion-button:not(.collapsed) {
+        background-color: #1a2635 !important;
+        color: #E5E8EB !important;
+    }
+
+    body.dark-mode .accordion-button::after {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20px' height='20px' fill='%23E5E8EB' viewBox='0 0 256 256'%3E%3Cpath d='M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z'%3E%3C/path%3E%3C/svg%3E") !important;
+    }
+
+    body.dark-mode .accordion-body {
+        background-color: #263645 !important;
+        color: #94ADC7 !important;
+    }
+
+    body.dark-mode .accordion-body p {
+        color: #94ADC7 !important;
+    }
+
+    /* Form styling */
+    body.dark-mode .form-label {
+        color: #E5E8EB !important;
+    }
+
+    body.dark-mode .form-control,
+    body.dark-mode .form-select {
+        background-color: #121A21 !important;
+        border: 1px solid #263645 !important;
+        color: #E5E8EB !important;
+    }
+
+    body.dark-mode .form-control:focus,
+    body.dark-mode .form-select:focus {
+        background-color: #121A21 !important;
+        border-color: #1C7DD6 !important;
+        box-shadow: 0 0 0 0.2rem rgba(28, 125, 214, 0.25) !important;
+        color: #E5E8EB !important;
+    }
+
+    body.dark-mode .form-control::placeholder {
+        color: #94ADC7 !important;
+    }
+
+    body.dark-mode .form-select option {
+        background-color: #263645 !important;
+        color: #E5E8EB !important;
+    }
+
+    /* Admin reply sections */
+    body.dark-mode .admin-reply {
+        background-color: #1a2635 !important;
+        color: #94ADC7 !important;
+        border: 1px solid #121A21 !important;
+    }
+
+    body.dark-mode .admin-reply h6 {
+        color: #E5E8EB !important;
+    }
+
+    body.dark-mode .admin-reply small {
+        color: #94ADC7 !important;
+    }
+
+    body.dark-mode .admin-reply-form {
+        background-color: #263645 !important;
+        border: 1px solid #121A21 !important;
+    }
+
+    /* Alert styling */
+    body.dark-mode .alert {
+        background-color: #1a2635 !important;
+        border: 1px solid #263645 !important;
+    }
+
+    body.dark-mode .alert-success {
+        background-color: rgba(40, 167, 69, 0.15) !important;
+        color: #94ADC7 !important;
+        border-color: #28a745 !important;
+    }
+
+    body.dark-mode .alert-danger {
+        background-color: rgba(220, 53, 69, 0.15) !important;
+        color: #94ADC7 !important;
+        border-color: #dc3545 !important;
+    }
+
+    /* Status badges */
+    body.dark-mode .status-open {
+        background-color: #e74c3c !important;
+        color: #FFFFFF !important;
+    }
+
+    body.dark-mode .status-in-progress {
+        background-color: #f39c12 !important;
+        color: #000000 !important;
+    }
+
+    body.dark-mode .status-resolved {
+        background-color: #27ae60 !important;
+        color: #FFFFFF !important;
+    }
+
+    body.dark-mode .status-closed {
+        background-color: #95a5a6 !important;
+        color: #FFFFFF !important;
+    }
+
+    /* Text colors */
+    body.dark-mode .text-muted {
+        color: #94ADC7 !important;
+    }
+
+    body.dark-mode p strong {
+        color: #E5E8EB !important;
+    }
+
+    body.dark-mode p {
+        color: #94ADC7 !important;
+    }
+
+    /* Scrollbar styling for dark mode */
+    body.dark-mode ::-webkit-scrollbar-track {
+        background: #121A21 !important;
+    }
+
+    body.dark-mode ::-webkit-scrollbar-thumb {
+        background-color: #263645 !important;
+        border: 3px solid #121A21 !important;
+    }
+
+    body.dark-mode ::-webkit-scrollbar-thumb:hover {
+        background-color: #1C7DD6 !important;
+    }
+
+    /* Support center header */
+    body.dark-mode .support-center-header {
+        border-bottom: 1px solid #263645 !important;
+    }
+
+    /* Ticket item hover states */
+    body.dark-mode .accordion-item:hover {
+        background-color: #1a2635 !important;
+    }
+
+    /* Close button for alerts */
+    body.dark-mode .btn-close {
+        filter: invert(1) grayscale(100%) brightness(200%) !important;
+    }
+
+    /* Responsive sidebar toggle */
+    body.dark-mode .sidebar-toggle {
+        background: #263645 !important;
+        color: #E5E8EB !important;
+        border: 1px solid #121A21 !important;
+    }
+
+    /* Print styles for dark mode */
+    @media print {
+        body.dark-mode .main-dashboard-content-support.support-center-page {
+            background-color: white !important;
+            color: black !important;
+        }
+
+        body.dark-mode .accordion-item {
+            border: 1px solid #000 !important;
+            background-color: white !important;
+            color: black !important;
+        }
+
+        body.dark-mode .accordion-body {
+            background-color: white !important;
+            color: black !important;
+        }
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 767px) {
+        body.dark-mode .main-dashboard-content-support.support-center-page {
+            background-color: #121A21 !important;
+        }
+    }
+
+    @media (min-width: 768px) and (max-width: 1023px) {
+        body.dark-mode .main-dashboard-content-support.support-center-page {
+            background-color: #121A21 !important;
+        }
+    }
+
+    @media (min-width: 1024px) {
+        body.dark-mode .main-dashboard-content-support.support-center-page {
+            background-color: #121A21 !important;
+        }
+    }
+
+    /* Enhanced hover effects for interactive elements */
+    body.dark-mode .accordion-button:hover {
+        background-color: #1a2635 !important;
+    }
+
+    body.dark-mode .btn-primary:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(28, 125, 214, 0.3) !important;
+    }
+
+    /* Active state for form elements */
+    body.dark-mode .form-control:active,
+    body.dark-mode .form-select:active {
+        background-color: #121A21 !important;
+    }
+
+    /* Ticket item specific dark mode adjustments */
+    body.dark-mode .ticket-item {
+        background-color: #263645 !important;
+    }
+
+    body.dark-mode .ticket-item .accordion-button {
+        background-color: #263645 !important;
+    }
+
+    body.dark-mode .ticket-item .accordion-button:hover {
+        background-color: #1a2635 !important;
+    }
+
+    /* Placeholder text color */
+    body.dark-mode textarea::placeholder,
+    body.dark-mode input::placeholder {
+        color: #94ADC7 !important;
+    }
+
+    /* Text selection color */
+    body.dark-mode ::selection {
+        background-color: #1C7DD6 !important;
+        color: #FFFFFF !important;
+    }
+
+    body.dark-mode ::-moz-selection {
+        background-color: #1C7DD6 !important;
+        color: #FFFFFF !important;
+    }
+
+    /* Border colors for consistency */
+    body.dark-mode .border {
+        border-color: #263645 !important;
+    }
+
+    body.dark-mode .border-bottom {
+        border-bottom-color: #263645 !important;
+    }
+
+    /* Modal overlay (if any modals are used) */
+    body.dark-mode .modal-backdrop {
+        background-color: rgba(0, 0, 0, 0.7) !important;
+    }
 </style>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">

@@ -504,6 +504,353 @@ require_once '../../templates/admin/sidenav_admin.php'; // Sidenav is included h
         color: #dc3545;
         font-weight: 600;
     }
+
+
+
+
+    /* ====================================================================== */
+/* Dark Mode Overrides for Report Generator Page                          */
+/* ====================================================================== */
+body.dark-mode {
+    background-color: #121A21 !important;
+    color: #E5E8EB !important;
+}
+
+body.dark-mode .main-content-wrapper {
+    background-color: #121A21 !important;
+    color: #E5E8EB !important;
+}
+
+/* Header styling */
+body.dark-mode h2 {
+    color: #E5E8EB !important;
+}
+
+body.dark-mode h4 {
+    color: #E5E8EB !important;
+}
+
+/* Card styling */
+body.dark-mode .card {
+    background-color: #263645 !important;
+    border: 1px solid #121A21 !important;
+    color: #E5E8EB !important;
+}
+
+body.dark-mode .shadow-sm {
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Alert styling */
+body.dark-mode .alert {
+    background-color: #1a2635 !important;
+    border: 1px solid #263645 !important;
+}
+
+body.dark-mode .alert-info {
+    background-color: rgba(28, 125, 214, 0.15) !important;
+    color: #94ADC7 !important;
+    border-color: #1C7DD6 !important;
+}
+
+body.dark-mode .alert-success {
+    background-color: rgba(40, 167, 69, 0.15) !important;
+    color: #94ADC7 !important;
+    border-color: #28a745 !important;
+}
+
+body.dark-mode .alert-warning {
+    background-color: rgba(255, 193, 7, 0.15) !important;
+    color: #94ADC7 !important;
+    border-color: #ffc107 !important;
+}
+
+body.dark-mode .alert-danger {
+    background-color: rgba(220, 53, 69, 0.15) !important;
+    color: #94ADC7 !important;
+    border-color: #dc3545 !important;
+}
+
+/* Form styling */
+body.dark-mode .form-label {
+    color: #E5E8EB !important;
+}
+
+body.dark-mode .form-select,
+body.dark-mode .form-control {
+    background-color: #121A21 !important;
+    border: 1px solid #263645 !important;
+    color: #E5E8EB !important;
+}
+
+body.dark-mode .form-select:focus,
+body.dark-mode .form-control:focus {
+    background-color: #121A21 !important;
+    border-color: #1C7DD6 !important;
+    box-shadow: 0 0 0 3px rgba(28, 125, 214, 0.25) !important;
+    color: #E5E8EB !important;
+}
+
+body.dark-mode .form-select option {
+    background-color: #263645 !important;
+    color: #E5E8EB !important;
+}
+
+/* Button styling */
+body.dark-mode .btn-primary {
+    background-color: #1C7DD6 !important;
+    color: #FFFFFF !important;
+    border: 1px solid #1C7DD6 !important;
+}
+
+body.dark-mode .btn-primary:hover {
+    background-color: #2E78C6 !important;
+    border-color: #2E78C6 !important;
+    transform: translateY(-1px);
+}
+
+body.dark-mode .btn-danger {
+    background-color: #dc3545 !important;
+    color: #FFFFFF !important;
+    border: 1px solid #dc3545 !important;
+}
+
+body.dark-mode .btn-danger:hover {
+    background-color: #c82333 !important;
+    border-color: #c82333 !important;
+    transform: translateY(-1px);
+}
+
+/* Table styling */
+body.dark-mode .table-responsive {
+    border: 1px solid #121A21 !important;
+}
+
+body.dark-mode .report-table {
+    background-color: #263645 !important;
+    color: #E5E8EB !important;
+}
+
+body.dark-mode .report-table thead th {
+    background-color: #121A21 !important;
+    color: #E5E8EB !important;
+    border-bottom: 2px solid #263645 !important;
+}
+
+body.dark-mode .report-table tbody td {
+    color: #E5E8EB !important;
+    border-bottom: 1px solid #121A21 !important;
+    background-color: #263645 !important;
+}
+
+body.dark-mode .report-table tbody tr:hover {
+    background-color: #1a2635 !important;
+}
+
+body.dark-mode .report-table tbody tr:hover td {
+    background-color: #1a2635 !important;
+}
+
+body.dark-mode .table-bordered {
+    border: 1px solid #121A21 !important;
+}
+
+body.dark-mode .table-bordered th,
+body.dark-mode .table-bordered td {
+    border: 1px solid #121A21 !important;
+}
+
+/* Table row striping */
+body.dark-mode .table-striped tbody tr:nth-of-type(odd) {
+    background-color: #1a2635 !important;
+}
+
+body.dark-mode .table-striped tbody tr:nth-of-type(odd) td {
+    background-color: #1a2635 !important;
+}
+
+/* Scrollbar styling for dark mode */
+body.dark-mode ::-webkit-scrollbar-track {
+    background: #121A21 !important;
+}
+
+body.dark-mode ::-webkit-scrollbar-thumb {
+    background-color: #263645 !important;
+    border: 3px solid #121A21 !important;
+}
+
+body.dark-mode ::-webkit-scrollbar-thumb:hover {
+    background-color: #1C7DD6 !important;
+}
+
+/* Percentage colors for attendance */
+body.dark-mode .attendance-high {
+    color: #28a745 !important;
+    font-weight: 600;
+}
+
+body.dark-mode .attendance-medium {
+    color: #ffc107 !important;
+    font-weight: 600;
+}
+
+body.dark-mode .attendance-low {
+    color: #dc3545 !important;
+    font-weight: 600;
+}
+
+/* Close button for alerts */
+body.dark-mode .btn-close {
+    filter: invert(1) grayscale(100%) brightness(200%) !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 767px) {
+    body.dark-mode .main-content-wrapper {
+        background-color: #121A21 !important;
+    }
+    
+    body.dark-mode .card.p-4 {
+        background-color: #263645 !important;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+    body.dark-mode .main-content-wrapper {
+        background-color: #121A21 !important;
+    }
+}
+
+@media (min-width: 1024px) {
+    body.dark-mode .main-content-wrapper {
+        background-color: #121A21 !important;
+    }
+}
+
+/* Text selection */
+body.dark-mode ::selection {
+    background-color: #1C7DD6 !important;
+    color: #FFFFFF !important;
+}
+
+body.dark-mode ::-moz-selection {
+    background-color: #1C7DD6 !important;
+    color: #FFFFFF !important;
+}
+
+/* Link styling */
+body.dark-mode a {
+    color: #1C7DD6 !important;
+}
+
+body.dark-mode a:hover {
+    color: #2E78C6 !important;
+}
+
+/* Modal styling (if any modals are used) */
+body.dark-mode .modal-content {
+    background-color: #263645 !important;
+    border: 1px solid #121A21 !important;
+    color: #E5E8EB !important;
+}
+
+body.dark-mode .modal-header {
+    background-color: #121A21 !important;
+    border-bottom: 1px solid #263645 !important;
+}
+
+body.dark-mode .modal-header .modal-title {
+    color: #E5E8EB !important;
+}
+
+/* PDF export button icon */
+body.dark-mode .btn-danger .fas.fa-file-pdf {
+    color: inherit !important;
+}
+
+/* Date input placeholder text */
+body.dark-mode input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+}
+
+/* Table header sticky position styling */
+body.dark-mode .report-table thead th {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Empty state styling */
+body.dark-mode .alert-info.text-center {
+    background-color: rgba(28, 125, 214, 0.1) !important;
+    color: #94ADC7 !important;
+    border: 1px solid rgba(28, 125, 214, 0.3) !important;
+}
+
+/* Filter section background */
+body.dark-mode .report-filters {
+    background-color: transparent !important;
+}
+
+/* Form control placeholder text */
+body.dark-mode .form-control::placeholder {
+    color: #94ADC7 !important;
+}
+
+/* Table cell text colors */
+body.dark-mode .report-table tbody td {
+    color: #94ADC7 !important;
+}
+
+body.dark-mode .report-table tbody td:first-child {
+    color: #E5E8EB !important;
+    font-weight: 500;
+}
+
+/* Icon colors */
+body.dark-mode .fas {
+    color: inherit;
+}
+
+/* Print styles for dark mode */
+@media print {
+    body.dark-mode {
+        background-color: white !important;
+        color: black !important;
+    }
+    
+    body.dark-mode .card,
+    body.dark-mode .report-table,
+    body.dark-mode .report-table th,
+    body.dark-mode .report-table td {
+        background-color: white !important;
+        color: black !important;
+        border-color: #000 !important;
+    }
+    
+    body.dark-mode .btn-danger,
+    body.dark-mode .btn-primary {
+        display: none !important;
+    }
+}
+
+/* Focus states for accessibility */
+body.dark-mode .btn:focus {
+    box-shadow: 0 0 0 0.2rem rgba(28, 125, 214, 0.5) !important;
+}
+
+body.dark-mode .form-control:focus,
+body.dark-mode .form-select:focus {
+    box-shadow: 0 0 0 0.2rem rgba(28, 125, 214, 0.25) !important;
+}
+
+/* Container background */
+body.dark-mode .container-fluid.py-4 {
+    background-color: transparent !important;
+}
+
+/* Text color utilities */
+body.dark-mode .text-center {
+    color: #E5E8EB !important;
+}
 </style>
 
 <div class="main-content-wrapper">

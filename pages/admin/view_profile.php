@@ -184,6 +184,7 @@ require_once '../../templates/admin/header_admin.php';
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
+            background: #e7edf4;
         }
 
         .btn.btn-custom-secondary {
@@ -310,6 +311,7 @@ require_once '../../templates/admin/header_admin.php';
             .profile-image {
                 width: 100px !important;
                 height: 100px !important;
+                background-size: cover;
             }
 
             .text-dark.fw-bold.fs-3 {
@@ -368,6 +370,7 @@ require_once '../../templates/admin/header_admin.php';
             .profile-image {
                 width: 115px !important;
                 height: 115px !important;
+                background-size: cover;
             }
 
             .text-dark.fw-bold.fs-3 {
@@ -402,6 +405,7 @@ require_once '../../templates/admin/header_admin.php';
             .profile-image {
                 width: 128px !important;
                 height: 128px !important;
+                background-size: cover;
             }
 
             .text-dark.fw-bold.fs-3 {
@@ -462,6 +466,409 @@ require_once '../../templates/admin/header_admin.php';
                 margin: 0;
                 max-width: 100%;
                 height: 100vh;
+            }
+        }
+
+
+
+
+        /* ====================================================================== */
+        /* Dark Mode Overrides for Admin Profile Page - Custom Colors            */
+        /* ====================================================================== */
+        body.dark-mode {
+            background-color: #121A21 !important;
+            /* Primary dark background */
+            color: #E5E8EB !important;
+            /* Primary light text */
+        }
+
+        /* Layout container and main content */
+        body.dark-mode .layout-content-container {
+            background-color: #121A21 !important;
+            color: #E5E8EB !important;
+        }
+
+        /* Header section */
+        body.dark-mode .d-flex.justify-content-end.align-items-start {
+            background-color: #121A21 !important;
+        }
+
+        body.dark-mode .text-dark.fw-bold.fs-3.mb-0 {
+            color: #E5E8EB !important;
+            /* Light text for welcome message */
+        }
+
+        body.dark-mode .main-dashboard-content {
+            background-color: #121A21 !important;
+        }
+
+        /* Profile image container */
+        body.dark-mode .profile-image {
+            background-color: #263645 !important;
+            /* Secondary dark background */
+            border: 3px solid #121A21 !important;
+            /* Primary dark border */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2) !important;
+        }
+
+        /* Buttons */
+        body.dark-mode .btn-custom-secondary {
+            background-color: #263645 !important;
+            /* Secondary dark */
+            color: #94ADC7 !important;
+            /* Secondary text color */
+            border: 1px solid #121A21 !important;
+            /* Primary dark border */
+        }
+
+        body.dark-mode .btn-custom-secondary:hover {
+            background-color: #1C7DD6 !important;
+            /* Active blue on hover */
+            color: #FFFFFF !important;
+            /* White text on hover */
+            border-color: #1C7DD6 !important;
+        }
+
+        /* Profile details */
+        body.dark-mode .profile-detail-row {
+            border-top: 1px solid #263645 !important;
+            /* Secondary dark border */
+            color: #E5E8EB !important;
+        }
+
+        body.dark-mode .profile-detail-row p.text-muted {
+            color: #94ADC7 !important;
+            /* Secondary text for labels */
+        }
+
+        body.dark-mode .profile-detail-row p.text-dark {
+            color: #E5E8EB !important;
+            /* Light text for values */
+        }
+
+        /* Section titles */
+        body.dark-mode .text-dark.fw-bold.fs-4 {
+            color: #E5E8EB !important;
+            /* Light text for section titles */
+        }
+
+        /* Preference and account items */
+        body.dark-mode .preference-item,
+        body.dark-mode .account-item {
+            background-color: #121A21 !important;
+            /* Primary dark background */
+            border-bottom: 1px solid #263645 !important;
+            /* Secondary dark border */
+            color: #E5E8EB !important;
+        }
+
+        body.dark-mode .preference-item:hover,
+        body.dark-mode .account-item:hover {
+            background-color: #263645 !important;
+            /* Secondary dark on hover */
+        }
+
+        body.dark-mode .preference-item p.text-dark,
+        body.dark-mode .account-item p.text-dark {
+            color: #E5E8EB !important;
+            /* Light text */
+        }
+
+        /* Toggle switches */
+        body.dark-mode .toggle-switch {
+            background-color: #121A21 !important;
+            /* Primary dark */
+            border: 1px solid #263645 !important;
+            /* Secondary dark border */
+        }
+
+        body.dark-mode .toggle-switch.checked {
+            background-color: #1C7DD6 !important;
+            /* Active blue when checked */
+            border-color: #1C7DD6 !important;
+        }
+
+        body.dark-mode .toggle-knob {
+            background-color: #E5E8EB !important;
+            /* Light knob */
+        }
+
+        /* Alerts */
+        body.dark-mode .alert {
+            background-color: #263645 !important;
+            /* Secondary dark background */
+            border: 1px solid #121A21 !important;
+        }
+
+        body.dark-mode .alert-success {
+            background-color: #1B5E20 !important;
+            /* Dark green */
+            color: #C8E6C9 !important;
+            /* Light green text */
+            border-color: #2E7D32 !important;
+        }
+
+        body.dark-mode .alert-danger {
+            background-color: #B71C1C !important;
+            /* Dark red */
+            color: #FFCDD2 !important;
+            /* Light red text */
+            border-color: #C62828 !important;
+        }
+
+        body.dark-mode .alert-warning {
+            background-color: #F57C00 !important;
+            /* Dark orange */
+            color: #FFE0B2 !important;
+            /* Light orange text */
+            border-color: #EF6C00 !important;
+        }
+
+        body.dark-mode .alert-info {
+            background-color: #0D47A1 !important;
+            /* Dark blue */
+            color: #BBDEFB !important;
+            /* Light blue text */
+            border-color: #1565C0 !important;
+        }
+
+        /* Modal styling */
+        body.dark-mode .modal-content {
+            background-color: #263645 !important;
+            /* Secondary dark background */
+            border: 1px solid #121A21 !important;
+            color: #E5E8EB !important;
+        }
+
+        body.dark-mode .modal-header {
+            background-color: #121A21 !important;
+            /* Primary dark */
+            border-bottom: 1px solid #263645 !important;
+            /* Secondary border */
+        }
+
+        body.dark-mode .modal-header .modal-title {
+            color: #E5E8EB !important;
+            /* Light text for modal title */
+        }
+
+        body.dark-mode .modal-footer {
+            background-color: #121A21 !important;
+            /* Primary dark */
+            border-top: 1px solid #263645 !important;
+            /* Secondary border */
+        }
+
+        /* Form elements */
+        body.dark-mode .form-control,
+        body.dark-mode .form-select,
+        body.dark-mode textarea.form-control {
+            background-color: #121A21 !important;
+            /* Primary dark */
+            border: 1px solid #263645 !important;
+            /* Secondary border */
+            color: #E5E8EB !important;
+            /* Light text */
+        }
+
+        body.dark-mode .form-control:focus,
+        body.dark-mode .form-select:focus,
+        body.dark-mode textarea.form-control:focus {
+            background-color: #121A21 !important;
+            border-color: #1C7DD6 !important;
+            /* Blue focus */
+            color: #E5E8EB !important;
+            box-shadow: 0 0 0 2px rgba(28, 125, 214, 0.2) !important;
+        }
+
+        body.dark-mode .form-label.text-muted {
+            color: #94ADC7 !important;
+            /* Secondary text for labels */
+        }
+
+        body.dark-mode .bg-light {
+            background-color: #121A21 !important;
+            /* Primary dark instead of light */
+            color: #E5E8EB !important;
+        }
+
+        body.dark-mode .border-0 {
+            border-color: #263645 !important;
+            /* Secondary border */
+        }
+
+        /* Links and text decorations */
+        body.dark-mode .text-decoration-none {
+            color: #94ADC7 !important;
+            /* Secondary text for links */
+        }
+
+        body.dark-mode .text-decoration-none:hover {
+            color: #1C7DD6 !important;
+            /* Active blue on hover */
+        }
+
+        /* Primary button */
+        body.dark-mode .btn-primary {
+            background-color: #1C7DD6 !important;
+            /* Active blue */
+            color: #FFFFFF !important;
+            border: none !important;
+        }
+
+        body.dark-mode .btn-primary:hover {
+            background-color: #1565C0 !important;
+            /* Darker blue on hover */
+        }
+
+        /* Text colors */
+        body.dark-mode .text-primary {
+            color: #1C7DD6 !important;
+            /* Active blue */
+        }
+
+        body.dark-mode .text-muted {
+            color: #94ADC7 !important;
+            /* Secondary text */
+        }
+
+        /* Scrollbar for dark mode */
+        body.dark-mode ::-webkit-scrollbar-track {
+            background: #121A21 !important;
+            /* Primary dark track */
+        }
+
+        body.dark-mode ::-webkit-scrollbar-thumb {
+            background-color: #263645 !important;
+            /* Secondary dark thumb */
+            border: 3px solid #121A21 !important;
+        }
+
+        body.dark-mode ::-webkit-scrollbar-thumb:hover {
+            background-color: #1C7DD6 !important;
+            /* Blue on hover */
+        }
+
+        /* Close button in modals */
+        body.dark-mode .btn-close {
+            filter: invert(1) grayscale(100%) brightness(200%) !important;
+        }
+
+        /* File upload button */
+        body.dark-mode .btn.btn-custom-secondary.btn-sm {
+            background-color: #263645 !important;
+            color: #94ADC7 !important;
+            border: 1px solid #121A21 !important;
+        }
+
+        body.dark-mode .btn.btn-custom-secondary.btn-sm:hover {
+            background-color: #1C7DD6 !important;
+            color: #FFFFFF !important;
+            border-color: #1C7DD6 !important;
+        }
+
+        /* Logout button specific */
+        body.dark-mode a[href*="logout.php"] .btn-custom-secondary {
+            background-color: #121A21 !important;
+            color: #E57373 !important;
+            /* Light red for logout */
+            border: 1px solid #263645 !important;
+        }
+
+        body.dark-mode a[href*="logout.php"] .btn-custom-secondary:hover {
+            background-color: #C62828 !important;
+            /* Darker red on hover */
+            color: #FFFFFF !important;
+            border-color: #C62828 !important;
+        }
+
+        /* Additional admin-specific elements */
+        body.dark-mode .class-item {
+            background-color: #263645 !important;
+            /* Secondary dark */
+            color: #E5E8EB !important;
+        }
+
+        body.dark-mode .class-icon {
+            background-color: #121A21 !important;
+            /* Primary dark */
+        }
+
+        body.dark-mode .floating-btn {
+            background-color: #263645 !important;
+            /* Secondary dark */
+            color: #E5E8EB !important;
+        }
+
+        body.dark-mode .floating-btn.fw-bold {
+            background-color: #1C7DD6 !important;
+            /* Active blue */
+            color: #FFFFFF !important;
+        }
+
+        /* Footer text */
+        body.dark-mode .text-center.text-muted {
+            color: #94ADC7 !important;
+            /* Secondary text color */
+        }
+
+        /* App version footer */
+        body.dark-mode .text-muted {
+            color: #94ADC7 !important;
+        }
+
+        /* Theme text in preferences */
+        body.dark-mode .preference-item:last-child p.text-dark:last-child {
+            color: #1C7DD6 !important;
+            /* Blue for "Light" theme text */
+        }
+
+        /* Icon colors in dark mode */
+        body.dark-mode .account-item .text-dark i,
+        body.dark-mode .account-item .text-dark svg {
+            color: #94ADC7 !important;
+            /* Secondary color for icons */
+        }
+
+        body.dark-mode .account-item:hover .text-dark i,
+        body.dark-mode .account-item:hover .text-dark svg {
+            color: #1C7DD6 !important;
+            /* Blue on hover */
+        }
+
+        /* Responsive adjustments for dark mode */
+        @media (max-width: 767px) {
+            body.dark-mode .layout-content-container {
+                background-color: #121A21 !important;
+            }
+
+            body.dark-mode .main-dashboard-content {
+                background-color: #121A21 !important;
+            }
+
+            body.dark-mode .preference-item:hover,
+            body.dark-mode .account-item:hover {
+                background-color: #263645 !important;
+            }
+        }
+
+        @media (min-width: 768px) and (max-width: 1023px) {
+            body.dark-mode .layout-content-container {
+                background-color: #121A21 !important;
+            }
+
+            body.dark-mode .main-dashboard-content {
+                background-color: #121A21 !important;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            body.dark-mode .layout-content-container {
+                background-color: #121A21 !important;
+            }
+
+            body.dark-mode .main-dashboard-content {
+                background-color: #121A21 !important;
             }
         }
     </style>

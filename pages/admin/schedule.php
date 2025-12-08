@@ -785,6 +785,446 @@ require_once '../../templates/admin/header_admin.php';
                 padding: 0.5rem 0 !important;
             }
         }
+
+
+
+
+        /* ====================================================================== */
+        /* Dark Mode Overrides for Admin Schedule Page - EXACT SAME AS USER      */
+        /* ====================================================================== */
+        body.dark-mode {
+            background-color: #121A21 !important;
+            /* Primary dark background */
+            color: #E5E8EB !important;
+        }
+
+        /* Layout container */
+        body.dark-mode .layout-content-container {
+            background-color: #121A21 !important;
+            color: #E5E8EB !important;
+        }
+
+        /* Header and text */
+        body.dark-mode .text-dark.fw-bold.fs-3.mb-0 {
+            color: #E5E8EB !important;
+            /* Light text for page title */
+        }
+
+        body.dark-mode .text-dark.fw-bold.fs-5 {
+            color: #E5E8EB !important;
+            /* Light text for section titles */
+        }
+
+        body.dark-mode .text-dark.fw-medium {
+            color: #E5E8EB !important;
+            /* Light text for class titles */
+        }
+
+        body.dark-mode .text-muted {
+            color: #94ADC7 !important;
+            /* Secondary text color */
+        }
+
+        /* Calendar container */
+        body.dark-mode #calendar {
+            background-color: #263645 !important;
+            /* Secondary dark background */
+            border: 1px solid #121A21 !important;
+            color: #E5E8EB !important;
+        }
+
+        /* FullCalendar custom styling for dark mode */
+        body.dark-mode .fc {
+            color: #E5E8EB !important;
+        }
+
+        body.dark-mode .fc-toolbar-title {
+            color: #E5E8EB !important;
+            /* Light text for calendar title */
+        }
+
+        body.dark-mode .fc-button {
+            background-color: #121A21 !important;
+            /* Primary dark */
+            border: 1px solid #263645 !important;
+            /* Secondary border */
+            color: #94ADC7 !important;
+            /* Secondary text */
+        }
+
+        body.dark-mode .fc-button:hover {
+            background-color: #263645 !important;
+            /* Secondary dark on hover */
+            color: #E5E8EB !important;
+            /* Light text on hover */
+        }
+
+        body.dark-mode .fc-button-primary:not(:disabled).fc-button-active {
+            background-color: #1C7DD6 !important;
+            /* Active blue */
+            border-color: #1C7DD6 !important;
+            color: #FFFFFF !important;
+            /* White text when active */
+        }
+
+        /* Calendar header cells */
+        body.dark-mode .fc-col-header-cell {
+            background-color: #121A21 !important;
+            /* Primary dark */
+            border-bottom: 1px solid #263645 !important;
+        }
+
+        body.dark-mode .fc-col-header-cell-cushion {
+            color: #94ADC7 !important;
+            /* Secondary text for day names */
+        }
+
+        /* Calendar day cells */
+        body.dark-mode .fc-daygrid-day {
+            background-color: #263645 !important;
+            /* Secondary dark background */
+            border: 1px solid #121A21 !important;
+        }
+
+        body.dark-mode .fc-daygrid-day-number {
+            color: #E5E8EB !important;
+            /* Light text for day numbers */
+        }
+
+        /* Today's date */
+        body.dark-mode .fc-daygrid-day.fc-day-today {
+            background-color: rgba(28, 125, 214, 0.2) !important;
+            /* Blue tint for today */
+        }
+
+        body.dark-mode .fc-daygrid-day.fc-day-today .fc-daygrid-day-number {
+            color: #FFFFFF !important;
+            /* White text for today */
+            background-color: #1C7DD6 !important;
+            /* Active blue for today's circle */
+        }
+
+        /* Calendar events */
+        body.dark-mode .fc-event {
+            background-color: #1C7DD6 !important;
+            /* Active blue for events */
+            border: none !important;
+            color: #FFFFFF !important;
+            /* White text for events */
+        }
+
+        body.dark-mode .fc-event:hover {
+            background-color: #1565C0 !important;
+            /* Darker blue on hover */
+        }
+
+        body.dark-mode .fc-daygrid-event-dot {
+            border-color: #1C7DD6 !important;
+            /* Blue for event dots */
+        }
+
+        /* Class items */
+        body.dark-mode .class-item {
+            background-color: #121A21 !important;
+            /* Primary dark background */
+            border: 1px solid #263645 !important;
+            color: #E5E8EB !important;
+        }
+
+        body.dark-mode .class-item:hover {
+            background-color: #263645 !important;
+            /* Secondary dark on hover */
+        }
+
+        /* Class icon */
+        body.dark-mode .class-icon {
+            background-color: #263645 !important;
+            /* Secondary dark */
+            color: #94ADC7 !important;
+            /* Secondary text color for icons */
+        }
+
+        body.dark-mode .class-icon i {
+            color: #94ADC7 !important;
+            /* Secondary color for icons */
+        }
+
+        /* Buttons */
+        body.dark-mode .btn-primary {
+            background-color: #1C7DD6 !important;
+            /* Active blue */
+            color: #FFFFFF !important;
+            border: none !important;
+        }
+
+        body.dark-mode .btn-primary:hover {
+            background-color: #1565C0 !important;
+            /* Darker blue on hover */
+        }
+
+        body.dark-mode .btn-light {
+            background-color: #121A21 !important;
+            /* Primary dark */
+            color: #94ADC7 !important;
+            /* Secondary text */
+            border: 1px solid #263645 !important;
+        }
+
+        body.dark-mode .btn-light:hover {
+            background-color: #263645 !important;
+            /* Secondary dark on hover */
+            color: #E5E8EB !important;
+            /* Light text on hover */
+        }
+
+        /* Floating button */
+        body.dark-mode .floating-btn {
+            background-color: #1C7DD6 !important;
+            /* Active blue */
+            color: #FFFFFF !important;
+            border: none !important;
+        }
+
+        body.dark-mode .floating-btn:hover {
+            background-color: #1565C0 !important;
+            /* Darker blue on hover */
+        }
+
+        /* Alerts */
+        body.dark-mode .alert {
+            background-color: #263645 !important;
+            /* Secondary dark background */
+            border: 1px solid #121A21 !important;
+            color: #E5E8EB !important;
+        }
+
+        body.dark-mode .alert-info {
+            background-color: #0D47A1 !important;
+            /* Dark blue */
+            color: #BBDEFB !important;
+            /* Light blue text */
+            border-color: #1565C0 !important;
+        }
+
+        body.dark-mode .alert-success {
+            background-color: #1B5E20 !important;
+            /* Dark green */
+            color: #C8E6C9 !important;
+            /* Light green text */
+            border-color: #2E7D32 !important;
+        }
+
+        body.dark-mode .alert-warning {
+            background-color: #F57C00 !important;
+            /* Dark orange */
+            color: #FFE0B2 !important;
+            /* Light orange text */
+            border-color: #EF6C00 !important;
+        }
+
+        body.dark-mode .alert-danger {
+            background-color: #B71C1C !important;
+            /* Dark red */
+            color: #FFCDD2 !important;
+            /* Light red text */
+            border-color: #C62828 !important;
+        }
+
+        /* Modal styling */
+        body.dark-mode .modal-content {
+            background-color: #263645 !important;
+            /* Secondary dark background */
+            border: 1px solid #121A21 !important;
+            color: #E5E8EB !important;
+        }
+
+        body.dark-mode .modal-header {
+            background-color: #121A21 !important;
+            /* Primary dark */
+            border-bottom: 1px solid #263645 !important;
+            /* Secondary border */
+        }
+
+        body.dark-mode .modal-header .modal-title {
+            color: #E5E8EB !important;
+            /* Light text for modal title */
+        }
+
+        body.dark-mode .modal-footer {
+            background-color: #121A21 !important;
+            /* Primary dark */
+            border-top: 1px solid #263645 !important;
+            /* Secondary border */
+        }
+
+        /* Form elements */
+        body.dark-mode .form-control {
+            background-color: #121A21 !important;
+            /* Primary dark */
+            border: 1px solid #263645 !important;
+            /* Secondary border */
+            color: #E5E8EB !important;
+            /* Light text */
+        }
+
+        body.dark-mode .form-control:focus {
+            background-color: #121A21 !important;
+            border-color: #1C7DD6 !important;
+            /* Blue focus */
+            color: #E5E8EB !important;
+            box-shadow: 0 0 0 2px rgba(28, 125, 214, 0.2) !important;
+        }
+
+        body.dark-mode .form-label {
+            color: #94ADC7 !important;
+            /* Secondary text for labels */
+        }
+
+        /* Close button in modals */
+        body.dark-mode .btn-close {
+            filter: invert(1) grayscale(100%) brightness(200%) !important;
+        }
+
+        /* Scrollbar for dark mode */
+        body.dark-mode ::-webkit-scrollbar-track {
+            background: #121A21 !important;
+            /* Primary dark track */
+        }
+
+        body.dark-mode ::-webkit-scrollbar-thumb {
+            background-color: #263645 !important;
+            /* Secondary dark thumb */
+            border: 3px solid #121A21 !important;
+        }
+
+        body.dark-mode ::-webkit-scrollbar-thumb:hover {
+            background-color: #1C7DD6 !important;
+            /* Blue on hover */
+        }
+
+        /* Navigation tabs */
+        body.dark-mode .nav-tabs-custom {
+            border-bottom: 1px solid #263645 !important;
+            /* Secondary border */
+        }
+
+        body.dark-mode .nav-tabs-custom .nav-link {
+            color: #94ADC7 !important;
+            /* Secondary text for tabs */
+            border-bottom: 3px solid transparent !important;
+        }
+
+        body.dark-mode .nav-tabs-custom .nav-link.active {
+            color: #E5E8EB !important;
+            /* Light text for active tab */
+            border-bottom: 3px solid #1C7DD6 !important;
+            /* Blue underline for active tab */
+        }
+
+        body.dark-mode .nav-tabs-custom .nav-link:hover {
+            color: #E5E8EB !important;
+            /* Light text on hover */
+        }
+
+        /* Today button in calendar */
+        body.dark-mode button.fc-today-button.fc-button.fc-button-primary {
+            background-color: #121A21 !important;
+            /* Primary dark */
+            color: #94ADC7 !important;
+            /* Secondary text */
+            border: 1px solid #263645 !important;
+        }
+
+        body.dark-mode button.fc-today-button.fc-button.fc-button-primary:hover {
+            background-color: #263645 !important;
+            /* Secondary dark on hover */
+            color: #E5E8EB !important;
+            /* Light text on hover */
+        }
+
+        /* Previous/next buttons in calendar */
+        body.dark-mode button.fc-prev-button.fc-button.fc-button-primary,
+        body.dark-mode button.fc-next-button.fc-button.fc-button-primary {
+            background-color: #121A21 !important;
+            /* Primary dark */
+            color: #94ADC7 !important;
+            /* Secondary text */
+            border: 1px solid #263645 !important;
+        }
+
+        body.dark-mode button.fc-prev-button.fc-button.fc-button-primary:hover,
+        body.dark-mode button.fc-next-button.fc-button.fc-button-primary:hover {
+            background-color: #263645 !important;
+            /* Secondary dark on hover */
+            color: #E5E8EB !important;
+            /* Light text on hover */
+        }
+
+        /* Calendar button group */
+        body.dark-mode .fc-direction-ltr .fc-button-group>.fc-button:not(:last-child),
+        body.dark-mode .fc-direction-ltr .fc-button-group>.fc-button:not(:first-child) {
+            background-color: #121A21 !important;
+            /* Primary dark */
+            color: #94ADC7 !important;
+            /* Secondary text */
+            border: 1px solid #263645 !important;
+        }
+
+        body.dark-mode .fc-direction-ltr .fc-button-group>.fc-button:hover {
+            background-color: #263645 !important;
+            /* Secondary dark on hover */
+            color: #E5E8EB !important;
+            /* Light text on hover */
+        }
+
+        /* Responsive adjustments for dark mode */
+        @media (max-width: 767px) {
+            body.dark-mode .layout-content-container {
+                background-color: #121A21 !important;
+            }
+
+            body.dark-mode .main-dashboard-content {
+                background-color: #121A21 !important;
+            }
+        }
+
+        @media (min-width: 768px) and (max-width: 1023px) {
+            body.dark-mode .layout-content-container {
+                background-color: #121A21 !important;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            body.dark-mode .layout-content-container {
+                background-color: #121A21 !important;
+            }
+        }
+
+        /* Print styles for dark mode (when printing in dark mode) */
+        @media print {
+            body.dark-mode .layout-content-container {
+                background-color: white !important;
+                /* White for printing */
+                color: black !important;
+            }
+
+            body.dark-mode .class-item {
+                background-color: #f8f9fa !important;
+                /* Light background for print */
+                border: 1px solid #dee2e6 !important;
+            }
+        }
+
+        /* Enhanced modal for dark mode */
+        body.dark-mode .modal-content.border-0.rounded-4.shadow-lg {
+            background-color: #263645 !important;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3) !important;
+        }
+
+        /* Rounded buttons in modal footer */
+        body.dark-mode .btn.rounded-pill {
+            border-radius: 50px !important;
+        }
     </style>
 </head>
 
@@ -862,7 +1302,8 @@ require_once '../../templates/admin/header_admin.php';
 
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- JQuery Library -->
+    <script src="../../assets/js/jquery.min.js"></script>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {

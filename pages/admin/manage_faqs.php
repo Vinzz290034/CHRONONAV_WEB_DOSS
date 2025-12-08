@@ -437,6 +437,349 @@ require_once '../../templates/admin/header_admin.php';
                 gap: 1rem;
             }
         }
+
+
+
+
+
+        /* ====================================================================== */
+        /* Dark Mode Overrides for Manage FAQs Page                               */
+        /* ====================================================================== */
+        body.dark-mode {
+            background-color: #121A21 !important;
+            color: #E5E8EB !important;
+        }
+
+        body.dark-mode .layout-container {
+            background-color: #121A21 !important;
+        }
+
+        body.dark-mode .sched.main-content-wrapper {
+            background-color: #121A21 !important;
+        }
+
+        body.dark-mode .main-dashboard-content {
+            background-color: #121A21 !important;
+            color: #E5E8EB !important;
+        }
+
+        /* Header styling */
+        body.dark-mode .dashboard-header h2 {
+            color: #E5E8EB !important;
+        }
+
+        /* Card styling */
+        body.dark-mode .card {
+            background-color: #263645 !important;
+            border: 1px solid #121A21 !important;
+            color: #E5E8EB !important;
+        }
+
+        body.dark-mode .card-header {
+            background-color: #263645 !important;
+            border-bottom: 1px solid #121A21 !important;
+        }
+
+        body.dark-mode .card-header h5 {
+            color: #E5E8EB !important;
+        }
+
+        /* Button styling */
+        body.dark-mode .btn-primary {
+            background-color: #1C7DD6 !important;
+            border: 1px solid #1C7DD6 !important;
+            color: #FFFFFF !important;
+        }
+
+        body.dark-mode .btn-primary:hover {
+            background-color: #2E78C6 !important;
+            border-color: #2E78C6 !important;
+        }
+
+        body.dark-mode .btn-secondary {
+            background-color: #263645 !important;
+            border: 1px solid #121A21 !important;
+            color: #94ADC7 !important;
+        }
+
+        body.dark-mode .btn-secondary:hover {
+            background-color: #1C7DD6 !important;
+            color: #FFFFFF !important;
+            border-color: #1C7DD6 !important;
+        }
+
+        body.dark-mode .btn-warning {
+            background-color: #ffc107 !important;
+            border: 1px solid #ffc107 !important;
+            color: #000000 !important;
+        }
+
+        body.dark-mode .btn-warning:hover {
+            background-color: #e0a800 !important;
+            border-color: #e0a800 !important;
+        }
+
+        body.dark-mode .btn-danger {
+            background-color: #dc3545 !important;
+            border: 1px solid #dc3545 !important;
+            color: #FFFFFF !important;
+        }
+
+        body.dark-mode .btn-danger:hover {
+            background-color: #c82333 !important;
+            border-color: #c82333 !important;
+        }
+
+        /* Alert styling */
+        body.dark-mode .alert {
+            background-color: #1a2635 !important;
+            border: 1px solid #263645 !important;
+        }
+
+        body.dark-mode .alert-info {
+            background-color: rgba(28, 125, 214, 0.15) !important;
+            color: #94ADC7 !important;
+            border-color: #1C7DD6 !important;
+        }
+
+        body.dark-mode .alert-success {
+            background-color: rgba(40, 167, 69, 0.15) !important;
+            color: #94ADC7 !important;
+            border-color: #28a745 !important;
+        }
+
+        body.dark-mode .alert-danger {
+            background-color: rgba(220, 53, 69, 0.15) !important;
+            color: #94ADC7 !important;
+            border-color: #dc3545 !important;
+        }
+
+        body.dark-mode .alert-warning {
+            background-color: rgba(255, 193, 7, 0.15) !important;
+            color: #94ADC7 !important;
+            border-color: #ffc107 !important;
+        }
+
+        /* Form styling */
+        body.dark-mode .form-control {
+            background-color: #121A21 !important;
+            border: 1px solid #263645 !important;
+            color: #E5E8EB !important;
+        }
+
+        body.dark-mode .form-control:focus {
+            background-color: #121A21 !important;
+            border-color: #1C7DD6 !important;
+            box-shadow: 0 0 0 0.2rem rgba(28, 125, 214, 0.25) !important;
+            color: #E5E8EB !important;
+        }
+
+        body.dark-mode .form-control::placeholder {
+            color: #94ADC7 !important;
+        }
+
+        body.dark-mode .form-label {
+            color: #E5E8EB !important;
+        }
+
+        /* Accordion styling */
+        body.dark-mode .accordion-item {
+            background-color: #263645 !important;
+            border: 1px solid #121A21 !important;
+        }
+
+        body.dark-mode .accordion-button {
+            background-color: #263645 !important;
+            color: #E5E8EB !important;
+            border: none !important;
+        }
+
+        body.dark-mode .accordion-button:not(.collapsed) {
+            background-color: #1a2635 !important;
+            color: #E5E8EB !important;
+        }
+
+        body.dark-mode .accordion-body {
+            background-color: #263645 !important;
+            border-top: 1px solid #121A21 !important;
+            color: #94ADC7 !important;
+        }
+
+        body.dark-mode .accordion-body p {
+            color: #94ADC7 !important;
+        }
+
+        /* Text colors */
+        body.dark-mode .text-muted {
+            color: #94ADC7 !important;
+        }
+
+        /* Scrollbar styling for dark mode */
+        body.dark-mode ::-webkit-scrollbar-track {
+            background: #121A21 !important;
+        }
+
+        body.dark-mode ::-webkit-scrollbar-thumb {
+            background-color: #263645 !important;
+            border: 3px solid #121A21 !important;
+        }
+
+        body.dark-mode ::-webkit-scrollbar-thumb:hover {
+            background-color: #1C7DD6 !important;
+        }
+
+        /* Modal styling */
+        body.dark-mode .modal-content {
+            background-color: #263645 !important;
+            border: 1px solid #121A21 !important;
+            color: #E5E8EB !important;
+        }
+
+        body.dark-mode .modal-header {
+            background-color: #121A21 !important;
+            border-bottom: 1px solid #263645 !important;
+        }
+
+        body.dark-mode .modal-header .modal-title {
+            color: #E5E8EB !important;
+        }
+
+        body.dark-mode .modal-header .btn-close {
+            filter: invert(1) grayscale(100%) brightness(200%) !important;
+        }
+
+        body.dark-mode .modal-footer {
+            border-top: 1px solid #263645 !important;
+            background-color: #263645 !important;
+        }
+
+        /* FAQ actions styling */
+        body.dark-mode .faq-actions .btn {
+            background-color: #263645 !important;
+            border: 1px solid #121A21 !important;
+        }
+
+        body.dark-mode .faq-actions .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(28, 125, 214, 0.3) !important;
+        }
+
+        /* Placeholder text color */
+        body.dark-mode textarea::placeholder,
+        body.dark-mode input::placeholder {
+            color: #94ADC7 !important;
+        }
+
+        /* Icon colors */
+        body.dark-mode .fas {
+            color: inherit;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            body.dark-mode .sched.main-content-wrapper {
+                background-color: #121A21 !important;
+            }
+
+            body.dark-mode .main-dashboard-content {
+                background-color: #121A21 !important;
+            }
+        }
+
+        /* Text selection */
+        body.dark-mode ::selection {
+            background-color: #1C7DD6 !important;
+            color: #FFFFFF !important;
+        }
+
+        body.dark-mode ::-moz-selection {
+            background-color: #1C7DD6 !important;
+            color: #FFFFFF !important;
+        }
+
+        /* FAQ accordion chevron icons */
+        body.dark-mode .accordion-button i.fa-chevron-down,
+        body.dark-mode .accordion-button i.fa-chevron-up {
+            color: #E5E8EB !important;
+        }
+
+        /* FAQ item hover state */
+        body.dark-mode .accordion-item:hover {
+            background-color: #1a2635 !important;
+        }
+
+        body.dark-mode .accordion-button:hover {
+            background-color: #1a2635 !important;
+        }
+
+        /* Form textarea styling */
+        body.dark-mode textarea.form-control {
+            background-color: #121A21 !important;
+            color: #E5E8EB !important;
+            border: 1px solid #263645 !important;
+        }
+
+        body.dark-mode textarea.form-control:focus {
+            background-color: #121A21 !important;
+            border-color: #1C7DD6 !important;
+        }
+
+        /* Shadow adjustments */
+        body.dark-mode .shadow-sm {
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important;
+        }
+
+        /* Border utilities */
+        body.dark-mode .border-0 {
+            border: none !important;
+        }
+
+        /* Active state for form elements */
+        body.dark-mode .form-control:active {
+            background-color: #121A21 !important;
+        }
+
+        /* Print styles for dark mode */
+        @media print {
+            body.dark-mode {
+                background-color: white !important;
+                color: black !important;
+            }
+
+            body.dark-mode .card,
+            body.dark-mode .accordion-item,
+            body.dark-mode .accordion-body {
+                background-color: white !important;
+                color: black !important;
+                border-color: #000 !important;
+            }
+
+            body.dark-mode .accordion-button {
+                background-color: #f8f9fa !important;
+                color: black !important;
+            }
+        }
+
+        /* Additional utility classes */
+        body.dark-mode .mb-0 {
+            margin-bottom: 0 !important;
+        }
+
+        /* Back to support center button icon */
+        body.dark-mode .btn-secondary .fas.fa-arrow-left {
+            color: inherit !important;
+        }
+
+        /* Confirmation dialog styling (if custom dialogs are used) */
+        body.dark-mode .modal-backdrop {
+            background-color: rgba(0, 0, 0, 0.7) !important;
+        }
+
+        /* Focus ring for accessibility */
+        body.dark-mode *:focus {
+            outline: 2px solid #1C7DD6 !important;
+            outline-offset: 2px;
+        }
     </style>
 </head>
 
@@ -581,7 +924,8 @@ require_once '../../templates/admin/header_admin.php';
     </div>
 
     <!-- Bootstrap JS Bundle with Popper -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- JQuery Library -->
+    <script src="../../assets/js/jquery.min.js"></script>
 
     <script>
         // FAQ Accordion functionality
@@ -635,3 +979,8 @@ require_once '../../templates/admin/header_admin.php';
 </body>
 
 </html>
+
+
+<script>
+    document.body.style.backgroundColor = "#ffffff";
+</script>
