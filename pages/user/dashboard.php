@@ -837,13 +837,7 @@ require_once $header_path;
                                     <div class="mb-3 mb-xl-0 flex-grow-1">
                                         <p class="text-muted mb-1">Get started by adding your courses for the semester.
                                         </p>
-                                        <p class="text-muted mb-0">Plan your academic journey with ease. Add your
-                                            courses and stay organized.</p>
-                                    </div>
-                                    <button class="btn btn-custom-primary ms-xl-3" data-bs-toggle="modal"
-                                        data-bs-target="#ocrModal">
-                                        <span>Add</span>
-                                    </button>
+                                        <p class="text-muted mb-0">Plan your academic journey with ease. Add your                                            courses and stay organized.</p>                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -858,25 +852,35 @@ require_once $header_path;
             <div class="px-3">
                 <?php if (!empty($user_schedule)): ?>
                     <?php foreach ($user_schedule as $class): ?>
-                        <div class="class-item-custom d-flex align-items-center justify-content-between mb-2">
+                        <div class="class-item-custom d-flex align-items-center justify-content-between mb-2" id="schedule-item-<?= htmlspecialchars($class['schedule_code']) ?>">
+
                             <div class="d-flex align-items-center flex-grow-1">
                                 <div class="class-image-custom me-3"
-                                    style='background-image: url("http://googleusercontent.com/profile/picture/<?= htmlspecialchars($class['schedule_code'] ?? 0) ?>");'>
+                                    style='background-image: url("http://googleusercontent.com/profile/picture/<?= htmlspecialchars($class['schedule_code']) ?>");'>
                                 </div>
+
                                 <div class="d-flex flex-column flex-grow-1">
                                     <p class="text-dark fw-medium mb-1 text-truncate">
-                                        <?= htmlspecialchars($class['title'] ?? 'N/A') ?>
+                                        <?= htmlspecialchars($class['title']) ?>
                                     </p>
                                     <p class="text-muted small mb-0 text-truncate-2">
-                                        <?= htmlspecialchars($class['room'] ?? 'N/A') ?> &middot; 
-                                        <?= htmlspecialchars($class['start_time'] ?? 'N/A') ?> - 
-                                        <?= htmlspecialchars($class['end_time'] ?? 'N/A') ?> (<?= htmlspecialchars($class['day_of_week'] ?? 'N/A') ?>)
+                                        <?= htmlspecialchars($class['room']) ?> · 
+                                        <?= htmlspecialchars($class['start_time']) ?> -
+                                        <?= htmlspecialchars($class['end_time']) ?> (<?= htmlspecialchars($class['day_of_week']) ?>)
                                     </p>
                                 </div>
                             </div>
-                            <button
-                                class="btn btn-custom-outline ms-3 flex-shrink-0 btn-outline-secondary ms-3 flex-shrink-0 rounded-pill">
-                                <span>View</span>
+
+                            <!-- VIEW BUTTON -->
+                            <button class="btn btn-custom-outline btn-view-schedule rounded-pill ms-3"
+                                    data-schedule-id="<?= htmlspecialchars($class['schedule_code']) ?>">
+                                View
+                            </button>
+
+                            <!-- DELETE BUTTON -->
+                            <button class="btn btn-custom-outline btn-custom-delete rounded-pill ms-2"
+                                    data-schedule-id="<?= htmlspecialchars($class['schedule_code']) ?>">
+                                Delete
                             </button>
                         </div>
                     <?php endforeach; ?>
@@ -895,61 +899,72 @@ require_once $header_path;
 
 <script id="tour-data" type="application/json">
     <?= json_encode($onboarding_steps); ?>
-</script>
-
-
-<div class="modal fade" id="ocrModal" tabindex="-1" aria-labelledby="ocrModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-
-                <h5 class="modal-title fw-bold" id="ocrModalLabel">OCR Study Load Reader</h5>
-
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div id="ocr-alert" class="alert d-none" role="alert"></div>
-                <div id="upload-step">
-
-                    <h6 class="fw-medium">Step 1: Upload your PDF file</h6>
-
-                    <div class="input-group mb-3">
-                        <input type="file" class="form-control" id="studyLoadPdf" accept="application/pdf">
-                        <label class="input-group-text" for="studyLoadPdf">Upload</label>
-                    </div>
-
-                    <button class="btn btn-primary" id="processOcrBtn">Process Document</button>
-                </div>
-
-                <div id="preview-step" style="display: none;">
-                    <h6 class="fw-medium">Step 2: Preview Extracted Schedule</h6>
-                    <div id="preview-content" class="p-3 border rounded mb-3"
-                        style="max-height: 400px; overflow-y: auto;">
-                        <p class="text-center text-muted">Awaiting file upload...</p>
-                    </div>
-
-                    <button class="btn btn-secondary me-2" id="backToUploadBtn">Back</button>
-                    <button class="btn btn-success" id="confirmScheduleBtn">Confirm Extracted Schedule</button>
-                </div>
-
-                <div id="confirmation-step" style="display: none;">
-
-                    <h6 class="fw-medium">Step 3: Confirmation</h6>
-
-                    <p>Your study load has been successfully saved!</p>
-                    <button class="btn btn-success" data-bs-dismiss="modal">Done</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
+                </script>
 <?php require_once '../../templates/footer.php'; ?>
 <script src="../../assets/js/jquery.min.js"></script>
 <script src="../../assets/js/script.js"></script>
 <script src="../../assets/js/onboarding_tour.js"></script>
 
 <script>
+    $(document).ready(function () {
+
+        // ================== VIEW SCHEDULE FUNCTIONALITY ==================
+        $(document).on('click', '.btn-view-schedule', function() {
+            const scheduleId = $(this).data('schedule-id');
+            const modalBody = $('#modal-content-area')
+            modalBody.html('<i class="fas fa-spinner fa-spin me-2"></i> Loading details...');
+            $('#scheduleDetailModal').modal('show');
+
+            // AJAX call to fetch schedule details
+            // NOTE: You must create the file pages/user/get_schedule_details.php
+            $.ajax({
+                url: "../../pages/user/get_schedule_details.php",
+                method: "GET",
+                data: { schedule_id: scheduleId },
+                success: function(response) {
+                    // Expecting detailed HTML content from the PHP file
+                    modalBody.html(response);
+                },
+                error: function() {
+                    modalBody.html('<div class="alert alert-danger">Could not load schedule details.</div>');
+                }
+            });
+        });
+
+        // ================== DELETE SCHEDULE FUNCTIONALITY ==================
+        $(document).on('click', '.btn-custom-delete', function() {
+            const scheduleId = $(this).data('schedule-id');
+            
+            if (confirm('Are you sure you want to delete this schedule entry? This action cannot be undone.')) {
+                // Disable button during AJAX call
+                const deleteButton = $(this);
+                deleteButton.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i>');
+
+                // NOTE: You must create the file pages/user/delete_schedule.php
+                $.ajax({
+                    url: "../../pages/user/delete_schedule.php",
+                    method: "POST",
+                    data: { schedule_id: scheduleId },
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response.success) {
+                            // Success: Remove the visual item from the list
+                            $('#schedule-item-' + scheduleId).fadeOut(300, function() {
+                                $(this).remove();
+                                alert(response.message);
+                            });
+                        } else {
+                            alert('Error: ' + response.message);
+                            deleteButton.prop('disabled', false).html('<i class="fas fa-trash-alt"></i>');
+                        }
+                    },
+                    error: function() {
+                        alert('An error occurred while communicating with the server.');
+                        deleteButton.prop('disabled', false).html('<i class="fas fa-trash-alt"></i>');
+                    }
+                });
+            }
+        });    });
 
     // ================== AJAX SEARCH ==================
     $("#searchInput").on("keyup", function () {
@@ -973,76 +988,7 @@ require_once $header_path;
                 }
             });
         } else {
-            $("#searchResults").hide();
-        }
-    });
-
-    // ================== AJAX OCR UPLOAD ==================
-    $("#processOcrBtn").click(function () {
-        let file = $("#studyLoadPdf")[0].files[0];
-        if (!file) {
-            $("#ocr-alert").removeClass("d-none alert-success").addClass("alert-danger").text("Please upload a file first.");
-            return;
-        }
-
-        let formData = new FormData();
-        formData.append("studyLoadPdf", file);
-
-        $.ajax({
-            url: "../../pages/user/process_ocr.php",
-            method: "POST",
-            data: formData,
-            processData: false,
-            contentType: false,
-            dataType: "json",
-            success: function (response) {
-                if (response.success) {
-                    $("#upload-step").hide();
-                    $("#preview-step").show();
-                    $("#ocr-alert").removeClass("d-none alert-danger").addClass("alert-success").text("Document processed successfully! Please review the extracted schedule.");
-
-                    let scheduleHtml = `<table class="table table-striped table-hover">
-
-                                    <thead>
-                                        <tr>
-                                            <th>Sched No.</th>
-                                            <th>Course No.</th>
-                                            <th>Time</th>
-                                            <th>Days</th>
-                                            <th>Room</th>
-                                            <th>Units</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>`;
-
-                    response.schedule.forEach(item => {
-                        scheduleHtml += `<tr>
-
-                                    <td>${item.sched_no}</td>
-                                    <td>${item.course_no}</td>
-                                    <td>${item.time}</td>
-                                    <td>${item.days}</td>
-                                    <td>${item.room}</td>
-                                    <td>${item.units}</td>
-                                </tr>`;
-                    });
-
-                    scheduleHtml += `</tbody></table>`;
-                    $("#preview-content").html(scheduleHtml);
-                } else {
-                    $("#ocr-alert").removeClass("d-none alert-success").addClass("alert-danger").text(response.error);
-                    $("#upload-step").show();
-                    $("#preview-step").hide();
-                }
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                $("#ocr-alert").removeClass("d-none alert-success").addClass("alert-danger").text("An unexpected error occurred during processing. Please try again.");
-                console.error("AJAX Error: ", textStatus, errorThrown);
-            }
-        });
-
-    });
-
+            $("#searchResults").hide();        }    });
 
     // ================== AJAX ONBOARDING ==================
     $("#viewTipsBtn").click(function () {
