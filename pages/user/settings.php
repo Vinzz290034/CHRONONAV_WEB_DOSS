@@ -764,37 +764,19 @@ require_once '../../templates/user/sidenav_user.php';
         <?php endif; ?>
 
         <div class="settings-container">
-            <!-- Accessibility Section -->
+            
+            <!-- Display Section -->
             <div class="settings-section card shadow-sm">
                 <div class="card-header">
-                    <h5 class="mb-0">Accessibility</h5>
+                    <h5 class="mb-0">Display</h5>
                 </div>
                 <div class="card-body">
-                    <div class="settings-item d-flex justify-content-between align-items-center">
-                        <span>Voice Guidance</span>
-                        <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" id="voiceGuidance">
-                        </div>
-                    </div>
-                    <div class="settings-item d-flex justify-content-between align-items-center">
-                        <span>High Contrast Mode</span>
-                        <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" id="contrastMode">
-                        </div>
-                    </div>
                     <div class="settings-item d-flex justify-content-between align-items-center">
                         <span>Dark Mode</span>
                         <div class="form-check form-switch">
                             <input class="form-check-input" type="checkbox" id="darkModeSwitch">
                         </div>
                     </div>
-                </div>
-            </div>
-
-            <!-- Display Section -->
-            <div class="settings-section card shadow-sm">
-                <div class="card-header">
-                    <h5 class="mb-0">Display</h5>
                 </div>
                 <div class="card-body">
                     <div class="settings-item d-flex justify-content-between align-items-center">

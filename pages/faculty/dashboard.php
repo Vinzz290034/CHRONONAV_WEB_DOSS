@@ -1,5 +1,5 @@
 <?php
-// CHRONONAV_WEB_UNO/pages/faculty/dashboard.php
+// CHRONONAV_WEB_DOSS/pages/faculty/dashboard.php
 
 // Required files for authentication, database connection, and onboarding functions
 require_once '../../middleware/auth_check.php';
@@ -167,6 +167,7 @@ require_once $header_path;
     .text-truncate-2 {
         display: -webkit-box;
         -webkit-line-clamp: 2;
+        line-clamp: 2;
         -webkit-box-orient: vertical;
         overflow: hidden;
     }
@@ -750,3 +751,4 @@ require_once $header_path;
 </script>
 
 <?php include('../../includes/semantics/footer.php'); ?>
+

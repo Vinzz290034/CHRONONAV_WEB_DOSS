@@ -570,18 +570,7 @@ if (!isset($current_page)) {
                     <span class="nav-link-text fs-6">Dashboard</span>
                 </a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link <?= ($current_page === 'map') ? 'active' : '' ?>"
-                    href="<?= $base_path ?>pages/faculty/map_navigation.php">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor"
-                        viewBox="0 0 256 256">
-                        <path
-                            d="M128,16a48,48,0,1,0,48,48A48.05,48.05,0,0,0,128,16Zm0,80a32,32,0,1,1,32-32A32,32,0,0,1,128,96Zm119.07,103.31L237.26,98.91a24,24,0,0,0-41.51-9.13L169.18,172.2a32,32,0,0,1-52.36,0L60.25,89.78a24,24,0,0,0-41.51,9.13L8.93,199.31A23.88,23.88,0,0,0,32,232a24.1,24.1,0,0,0,6-0.77l73-18.27a32,32,0,0,1,14,0l73,18.27a24,24,0,0,0,30.07-32.92Z">
-                        </path>
-                    </svg>
-                    <span class="nav-link-text fs-6">Navigate Map</span>
-                </a>
-            </li>
+            
             <li class="nav-item">
                 <a class="nav-link <?= ($current_page === 'calendar') ? 'active' : '' ?>"
                     href="<?= $base_path ?>pages/faculty/calendar.php">

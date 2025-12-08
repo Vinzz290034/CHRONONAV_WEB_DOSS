@@ -275,7 +275,7 @@ $chrononav_dropdown_logo_path = '../../assets/images/chrononav_logo_small.png'; 
 
         <!-- Right Section with Settings and Profile -->
         <div class="header-right-section">
-
+            
             <!-- Settings Button -->
             <a href="../../pages/faculty/settings.php" class="settings-btn rounded-3" title="Settings">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"

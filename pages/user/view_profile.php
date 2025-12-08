@@ -961,29 +961,7 @@ require_once $sidenav_path;
                         </label>
                     </div>
                 </div>
-
-                <!-- Accessibility Mode -->
-                <div class="preference-item d-flex align-items-center justify-content-between">
-                    <p class="text-dark mb-0 flex-grow-1 text-truncate">Accessibility Mode</p>
-                    <div class="flex-shrink-0">
-                        <label class="toggle-switch">
-                            <div class="toggle-knob"></div>
-                            <input type="checkbox" class="toggle-input">
-                        </label>
-                    </div>
-                </div>
-
-                <!-- Voice Navigation -->
-                <div class="preference-item d-flex align-items-center justify-content-between">
-                    <p class="text-dark mb-0 flex-grow-1 text-truncate">Voice Navigation</p>
-                    <div class="flex-shrink-0">
-                        <label class="toggle-switch">
-                            <div class="toggle-knob"></div>
-                            <input type="checkbox" class="toggle-input">
-                        </label>
-                    </div>
-                </div>
-
+                
                 <!-- Font Size -->
                 <div class="preference-item d-flex align-items-center justify-content-between">
                     <p class="text-dark mb-0 flex-grow-1 text-truncate">Font Size</p>

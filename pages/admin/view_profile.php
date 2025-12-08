@@ -950,51 +950,17 @@ require_once '../../templates/admin/header_admin.php';
                 </div>
             </div>
         </div>
-
+        
 
         <h2 class="text-dark fw-bold fs-4 px-3 pb-3 pt-4">App Preferences</h2>
         <div class="d-flex flex-column">
-
-            <div class="preference-item d-flex align-items-center justify-content-between">
-                <p class="text-dark mb-0 flex-grow-1 text-truncate">Notifications</p>
-                <div class="flex-shrink-0">
-                    <label class="toggle-switch checked">
-                        <div class="toggle-knob"></div>
-                        <input type="checkbox" class="toggle-input" checked>
-                    </label>
-                </div>
-            </div>
-
-
-            <div class="preference-item d-flex align-items-center justify-content-between">
-                <p class="text-dark mb-0 flex-grow-1 text-truncate">Accessibility Mode</p>
-                <div class="flex-shrink-0">
-                    <label class="toggle-switch">
-                        <div class="toggle-knob"></div>
-                        <input type="checkbox" class="toggle-input">
-                    </label>
-                </div>
-            </div>
-
-
-            <div class="preference-item d-flex align-items-center justify-content-between">
-                <p class="text-dark mb-0 flex-grow-1 text-truncate">Voice Navigation</p>
-                <div class="flex-shrink-0">
-                    <label class="toggle-switch">
-                        <div class="toggle-knob"></div>
-                        <input type="checkbox" class="toggle-input">
-                    </label>
-                </div>
-            </div>
-
-
+            
             <div class="preference-item d-flex align-items-center justify-content-between">
                 <p class="text-dark mb-0 flex-grow-1 text-truncate">Font Size</p>
                 <div class="flex-shrink-0">
                     <p class="text-dark mb-0">Medium</p>
                 </div>
             </div>
-
 
             <div class="preference-item d-flex align-items-center justify-content-between">
                 <p class="text-dark mb-0 flex-grow-1 text-truncate">Theme</p>

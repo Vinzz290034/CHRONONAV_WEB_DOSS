@@ -671,34 +671,7 @@ require_once '../../templates/admin/sidenav_admin.php';
         <?php endif; ?>
 
         <div class="settings-container">
-
-            <div class="settings-section card shadow-sm">
-                <div class="card-header">
-                    <h5 class="mb-0">Accessibility</h5>
-                </div>
-                <div class="card-body">
-                    <div class="settings-item d-flex justify-content-between align-items-center">
-                        <span>Voice Guidance</span>
-                        <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" id="voiceGuidance">
-                        </div>
-                    </div>
-                    <div class="settings-item d-flex justify-content-between align-items-center">
-                        <span>High Contrast Mode</span>
-                        <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" id="contrastMode">
-                        </div>
-                    </div>
-                    <div class="settings-item d-flex justify-content-between align-items-center">
-                        <span>Dark Mode</span>
-                        <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" id="darkModeSwitch">
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-
+            
             <div class="settings-section card shadow-sm">
                 <div class="card-header">
                     <h5 class="mb-0">Display</h5>
@@ -707,6 +680,12 @@ require_once '../../templates/admin/sidenav_admin.php';
                     <div class="settings-item d-flex justify-content-between align-items-center">
                         <span>Font Size</span>
                         <span>Medium</span>
+                    </div>
+                    <div class="settings-item d-flex justify-content-between align-items-center">
+                        <span>Dark Mode</span>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="darkModeSwitch">
+                        </div>
                     </div>
                 </div>
             </div>
