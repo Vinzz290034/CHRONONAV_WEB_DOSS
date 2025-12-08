@@ -9,10 +9,26 @@ $user = $_SESSION['user'];
 $page_title = "Campus Map - Navigation";
 $current_page = "map";
 
+// Define the available floors and their corresponding SVG files (assuming files exist)
+$floors = [
+    'groundfloor' => 'UC-MAIN-UPDATED (WITH DIMENSIONS)-1.svg', // Assuming this is your ground floor
+    'mezzanine' => 'UC-MAIN-UPDATED (WITH DIMENSIONS)-2.svg', 
+    'floor_2' => 'UC-MAIN-UPDATED (WITH DIMENSIONS)-3.svg',
+    'floor_3' => 'UC-MAIN-UPDATED (WITH DIMENSIONS)-4.svg',
+    'floor_4' => 'UC-MAIN-UPDATED (WITH DIMENSIONS)-5.svg',
+    'floor_5' => 'UC-MAIN-UPDATED (WITH DIMENSIONS)-6.svg',
+    'floor_6' => 'UC-MAIN-UPDATED (WITH DIMENSIONS)-7.svg',
+    'floor_7' => 'UC-MAIN-UPDATED (WITH DIMENSIONS)-8.svg',
+];
+// Determine the initial floor to load
+$initial_floor_key = 'groundfloor';
+$initial_map_src = '../../assets/img/' . $floors[$initial_floor_key];
+
+
 // Fetch all available rooms with their status
 try {
     $pdo = get_db_connection();
-    $stmt = $pdo->query("SELECT id, room_name, capacity, room_type, location_description, is_available, map_x, map_y FROM rooms ORDER BY room_name");
+    $stmt = $pdo->query("SELECT id, room_name, capacity, room_type, location_description, is_available, map_x, map_y, floor FROM rooms ORDER BY room_name");
     $rooms = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
     error_log("Error fetching rooms: " . $e->getMessage());
@@ -39,21 +55,21 @@ require_once $header_path;
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $page_title ?></title>
 
-    <!-- Font Awesome -->
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-    <!-- Google Fonts -->
+
     <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
     <link rel="stylesheet" as="style" onload="this.rel='stylesheet'"
         href="https://fonts.googleapis.com/css2?display=swap&family=Noto+Sans:wght@400;500;700;900&family=Space+Grotesk:wght@400;500;700">
 
-    <!-- Favicon -->
+
     <link rel="icon" type="image/x-icon"
         href="https://res.cloudinary.com/deua2yipj/image/upload/v1758917007/ChronoNav_logo_muon27.png">
 
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
     <style>
         :root {
             --primary-dark: #101518;
@@ -642,6 +658,42 @@ require_once $header_path;
         body.dark-mode .room-item-type {
             color: #94ADC7;
         }
+
+        .floor-selector {
+            display: flex;
+            gap: 5px; /* Spacing between buttons */
+            padding: 10px 0;
+            overflow-x: auto; /* Allow horizontal scrolling if many buttons */
+            border-bottom: 1px solid #eee;
+            margin-bottom: 15px;
+        }
+
+        .floor-selector button {
+            white-space: nowrap; /* Prevent button text from wrapping */
+            padding: 8px 12px;
+            border: 1px solid #ccc;
+            background-color: #f8f9fa;
+            color: #333;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+
+        .floor-selector button:hover {
+            background-color: #e2e6ea;
+        }
+
+        .floor-selector button.active-floor {
+            background-color: var(--accent-blue, #007bff); /* Use an accent color for active */
+            color: white;
+            border-color: var(--accent-blue, #007bff);
+            font-weight: bold;
+        }
+        
+        .map-viewer-header {
+            display: flex;
+            flex-direction: column; /* Stack header and selector */
+        }
     </style>
 </head>
 
@@ -660,7 +712,7 @@ require_once $header_path;
 
     <div class="map-main-container">
         <div class="map-container">
-            <!-- Page Header -->
+
             <div class="map-header">
                 <div class="page-header">
                     <a href="../../pages/user/dashboard.php" class="btn-back" title="Back to Dashboard">
@@ -678,19 +730,43 @@ require_once $header_path;
                 </div>
             </div>
 
-            <!-- Main Content Area -->
+
             <div class="map-content">
-                <!-- Map Viewer -->
+
                 <div class="map-viewer">
                     <div class="map-viewer-header">
                         <h2><i class="fas fa-map"></i> Campus Map</h2>
-                    </div>
+                        
+                        <div class="floor-selector" id="floorSelector">
+                            <?php 
+                            $floor_names = [
+                                'groundfloor' => 'Ground Floor',
+                                'floor_1' => '1st Floor',
+                                'floor_2' => '2nd Floor',
+                                'floor_3' => '3rd Floor',
+                                'floor_4' => '4th Floor',
+                                'floor_5' => '5th Floor',
+                                'floor_6' => '6th Floor',
+                                'floor_7' => '7th Floor',
+                            ];
+                            foreach ($floors as $key => $file): 
+                            ?>
+                                <button 
+                                    class="floor-btn <?= $key === $initial_floor_key ? 'active-floor' : '' ?>"
+                                    data-floor-key="<?= $key ?>"
+                                    data-map-src="../../assets/img/<?= $file ?>"
+                                    title="View <?= $floor_names[$key] ?? $key ?>">
+                                    <?= $floor_names[$key] ?? $key ?>
+                                </button>
+                            <?php endforeach; ?>
+                        </div>
+                        </div>
 
                     <div class="map-display-container">
                         <div id="mapWrapper">
                             <div id="mapContainer">
                                 <iframe id="campusMap"
-                                    src="../../assets/img/UC-MAIN-UPDATED%20(WITH%20DIMENSIONS)-1.svg"
+                                    src="<?= $initial_map_src ?>"
                                     title="University Campus Map" loading="lazy" referrerpolicy="no-referrer"></iframe>
                             </div>
                         </div>
@@ -723,7 +799,7 @@ require_once $header_path;
                     </div>
                 </div>
 
-                <!-- Sidebar with Room List -->
+
                 <div class="map-sidebar">
                     <div class="sidebar-header">
                         <h3><i class="fas fa-building"></i> Available Rooms</h3>
@@ -748,8 +824,8 @@ require_once $header_path;
                                         data-room-name="<?= htmlspecialchars($room['room_name']) ?>"
                                         data-room-type="<?= htmlspecialchars($room['room_type']) ?>"
                                         data-room-capacity="<?= $room['capacity'] ?? 0 ?>"
-                                        data-room-location="<?= htmlspecialchars($room['location_description'] ?? '') ?>">
-                                        <div class="room-item-name">
+                                        data-room-location="<?= htmlspecialchars($room['location_description'] ?? '') ?>"
+                                        data-room-floor="<?= htmlspecialchars($room['floor'] ?? '') ?>"> <div class="room-item-name">
                                             <span><?= htmlspecialchars($room['room_name']) ?></span>
                                             <?php if ($room['capacity']): ?>
                                                 <small class="text-muted"><?= $room['capacity'] ?> seats</small>
@@ -805,7 +881,7 @@ require_once $header_path;
         </div>
     </div>
 
-    <!-- JavaScript -->
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../../assets/js/jquery.min.js"></script>
 
@@ -817,6 +893,7 @@ require_once $header_path;
             const maxZoom = 3;
             const zoomStep = 0.2;
             let selectedRoom = null;
+            let currentFloor = '<?= $initial_floor_key ?>'; // Store current floor key
 
             // DOM Elements
             const roomsList = document.getElementById('roomsList');
@@ -825,31 +902,96 @@ require_once $header_path;
             const zoomLevel = document.getElementById('zoomLevel');
             const mapContainer = document.getElementById('mapContainer');
             const mapWrapper = document.getElementById('mapWrapper');
+            const campusMap = document.getElementById('campusMap');
+            const floorSelector = document.getElementById('floorSelector');
+            const roomItems = roomsList.querySelectorAll('.room-item'); // Get all room items once
 
             // Apply initial zoom
             applyZoom();
 
-            // Search functionality
-            searchBox.addEventListener('input', function () {
-                const searchTerm = this.value.toLowerCase().trim();
-                const roomItems = roomsList.querySelectorAll('.room-item');
-
+            // Function to filter rooms based on search term and current floor
+            function filterRooms() {
+                const searchTerm = searchBox.value.toLowerCase().trim();
+                let hasVisibleRoom = false;
+                
                 roomItems.forEach(item => {
                     const roomName = item.dataset.roomName.toLowerCase();
                     const roomType = item.dataset.roomType.toLowerCase();
                     const location = item.dataset.roomLocation.toLowerCase();
+                    const roomFloor = item.dataset.roomFloor.toLowerCase();
 
-                    if (searchTerm === '' ||
+                    const matchesSearch = (searchTerm === '' ||
                         roomName.includes(searchTerm) ||
                         roomType.includes(searchTerm) ||
-                        location.includes(searchTerm)) {
+                        location.includes(searchTerm));
+                    
+                    const matchesFloor = (roomFloor === currentFloor || roomFloor === ''); // Empty floor data shows on all maps or filter logic needs refinement
+
+                    if (matchesSearch && matchesFloor) {
                         item.style.display = 'flex';
                         item.style.flexDirection = 'column';
+                        hasVisibleRoom = true;
                     } else {
                         item.style.display = 'none';
                     }
                 });
+
+                // Display a message if no rooms are found after filtering
+                const noRoomsMessage = roomsList.querySelector('.text-center');
+                if (!hasVisibleRoom && !noRoomsMessage) {
+                    const messageDiv = document.createElement('div');
+                    messageDiv.className = 'text-center py-4 text-muted';
+                    messageDiv.innerHTML = '<i class="fas fa-door-closed fa-2x mb-3"></i><p>No rooms found for this floor/search criteria.</p>';
+                    roomsList.appendChild(messageDiv);
+                } else if (hasVisibleRoom && noRoomsMessage) {
+                     // Remove the 'No rooms found' message if rooms are visible
+                     noRoomsMessage.remove();
+                }
+
+                // If the selected room is now hidden, unselect it
+                if (selectedRoom) {
+                    const selectedItem = roomsList.querySelector(`[data-room-id="${selectedRoom}"]`);
+                    if (selectedItem && selectedItem.style.display === 'none') {
+                        unselectRoom();
+                    }
+                }
+            }
+            
+            // Function to unselect the current room
+            function unselectRoom() {
+                roomsList.querySelectorAll('.room-item').forEach(item => {
+                    item.classList.remove('selected-room');
+                });
+                selectedRoom = null;
+                selectedRoomInfo.textContent = 'None';
+                // TODO: Clear highlight on map
+            }
+
+            // Search functionality
+            searchBox.addEventListener('input', filterRooms);
+
+            // Floor Selection functionality (NEW)
+            floorSelector.addEventListener('click', function (e) {
+                const floorButton = e.target.closest('.floor-btn');
+                if (floorButton) {
+                    // Update active button class
+                    floorSelector.querySelectorAll('.floor-btn').forEach(btn => {
+                        btn.classList.remove('active-floor');
+                    });
+                    floorButton.classList.add('active-floor');
+                    
+                    // Update map source
+                    const newMapSrc = floorButton.dataset.mapSrc;
+                    campusMap.src = newMapSrc;
+                    currentFloor = floorButton.dataset.floorKey;
+                    
+                    // Reset zoom and highlight on map change
+                    resetZoom();
+                    unselectRoom();
+                    filterRooms(); // Filter room list for the new floor
+                }
             });
+
 
             // Room selection
             roomsList.addEventListener('click', function (e) {
@@ -874,6 +1016,9 @@ require_once $header_path;
                     highlightRoomOnMap(roomItem.dataset.roomName);
                 }
             });
+
+            // Zoom functionality (rest remains the same)
+            // ... (keep all your original zoom, pan, and fitToScreen functions) ...
 
             // Zoom functionality
             window.zoomIn = function () {
@@ -900,8 +1045,14 @@ require_once $header_path;
                 const containerRect = mapContainer.getBoundingClientRect();
 
                 // Calculate zoom to fit container within wrapper
-                const scaleX = wrapperRect.width / containerRect.width;
-                const scaleY = wrapperRect.height / containerRect.height;
+                const mapIframe = document.getElementById('campusMap');
+                const iframeContentWidth = mapIframe.contentWindow?.document.body.scrollWidth || containerRect.width;
+                const iframeContentHeight = mapIframe.contentWindow?.document.body.scrollHeight || containerRect.height;
+
+
+                // Use the iframe's content size for calculation if available, otherwise fallback to container size
+                const scaleX = wrapperRect.width / iframeContentWidth;
+                const scaleY = wrapperRect.height / iframeContentHeight;
                 currentZoom = Math.min(scaleX, scaleY) * 0.95; // 95% to add some padding
 
                 // Ensure zoom stays within bounds
@@ -909,8 +1060,8 @@ require_once $header_path;
                 applyZoom();
 
                 // Center the map
-                mapWrapper.scrollLeft = (containerRect.width * currentZoom - wrapperRect.width) / 2;
-                mapWrapper.scrollTop = (containerRect.height * currentZoom - wrapperRect.height) / 2;
+                mapWrapper.scrollLeft = (iframeContentWidth * currentZoom - wrapperRect.width) / 2;
+                mapWrapper.scrollTop = (iframeContentHeight * currentZoom - wrapperRect.height) / 2;
             };
 
             function applyZoom() {
@@ -1009,6 +1160,7 @@ require_once $header_path;
                 return Math.sqrt(dx * dx + dy * dy);
             }
 
+
             // Highlight room on map (placeholder function)
             function highlightRoomOnMap(roomName) {
                 console.log(`Highlighting room: ${roomName}`);
@@ -1017,23 +1169,25 @@ require_once $header_path;
                 selectedRoomInfo.textContent = `${roomName} (Click to navigate)`;
             }
 
-            // Initialize with first available room selected
-            const firstAvailableRoom = roomsList.querySelector('.room-item:not(.unavailable)');
+            // Initialize:
+            // 1. Filter room list based on the initial floor
+            filterRooms(); 
+
+            // 2. Select first available room on the initial floor
+            const firstAvailableRoom = roomsList.querySelector('.room-item:not(.unavailable):not([style*="display: none"])');
             if (firstAvailableRoom) {
                 firstAvailableRoom.click();
             }
 
-            // Fit map to screen on initial load
-            setTimeout(() => {
-                fitToScreen();
-            }, 500);
+            // 3. Fit map to screen on initial load and whenever the map iframe loads new content
+            function fitMapOnLoad() {
+                setTimeout(() => {
+                    fitToScreen();
+                }, 500); // Small delay to ensure iframe content is loaded and measured
+            }
+            campusMap.onload = fitMapOnLoad; // Attach to iframe load event
+            fitMapOnLoad(); // Call once for initial load
         });
-    </script>
-
-
-
-    <!-- Favicon Script -->
-    <script>
         (function () {
             const faviconUrl = "https://res.cloudinary.com/deua2yipj/image/upload/v1758917007/ChronoNav_logo_muon27.png";
 

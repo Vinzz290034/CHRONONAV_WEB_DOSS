@@ -758,7 +758,7 @@ if (!isset($current_page)) {
             </li>
             <li class="nav-item">
                 <a class="nav-link <?= ($current_page === 'map_management') ? 'active' : '' ?>"
-                    href="<?= $base_path ?>pages/admin/map_management.php">
+                    href="<?= $base_path ?>pages/admin/map_managements.php">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" transform="scale(0.8)"
                         fill="currentColor" class="bi bi-map" viewBox="0 0 16 16">
                         <path
