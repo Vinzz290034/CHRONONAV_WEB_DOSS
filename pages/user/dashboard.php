@@ -17,7 +17,7 @@ $user_id = $user['id'] ?? 0; // Get user ID for fetching schedule
 
 // Assuming get_db_connection returns a valid mysqli connection ($conn)
 // Reusing global $conn for schedule fetching if db_connect uses mysqli
-global $conn; 
+global $conn;
 
 $onboarding_steps = [];
 $pdo = null; // Initialize PDO as null for local scope
@@ -50,7 +50,7 @@ function getUserSchedule($user_id, $conn)
             WHERE user_id = ? AND is_active = 1
             ORDER BY FIELD(day_of_week, 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'), start_time
         ");
-        
+
         if ($stmt) {
             $stmt->bind_param("i", $user_id);
             $stmt->execute();
@@ -408,6 +408,250 @@ require_once $header_path;
         .class-image-custom {
             width: 56px;
             height: 74.67px;
+        }
+    }
+
+
+    /* Enhanced Schedule Styling */
+    .day-group {
+        background: white;
+        border-radius: 0.75rem;
+        padding: 20px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        border: 1px solid #e5e7eb;
+    }
+
+    .day-header {
+        padding-bottom: 15px;
+        border-bottom: 2px solid #eaedf1;
+    }
+
+    .day-badge .badge {
+        font-size: 0.875rem;
+        font-weight: 500;
+        background: linear-gradient(135deg, #2e78c6, #3e99f4);
+        border: none;
+    }
+
+    .classes-container {
+        margin-top: 15px;
+    }
+
+    .class-item-custom {
+        background: linear-gradient(135deg, #f8fafc, #ffffff);
+        border: 1px solid #e5e7eb;
+        border-left: 4px solid #2e78c6;
+        border-radius: 0.75rem;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .class-item-custom::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, rgba(46, 120, 198, 0.03), rgba(62, 153, 244, 0.03));
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .class-item-custom:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        border-color: #d1dce6;
+    }
+
+    .class-item-custom:hover::before {
+        opacity: 1;
+    }
+
+    .class-icon {
+        background: linear-gradient(135deg, #2e78c6, #3e99f4);
+        color: white;
+        font-size: 1.25rem;
+        box-shadow: 0 4px 12px rgba(46, 120, 198, 0.2);
+    }
+
+    .class-item-custom .badge.bg-light {
+        background-color: #eaedf1 !important;
+        color: #101518;
+        font-size: 0.75rem;
+        font-weight: 500;
+        border: 1px solid #d1d5db;
+    }
+
+    .btn-custom-outline {
+        background-color: #eaedf1;
+        color: #101518;
+        border: none;
+        border-radius: 9999px;
+        font-weight: 500;
+        font-size: 0.875rem;
+        padding: 8px 16px;
+        min-width: 84px;
+        height: 32px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-custom-outline:hover {
+        background-color: #dce8f3;
+        color: #2e78c6;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(46, 120, 198, 0.1);
+    }
+
+    .btn-custom-delete {
+        background-color: #fee2e2;
+        color: #dc3545;
+        border: none;
+        border-radius: 9999px;
+        font-weight: 500;
+        font-size: 0.875rem;
+        padding: 8px 16px;
+        min-width: 84px;
+        height: 32px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-custom-delete:hover {
+        background-color: #fecaca;
+        color: #b91c1c;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(220, 53, 69, 0.1);
+    }
+
+    .empty-state {
+        background: white;
+        border-radius: 0.75rem;
+        border: 2px dashed #e5e7eb;
+        margin: 20px 0;
+    }
+
+    .empty-state-icon {
+        color: #9ca3af;
+    }
+
+    .text-truncate {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 200px;
+    }
+
+    /* Dark mode adjustments */
+    body.dark-mode .day-group {
+        background-color: #263645 !important;
+        border-color: #121A21 !important;
+    }
+
+    body.dark-mode .day-header {
+        border-bottom-color: #121A21 !important;
+    }
+
+    body.dark-mode .class-item-custom {
+        background: linear-gradient(135deg, #121A21, #263645) !important;
+        border-color: #121A21 !important;
+        border-left-color: #1C7DD6 !important;
+    }
+
+    body.dark-mode .class-item-custom:hover {
+        border-color: #1C7DD6 !important;
+        box-shadow: 0 4px 20px rgba(28, 125, 214, 0.2);
+    }
+
+    body.dark-mode .class-item-custom .badge.bg-light {
+        background-color: #121A21 !important;
+        color: #E5E8EB !important;
+        border-color: #263645 !important;
+    }
+
+    body.dark-mode .btn-custom-outline {
+        background-color: #121A21 !important;
+        color: #94ADC7 !important;
+        border: 1px solid #263645 !important;
+    }
+
+    body.dark-mode .btn-custom-outline:hover {
+        background-color: #1C7DD6 !important;
+        color: #FFFFFF !important;
+        border-color: #1C7DD6 !important;
+    }
+
+    body.dark-mode .btn-custom-delete {
+        background-color: #121A21 !important;
+        color: #E57373 !important;
+        border: 1px solid #263645 !important;
+    }
+
+    body.dark-mode .btn-custom-delete:hover {
+        background-color: #C62828 !important;
+        color: #FFFFFF !important;
+        border-color: #C62828 !important;
+    }
+
+    body.dark-mode .empty-state {
+        background-color: #263645 !important;
+        border-color: #121A21 !important;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 767px) {
+        .class-item-custom {
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 20px;
+        }
+
+        .class-item-custom>.d-flex.align-items-center {
+            width: 100%;
+            margin-bottom: 15px;
+        }
+
+        .class-item-custom .d-flex.gap-2 {
+            width: 100%;
+            justify-content: flex-end;
+        }
+
+        .btn-custom-outline,
+        .btn-custom-delete {
+            flex: 1;
+            min-width: auto;
+        }
+
+        .class-item-custom .d-flex.flex-column.flex-grow-1 {
+            margin-left: 15px;
+        }
+
+        .text-truncate {
+            max-width: 150px;
+        }
+
+        .day-group {
+            padding: 15px;
+        }
+    }
+
+    @media (min-width: 768px) and (max-width: 1023px) {
+        .class-item-custom {
+            padding: 20px;
+        }
+
+        .text-truncate {
+            max-width: 250px;
+        }
+    }
+
+    @media (min-width: 1024px) {
+        .class-item-custom {
+            padding: 20px 25px;
+        }
+
+        .text-truncate {
+            max-width: 300px;
         }
     }
 
@@ -837,7 +1081,9 @@ require_once $header_path;
                                     <div class="mb-3 mb-xl-0 flex-grow-1">
                                         <p class="text-muted mb-1">Get started by adding your courses for the semester.
                                         </p>
-                                        <p class="text-muted mb-0">Plan your academic journey with ease. Add your                                            courses and stay organized.</p>                                    </div>
+                                        <p class="text-muted mb-0">Plan your academic journey with ease. Add your
+                                            courses and stay organized.</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -846,47 +1092,120 @@ require_once $header_path;
             </div>
 
             <div class="px-3 pt-3 pb-1">
-                <h3 class="section-title mb-0">Upcoming Classes</h3>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h3 class="section-title mb-0">Upcoming Classes</h3>
+                    <span class="text-muted small"><?= count($user_schedule) ?>
+                        class<?= count($user_schedule) !== 1 ? 'es' : '' ?>
+                        scheduled</span>
+                </div>
             </div>
 
             <div class="px-3">
                 <?php if (!empty($user_schedule)): ?>
-                    <?php foreach ($user_schedule as $class): ?>
-                        <div class="class-item-custom d-flex align-items-center justify-content-between mb-2" id="schedule-item-<?= htmlspecialchars($class['schedule_code']) ?>">
+                    <div class="schedule-list">
+                        <?php
+                        // Group classes by day for better organization
+                        $grouped_classes = [];
+                        foreach ($user_schedule as $class) {
+                            $day = htmlspecialchars($class['day_of_week']);
+                            if (!isset($grouped_classes[$day])) {
+                                $grouped_classes[$day] = [];
+                            }
+                            $grouped_classes[$day][] = $class;
+                        }
 
-                            <div class="d-flex align-items-center flex-grow-1">
-                                <div class="class-image-custom me-3"
-                                    style='background-image: url("http://googleusercontent.com/profile/picture/<?= htmlspecialchars($class['schedule_code']) ?>");'>
+                        // Sort days in order
+                        $day_order = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+                        ?>
+
+                        <?php foreach ($day_order as $day): ?>
+                            <?php if (isset($grouped_classes[$day]) && !empty($grouped_classes[$day])): ?>
+                                <div class="day-group mb-4">
+                                    <div class="day-header d-flex align-items-center mb-3">
+                                        <div class="day-badge me-3">
+                                            <span class="badge bg-primary px-3 py-2 rounded-pill">
+                                                <i class="fas fa-calendar-day me-2"></i><?= $day ?>
+                                            </span>
+                                        </div>
+                                        <div class="day-count text-muted small">
+                                            <?= count($grouped_classes[$day]) ?>
+                                            class<?= count($grouped_classes[$day]) !== 1 ? 'es' : '' ?>
+                                        </div>
+                                    </div>
+
+                                    <div class="classes-container">
+                                        <?php foreach ($grouped_classes[$day] as $class): ?>
+                                            <div class="class-item-custom d-flex align-items-center justify-content-between mb-3 p-3"
+                                                id="schedule-item-<?= htmlspecialchars($class['schedule_code']) ?>">
+
+                                                <div class="d-flex align-items-center flex-grow-1">
+                                                    <div class="class-icon me-3 d-flex align-items-center justify-content-center rounded-2"
+                                                        style="width: 48px; height: 48px; background: linear-gradient(135deg, #2e78c6, #3e99f4); color: white;">
+                                                        <i class="fas fa-book"></i>
+                                                    </div>
+
+                                                    <div class="d-flex flex-column flex-grow-1">
+                                                        <div class="d-flex align-items-center mb-2">
+                                                            <p class="text-dark fw-medium mb-0 text-truncate me-2">
+                                                                <?= htmlspecialchars($class['title']) ?>
+                                                            </p>
+                                                            <span class="badge bg-light text-dark small px-2 py-1 rounded-pill">
+                                                                <i class="fas fa-clock me-1"></i>
+                                                                <?= htmlspecialchars($class['start_time']) ?> -
+                                                                <?= htmlspecialchars($class['end_time']) ?>
+                                                            </span>
+                                                        </div>
+
+                                                        <div class="d-flex align-items-center text-muted small">
+                                                            <span class="d-flex align-items-center me-3">
+                                                                <i class="fas fa-map-marker-alt me-1"></i>
+                                                                <?= htmlspecialchars($class['room']) ?>
+                                                            </span>
+                                                            <span class="d-flex align-items-center me-3">
+                                                                <i class="fas fa-calendar me-1"></i>
+                                                                <?= htmlspecialchars($class['day_of_week']) ?>
+                                                            </span>
+                                                            <span class="d-flex align-items-center">
+                                                                <i class="fas fa-id-card me-1"></i>
+                                                                <?= htmlspecialchars($class['schedule_code']) ?>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="d-flex gap-2 ms-3">
+                                                    <button class="btn btn-custom-outline btn-view-schedule rounded-pill px-3"
+                                                        data-schedule-id="<?= htmlspecialchars($class['schedule_code']) ?>"
+                                                        title="View Details">
+                                                        <i class="fas fa-eye me-1"></i> View
+                                                    </button>
+
+                                                    <button class="btn btn-custom-delete rounded-pill px-3"
+                                                        data-schedule-id="<?= htmlspecialchars($class['schedule_code']) ?>"
+                                                        title="Delete Class"
+                                                        style="background-color: #fee2e2; color: #dc3545; border: none;">
+                                                        <i class="fas fa-trash-alt me-1"></i> Delete
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        <?php endforeach; ?>
+                                    </div>
                                 </div>
-
-                                <div class="d-flex flex-column flex-grow-1">
-                                    <p class="text-dark fw-medium mb-1 text-truncate">
-                                        <?= htmlspecialchars($class['title']) ?>
-                                    </p>
-                                    <p class="text-muted small mb-0 text-truncate-2">
-                                        <?= htmlspecialchars($class['room']) ?> · 
-                                        <?= htmlspecialchars($class['start_time']) ?> -
-                                        <?= htmlspecialchars($class['end_time']) ?> (<?= htmlspecialchars($class['day_of_week']) ?>)
-                                    </p>
-                                </div>
-                            </div>
-
-                            <!-- VIEW BUTTON -->
-                            <button class="btn btn-custom-outline btn-view-schedule rounded-pill ms-3"
-                                    data-schedule-id="<?= htmlspecialchars($class['schedule_code']) ?>">
-                                View
-                            </button>
-
-                            <!-- DELETE BUTTON -->
-                            <button class="btn btn-custom-outline btn-custom-delete rounded-pill ms-2"
-                                    data-schedule-id="<?= htmlspecialchars($class['schedule_code']) ?>">
-                                Delete
-                            </button>
-                        </div>
-                    <?php endforeach; ?>
+                            <?php endif; ?>
+                        <?php endforeach; ?>
+                    </div>
                 <?php else: ?>
-                    <div class="alert alert-info mt-3" role="alert">
-                        No upcoming classes found. Please add your study load using the card above.
+                    <div class="empty-state text-center py-5">
+                        <div class="empty-state-icon mb-3">
+                            <i class="fas fa-calendar-times text-muted" style="font-size: 3rem;"></i>
+                        </div>
+                        <h4 class="text-dark mb-2">No Classes Scheduled</h4>
+                        <p class="text-muted mb-4">You haven't added any classes yet. Start by adding your study load to see
+                            your
+                            schedule here.</p>
+                        <a href="#addStudyLoad" class="btn btn-custom-primary rounded-pill px-4">
+                            <i class="fas fa-plus me-2"></i> Add Study Load
+                        </a>
                     </div>
                 <?php endif; ?>
             </div>
@@ -908,63 +1227,64 @@ require_once $header_path;
 <script>
     $(document).ready(function () {
 
-        // ================== VIEW SCHEDULE FUNCTIONALITY ==================
-        $(document).on('click', '.btn-view-schedule', function() {
-            const scheduleId = $(this).data('schedule-id');
-            const modalBody = $('#modal-content-area')
-            modalBody.html('<i class="fas fa-spinner fa-spin me-2"></i> Loading details...');
-            $('#scheduleDetailModal').modal('show');
+        // ================== VIEW SCHEDULE FUNCTIONALITY ==================
+        $(document).on('click', '.btn-view-schedule', function () {
+            const scheduleId = $(this).data('schedule-id');
+            const modalBody = $('#modal-content-area')
+            modalBody.html('<i class="fas fa-spinner fa-spin me-2"></i> Loading details...');
+            $('#scheduleDetailModal').modal('show');
 
-            // AJAX call to fetch schedule details
-            // NOTE: You must create the file pages/user/get_schedule_details.php
-            $.ajax({
-                url: "../../pages/user/get_schedule_details.php",
-                method: "GET",
-                data: { schedule_id: scheduleId },
-                success: function(response) {
-                    // Expecting detailed HTML content from the PHP file
-                    modalBody.html(response);
-                },
-                error: function() {
-                    modalBody.html('<div class="alert alert-danger">Could not load schedule details.</div>');
-                }
-            });
-        });
+            // AJAX call to fetch schedule details
+            // NOTE: You must create the file pages/user/get_schedule_details.php
+            $.ajax({
+                url: "../../pages/user/get_schedule_details.php",
+                method: "GET",
+                data: { schedule_id: scheduleId },
+                success: function (response) {
+                    // Expecting detailed HTML content from the PHP file
+                    modalBody.html(response);
+                },
+                error: function () {
+                    modalBody.html('<div class="alert alert-danger">Could not load schedule details.</div>');
+                }
+            });
+        });
 
-        // ================== DELETE SCHEDULE FUNCTIONALITY ==================
-        $(document).on('click', '.btn-custom-delete', function() {
-            const scheduleId = $(this).data('schedule-id');
-            
-            if (confirm('Are you sure you want to delete this schedule entry? This action cannot be undone.')) {
-                // Disable button during AJAX call
-                const deleteButton = $(this);
-                deleteButton.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i>');
+        // ================== DELETE SCHEDULE FUNCTIONALITY ==================
+        $(document).on('click', '.btn-custom-delete', function () {
+            const scheduleId = $(this).data('schedule-id');
 
-                // NOTE: You must create the file pages/user/delete_schedule.php
-                $.ajax({
-                    url: "../../pages/user/delete_schedule.php",
-                    method: "POST",
-                    data: { schedule_id: scheduleId },
-                    dataType: 'json',
-                    success: function(response) {
-                        if (response.success) {
-                            // Success: Remove the visual item from the list
-                            $('#schedule-item-' + scheduleId).fadeOut(300, function() {
-                                $(this).remove();
-                                alert(response.message);
-                            });
-                        } else {
-                            alert('Error: ' + response.message);
-                            deleteButton.prop('disabled', false).html('<i class="fas fa-trash-alt"></i>');
-                        }
-                    },
-                    error: function() {
-                        alert('An error occurred while communicating with the server.');
-                        deleteButton.prop('disabled', false).html('<i class="fas fa-trash-alt"></i>');
-                    }
-                });
-            }
-        });    });
+            if (confirm('Are you sure you want to delete this schedule entry? This action cannot be undone.')) {
+                // Disable button during AJAX call
+                const deleteButton = $(this);
+                deleteButton.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i>');
+
+                // NOTE: You must create the file pages/user/delete_schedule.php
+                $.ajax({
+                    url: "../../pages/user/delete_schedule.php",
+                    method: "POST",
+                    data: { schedule_id: scheduleId },
+                    dataType: 'json',
+                    success: function (response) {
+                        if (response.success) {
+                            // Success: Remove the visual item from the list
+                            $('#schedule-item-' + scheduleId).fadeOut(300, function () {
+                                $(this).remove();
+                                alert(response.message);
+                            });
+                        } else {
+                            alert('Error: ' + response.message);
+                            deleteButton.prop('disabled', false).html('<i class="fas fa-trash-alt"></i>');
+                        }
+                    },
+                    error: function () {
+                        alert('An error occurred while communicating with the server.');
+                        deleteButton.prop('disabled', false).html('<i class="fas fa-trash-alt"></i>');
+                    }
+                });
+            }
+        });
+    });
 
     // ================== AJAX SEARCH ==================
     $("#searchInput").on("keyup", function () {
@@ -988,7 +1308,9 @@ require_once $header_path;
                 }
             });
         } else {
-            $("#searchResults").hide();        }    });
+            $("#searchResults").hide();
+        }
+    });
 
     // ================== AJAX ONBOARDING ==================
     $("#viewTipsBtn").click(function () {
@@ -1082,3 +1404,59 @@ require_once $header_path;
 </script>
 
 <?php include('../../includes/semantics/footer.php'); ?>
+
+
+
+<script>
+    // Add click handlers for the improved buttons
+    document.addEventListener('DOMContentLoaded', function () {
+        // Add animation to class items
+        const classItems = document.querySelectorAll('.class-item-custom');
+        classItems.forEach((item, index) => {
+            item.style.animationDelay = `${index * 0.05}s`;
+            item.classList.add('animate-fade-in');
+        });
+
+        // Add tooltips to buttons
+        const viewButtons = document.querySelectorAll('.btn-view-schedule');
+        const deleteButtons = document.querySelectorAll('.btn-custom-delete');
+
+        viewButtons.forEach(btn => {
+            btn.setAttribute('data-bs-toggle', 'tooltip');
+            btn.setAttribute('data-bs-placement', 'top');
+            btn.setAttribute('title', 'View class details');
+        });
+
+        deleteButtons.forEach(btn => {
+            btn.setAttribute('data-bs-toggle', 'tooltip');
+            btn.setAttribute('data-bs-placement', 'top');
+            btn.setAttribute('title', 'Remove from schedule');
+        });
+
+        // Initialize Bootstrap tooltips
+        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+    });
+</script>
+
+
+<!-- Favicon Script -->
+<script>
+    (function () {
+        const faviconUrl = "https://res.cloudinary.com/deua2yipj/image/upload/v1758917007/ChronoNav_logo_muon27.png";
+
+        // Remove any existing favicons
+        document.querySelectorAll('link[rel="icon"], link[rel="shortcut icon"]').forEach(link => link.remove());
+
+        // Create a new favicon link
+        const link = document.createElement("link");
+        link.rel = "icon";
+        link.type = "image/png";
+        link.href = faviconUrl;
+
+        // Append to head
+        document.head.appendChild(link);
+    })();
+</script>
