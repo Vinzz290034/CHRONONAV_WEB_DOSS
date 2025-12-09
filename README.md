@@ -163,8 +163,8 @@ Acknowledgements
 - Uses the thiagoalessio/tesseract_ocr package to integrate Tesseract OCR in PHP.
 
 Contact
-- Project lead (as indicated in composer.json): Eric Dominic Momo — Momoe2957@gmail.com
-- For repository owner and issues: Vince Andrew Santoya —https://github.com/Vinzz290034/CHRONONAV_WEB_DOSS
+- For repository Project lead, owner and issues: Vince Andrew Santoya —https://github.com/Vinzz290034/CHRONONAV_WEB_DOSS
+- Head Developer (as indicated in composer.json): Eric Dominic Momo — Momoe2957@gmail.com
 - UI/UX Designer and Frontend Developer: Tristan Jesus V. Elvinia — [AKUMON12](https://github.com/AKUMON12)
 - Tester: Karl Kent Amarila
 ---
