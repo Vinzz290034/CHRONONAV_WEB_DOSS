@@ -11,8 +11,8 @@ $current_page = "map";
 
 // Define the available floors and their corresponding SVG files (assuming files exist)
 $floors = [
-    'groundfloor' => 'UC-MAIN-UPDATED (WITH DIMENSIONS)-1.svg', // Assuming this is your ground floor
-    'mezzanine' => 'UC-MAIN-UPDATED (WITH DIMENSIONS)-2.svg', 
+    'groundfloor' => 'UC-MAIN-UPDATED (WITH DIMENSIONS)-1.svg',
+    'mezzanine' => 'UC-MAIN-UPDATED (WITH DIMENSIONS)-2.svg',
     'floor_2' => 'UC-MAIN-UPDATED (WITH DIMENSIONS)-3.svg',
     'floor_3' => 'UC-MAIN-UPDATED (WITH DIMENSIONS)-4.svg',
     'floor_4' => 'UC-MAIN-UPDATED (WITH DIMENSIONS)-5.svg',
@@ -20,10 +20,10 @@ $floors = [
     'floor_6' => 'UC-MAIN-UPDATED (WITH DIMENSIONS)-7.svg',
     'floor_7' => 'UC-MAIN-UPDATED (WITH DIMENSIONS)-8.svg',
 ];
+
 // Determine the initial floor to load
 $initial_floor_key = 'groundfloor';
 $initial_map_src = '../../assets/img/' . $floors[$initial_floor_key];
-
 
 // Fetch all available rooms with their status
 try {
@@ -55,21 +55,14 @@ require_once $header_path;
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $page_title ?></title>
 
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
-
     <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
     <link rel="stylesheet" as="style" onload="this.rel='stylesheet'"
         href="https://fonts.googleapis.com/css2?display=swap&family=Noto+Sans:wght@400;500;700;900&family=Space+Grotesk:wght@400;500;700">
-
-
     <link rel="icon" type="image/x-icon"
         href="https://res.cloudinary.com/deua2yipj/image/upload/v1758917007/ChronoNav_logo_muon27.png">
-
-
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    
+
     <style>
         :root {
             --primary-dark: #101518;
@@ -79,15 +72,30 @@ require_once $header_path;
             --light-bg: #f9fafb;
             --available-color: #10b981;
             --unavailable-color: #ef4444;
+
+            /* Dark mode variables */
+            --dm-bg-primary: #0a0f14;
+            --dm-bg-secondary: #121a21;
+            --dm-bg-tertiary: #1a2430;
+            --dm-text-primary: #e5e8eb;
+            --dm-text-secondary: #94a3b8;
+            --dm-border-color: #263645;
+            --dm-accent-blue: #4a90e2;
+            --dm-hover-blue: #1c7dd6;
         }
 
         body {
             background-color: #ffffff;
-            background: #ffff;
             font-family: "Space Grotesk", "Noto Sans", sans-serif;
             margin: 0;
             padding: 0;
             overflow-x: hidden;
+            transition: background-color 0.3s ease;
+        }
+
+        body.dark-mode {
+            background-color: var(--dm-bg-primary);
+            color: var(--dm-text-primary);
         }
 
         .map-main-container {
@@ -105,6 +113,11 @@ require_once $header_path;
             box-sizing: border-box;
             margin-left: 20%;
             background-color: #ffffff;
+            transition: background-color 0.3s ease;
+        }
+
+        body.dark-mode .map-container {
+            background-color: var(--dm-bg-primary);
         }
 
         .map-header {
@@ -114,6 +127,11 @@ require_once $header_path;
             margin-bottom: 30px;
             padding-bottom: 20px;
             border-bottom: 1px solid var(--border-color);
+            transition: border-color 0.3s ease;
+        }
+
+        body.dark-mode .map-header {
+            border-bottom-color: var(--dm-border-color);
         }
 
         .map-content {
@@ -133,26 +151,51 @@ require_once $header_path;
             display: flex;
             flex-direction: column;
             height: 100%;
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode .map-viewer {
+            background: var(--dm-bg-secondary);
+            border-color: var(--dm-border-color);
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.2);
         }
 
         .map-viewer-header {
             padding: 20px 25px;
             border-bottom: 1px solid var(--border-color);
             background: var(--light-bg);
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode .map-viewer-header {
+            background: var(--dm-bg-tertiary);
+            border-bottom-color: var(--dm-border-color);
         }
 
         .map-viewer-header h2 {
             font-size: 22px;
             font-weight: 700;
             color: var(--primary-dark);
-            margin: 0;
+            margin: 0 0 15px 0;
             display: flex;
             align-items: center;
             gap: 10px;
+            transition: color 0.3s ease;
+        }
+
+        body.dark-mode .map-viewer-header h2 {
+            color: var(--dm-text-primary);
         }
 
         .map-viewer-header h2 i {
             color: var(--accent-blue);
+            transition: color 0.3s ease;
+        }
+
+        body.dark-mode .map-viewer-header h2 i {
+            color: var(--dm-accent-blue);
         }
 
         .map-display-container {
@@ -161,6 +204,11 @@ require_once $header_path;
             position: relative;
             overflow: hidden;
             background: #f8fafc;
+            transition: background-color 0.3s ease;
+        }
+
+        body.dark-mode .map-display-container {
+            background: var(--dm-bg-secondary);
         }
 
         #mapWrapper {
@@ -172,6 +220,12 @@ require_once $header_path;
             background: white;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
             overflow: auto;
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode #mapWrapper {
+            background: var(--dm-bg-tertiary);
+            border-color: var(--dm-border-color);
         }
 
         #mapContainer {
@@ -189,6 +243,11 @@ require_once $header_path;
             border: none;
             display: block;
             background: white;
+            transition: background-color 0.3s ease;
+        }
+
+        body.dark-mode #campusMap {
+            background: var(--dm-bg-tertiary);
         }
 
         .map-controls {
@@ -216,6 +275,13 @@ require_once $header_path;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
 
+        body.dark-mode .map-control-btn {
+            background: var(--dm-bg-tertiary);
+            border-color: var(--dm-border-color);
+            color: var(--dm-text-primary);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
         .map-control-btn:hover {
             background: var(--accent-blue);
             color: white;
@@ -223,8 +289,9 @@ require_once $header_path;
             box-shadow: 0 4px 8px rgba(46, 120, 198, 0.2);
         }
 
-        .map-control-btn:active {
-            transform: translateY(0);
+        body.dark-mode .map-control-btn:hover {
+            background: var(--dm-accent-blue);
+            box-shadow: 0 4px 8px rgba(74, 144, 226, 0.3);
         }
 
         .map-info-panel {
@@ -236,11 +303,23 @@ require_once $header_path;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode .map-info-panel {
+            background: var(--dm-bg-tertiary);
+            border-top-color: var(--dm-border-color);
+            color: var(--dm-text-secondary);
         }
 
         .map-info-panel strong {
             color: var(--primary-dark);
             font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        body.dark-mode .map-info-panel strong {
+            color: var(--dm-text-primary);
         }
 
         .map-sidebar {
@@ -252,12 +331,25 @@ require_once $header_path;
             display: flex;
             flex-direction: column;
             height: 100%;
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode .map-sidebar {
+            background: var(--dm-bg-secondary);
+            border-color: var(--dm-border-color);
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.2);
         }
 
         .sidebar-header {
             padding: 20px 25px;
             border-bottom: 1px solid var(--border-color);
             background: var(--light-bg);
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode .sidebar-header {
+            background: var(--dm-bg-tertiary);
+            border-bottom-color: var(--dm-border-color);
         }
 
         .sidebar-header h3 {
@@ -268,16 +360,31 @@ require_once $header_path;
             display: flex;
             align-items: center;
             gap: 10px;
+            transition: color 0.3s ease;
+        }
+
+        body.dark-mode .sidebar-header h3 {
+            color: var(--dm-text-primary);
         }
 
         .sidebar-header h3 i {
             color: var(--accent-blue);
+            transition: color 0.3s ease;
+        }
+
+        body.dark-mode .sidebar-header h3 i {
+            color: var(--dm-accent-blue);
         }
 
         .sidebar-content {
             flex: 1;
             padding: 20px;
             overflow-y: auto;
+            transition: background-color 0.3s ease;
+        }
+
+        body.dark-mode .sidebar-content {
+            background: var(--dm-bg-secondary);
         }
 
         .search-container {
@@ -296,14 +403,30 @@ require_once $header_path;
             box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
         }
 
+        body.dark-mode .search-box {
+            background: var(--dm-bg-tertiary);
+            border-color: var(--dm-border-color);
+            color: var(--dm-text-primary);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
         .search-box:focus {
             outline: none;
             border-color: var(--accent-blue);
             box-shadow: 0 0 0 3px rgba(46, 120, 198, 0.1);
         }
 
+        body.dark-mode .search-box:focus {
+            border-color: var(--dm-accent-blue);
+            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2);
+        }
+
         .search-box::placeholder {
             color: #94a3b8;
+        }
+
+        body.dark-mode .search-box::placeholder {
+            color: var(--dm-text-secondary);
         }
 
         #roomsList {
@@ -322,11 +445,23 @@ require_once $header_path;
             border: 1px solid var(--border-color);
         }
 
+        body.dark-mode .room-item {
+            background: var(--dm-bg-tertiary);
+            border-color: var(--dm-border-color);
+            border-left-color: var(--dm-accent-blue);
+        }
+
         .room-item:hover {
             background: #f0f7ff;
             transform: translateX(3px);
             border-color: var(--accent-blue);
             box-shadow: 0 2px 8px rgba(46, 120, 198, 0.1);
+        }
+
+        body.dark-mode .room-item:hover {
+            background: var(--dm-hover-blue);
+            border-color: var(--dm-accent-blue);
+            box-shadow: 0 2px 8px rgba(28, 125, 214, 0.2);
         }
 
         .room-item.selected-room {
@@ -335,10 +470,21 @@ require_once $header_path;
             box-shadow: 0 2px 8px rgba(2, 132, 199, 0.15);
         }
 
+        body.dark-mode .room-item.selected-room {
+            background: var(--dm-hover-blue);
+            border-left-color: var(--dm-accent-blue);
+            box-shadow: 0 2px 8px rgba(74, 144, 226, 0.25);
+        }
+
         .room-item.unavailable {
             border-left-color: var(--unavailable-color);
             background-color: #fef2f2;
             opacity: 0.9;
+        }
+
+        body.dark-mode .room-item.unavailable {
+            background-color: rgba(239, 68, 68, 0.1);
+            border-left-color: var(--unavailable-color);
         }
 
         .room-item-name {
@@ -349,6 +495,19 @@ require_once $header_path;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            transition: color 0.3s ease;
+        }
+
+        body.dark-mode .room-item-name {
+            color: var(--dm-text-primary);
+        }
+
+        .room-item-name small {
+            transition: color 0.3s ease;
+        }
+
+        body.dark-mode .room-item-name small {
+            color: var(--dm-text-secondary);
         }
 
         .room-item-type {
@@ -358,6 +517,11 @@ require_once $header_path;
             display: flex;
             align-items: center;
             gap: 6px;
+            transition: color 0.3s ease;
+        }
+
+        body.dark-mode .room-item-type {
+            color: var(--dm-text-secondary);
         }
 
         .room-item-type i {
@@ -370,6 +534,11 @@ require_once $header_path;
             display: flex;
             align-items: center;
             gap: 6px;
+            transition: color 0.3s ease;
+        }
+
+        body.dark-mode .room-item-capacity {
+            color: var(--dm-text-secondary);
         }
 
         .room-item-capacity i {
@@ -396,15 +565,31 @@ require_once $header_path;
             color: #065f46;
         }
 
+        body.dark-mode .room-status.available {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+        }
+
         .room-status.unavailable {
             background: #fee2e2;
             color: #991b1b;
+        }
+
+        body.dark-mode .room-status.unavailable {
+            background: rgba(239, 68, 68, 0.2);
+            color: #f87171;
         }
 
         .sidebar-footer {
             padding: 20px;
             border-top: 1px solid var(--border-color);
             background: var(--light-bg);
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode .sidebar-footer {
+            background: var(--dm-bg-tertiary);
+            border-top-color: var(--dm-border-color);
         }
 
         .legend-title {
@@ -415,10 +600,20 @@ require_once $header_path;
             display: flex;
             align-items: center;
             gap: 8px;
+            transition: color 0.3s ease;
+        }
+
+        body.dark-mode .legend-title {
+            color: var(--dm-text-primary);
         }
 
         .legend-title i {
             color: var(--accent-blue);
+            transition: color 0.3s ease;
+        }
+
+        body.dark-mode .legend-title i {
+            color: var(--dm-accent-blue);
         }
 
         .legend-items {
@@ -432,6 +627,11 @@ require_once $header_path;
             align-items: center;
             font-size: 13px;
             color: #374151;
+            transition: color 0.3s ease;
+        }
+
+        body.dark-mode .legend-item {
+            color: var(--dm-text-primary);
         }
 
         .legend-color {
@@ -467,11 +667,22 @@ require_once $header_path;
             flex-shrink: 0;
         }
 
+        body.dark-mode .btn-back {
+            background: var(--dm-bg-tertiary);
+            color: var(--dm-text-primary);
+        }
+
         .btn-back:hover {
             background: #dce8f3;
             transform: translateX(-3px);
             color: var(--accent-blue);
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        body.dark-mode .btn-back:hover {
+            background: var(--dm-hover-blue);
+            color: white;
+            box-shadow: 0 2px 8px rgba(28, 125, 214, 0.3);
         }
 
         .page-title h1 {
@@ -480,12 +691,22 @@ require_once $header_path;
             color: var(--primary-dark);
             margin: 0;
             line-height: 1.2;
+            transition: color 0.3s ease;
+        }
+
+        body.dark-mode .page-title h1 {
+            color: var(--dm-text-primary);
         }
 
         .page-title .subtitle {
             font-size: 15px;
             color: var(--secondary-text);
             margin-top: 4px;
+            transition: color 0.3s ease;
+        }
+
+        body.dark-mode .page-title .subtitle {
+            color: var(--dm-text-secondary);
         }
 
         .zoom-indicator {
@@ -497,10 +718,74 @@ require_once $header_path;
             border-radius: 0.5rem;
             font-size: 14px;
             color: var(--secondary-text);
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode .zoom-indicator {
+            background: var(--dm-bg-tertiary);
+            color: var(--dm-text-secondary);
         }
 
         .zoom-indicator strong {
             color: var(--primary-dark);
+            transition: color 0.3s ease;
+        }
+
+        body.dark-mode .zoom-indicator strong {
+            color: var(--dm-text-primary);
+        }
+
+        /* Floor Selector Styles */
+        .floor-selector {
+            display: flex;
+            gap: 8px;
+            padding: 10px 0;
+            overflow-x: auto;
+            margin-bottom: 0;
+        }
+
+        .floor-btn {
+            white-space: nowrap;
+            padding: 8px 16px;
+            border: 1px solid var(--border-color);
+            background-color: white;
+            color: var(--primary-dark);
+            cursor: pointer;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode .floor-btn {
+            background-color: var(--dm-bg-tertiary);
+            border-color: var(--dm-border-color);
+            color: var(--dm-text-primary);
+        }
+
+        .floor-btn:hover {
+            background-color: #f0f7ff;
+            border-color: var(--accent-blue);
+            transform: translateY(-1px);
+        }
+
+        body.dark-mode .floor-btn:hover {
+            background-color: var(--dm-hover-blue);
+            border-color: var(--dm-accent-blue);
+        }
+
+        .floor-btn.active-floor {
+            background-color: var(--accent-blue);
+            color: white;
+            border-color: var(--accent-blue);
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(46, 120, 198, 0.2);
+        }
+
+        body.dark-mode .floor-btn.active-floor {
+            background-color: var(--dm-accent-blue);
+            border-color: var(--dm-accent-blue);
+            box-shadow: 0 2px 8px rgba(74, 144, 226, 0.3);
         }
 
         /* Scrollbar Styling */
@@ -511,23 +796,31 @@ require_once $header_path;
 
         ::-webkit-scrollbar-track {
             background: #ffffff;
-            /* white track */
+        }
+
+        body.dark-mode ::-webkit-scrollbar-track {
+            background: var(--dm-bg-secondary);
         }
 
         ::-webkit-scrollbar-thumb {
             background-color: #737373;
-            /* gray thumb */
             border-radius: 6px;
             border: 3px solid #ffffff;
-            /* padding effect with white border */
+        }
+
+        body.dark-mode ::-webkit-scrollbar-thumb {
+            background-color: var(--dm-text-secondary);
+            border: 3px solid var(--dm-bg-secondary);
         }
 
         ::-webkit-scrollbar-thumb:hover {
-            background-color: #2e78c6;
-            /* blue on hover */
+            background-color: var(--accent-blue);
         }
 
-        /* Scrollbar styling to match dashboard */
+        body.dark-mode ::-webkit-scrollbar-thumb:hover {
+            background-color: var(--dm-accent-blue);
+        }
+
         .sidebar-content::-webkit-scrollbar,
         #mapWrapper::-webkit-scrollbar {
             width: 10px;
@@ -540,6 +833,11 @@ require_once $header_path;
             border-radius: 4px;
         }
 
+        body.dark-mode .sidebar-content::-webkit-scrollbar-track,
+        body.dark-mode #mapWrapper::-webkit-scrollbar-track {
+            background: var(--dm-bg-secondary);
+        }
+
         .sidebar-content::-webkit-scrollbar-thumb,
         #mapWrapper::-webkit-scrollbar-thumb {
             background-color: #737373;
@@ -547,9 +845,20 @@ require_once $header_path;
             border: 2px solid #ffffff;
         }
 
+        body.dark-mode .sidebar-content::-webkit-scrollbar-thumb,
+        body.dark-mode #mapWrapper::-webkit-scrollbar-thumb {
+            background-color: var(--dm-text-secondary);
+            border: 2px solid var(--dm-bg-secondary);
+        }
+
         .sidebar-content::-webkit-scrollbar-thumb:hover,
         #mapWrapper::-webkit-scrollbar-thumb:hover {
             background-color: var(--accent-blue);
+        }
+
+        body.dark-mode .sidebar-content::-webkit-scrollbar-thumb:hover,
+        body.dark-mode #mapWrapper::-webkit-scrollbar-thumb:hover {
+            background-color: var(--dm-accent-blue);
         }
 
         /* For Firefox */
@@ -557,6 +866,11 @@ require_once $header_path;
         #mapWrapper {
             scrollbar-width: thin;
             scrollbar-color: #737373 #ffffff;
+        }
+
+        body.dark-mode .sidebar-content,
+        body.dark-mode #mapWrapper {
+            scrollbar-color: var(--dm-text-secondary) var(--dm-bg-secondary);
         }
 
         /* Responsive Design */
@@ -618,82 +932,6 @@ require_once $header_path;
                 grid-template-columns: 1fr 320px;
             }
         }
-
-        /* Dark mode support */
-        body.dark-mode .map-viewer,
-        body.dark-mode .map-sidebar,
-        body.dark-mode #mapWrapper {
-            background: #263645;
-            border-color: #121A21;
-            color: #E5E8EB;
-        }
-
-        body.dark-mode .map-viewer-header,
-        body.dark-mode .sidebar-header,
-        body.dark-mode .sidebar-footer {
-            background: #121A21;
-            border-color: #263645;
-        }
-
-        body.dark-mode .search-box {
-            background: #121A21;
-            border-color: #263645;
-            color: #E5E8EB;
-        }
-
-        body.dark-mode .room-item {
-            background: #121A21;
-            border-color: #263645;
-            color: #E5E8EB;
-        }
-
-        body.dark-mode .room-item:hover {
-            background: #1C7DD6;
-        }
-
-        body.dark-mode .room-item-name {
-            color: #E5E8EB;
-        }
-
-        body.dark-mode .room-item-type {
-            color: #94ADC7;
-        }
-
-        .floor-selector {
-            display: flex;
-            gap: 5px; /* Spacing between buttons */
-            padding: 10px 0;
-            overflow-x: auto; /* Allow horizontal scrolling if many buttons */
-            border-bottom: 1px solid #eee;
-            margin-bottom: 15px;
-        }
-
-        .floor-selector button {
-            white-space: nowrap; /* Prevent button text from wrapping */
-            padding: 8px 12px;
-            border: 1px solid #ccc;
-            background-color: #f8f9fa;
-            color: #333;
-            cursor: pointer;
-            border-radius: 5px;
-            transition: background-color 0.2s, border-color 0.2s;
-        }
-
-        .floor-selector button:hover {
-            background-color: #e2e6ea;
-        }
-
-        .floor-selector button.active-floor {
-            background-color: var(--accent-blue, #007bff); /* Use an accent color for active */
-            color: white;
-            border-color: var(--accent-blue, #007bff);
-            font-weight: bold;
-        }
-        
-        .map-viewer-header {
-            display: flex;
-            flex-direction: column; /* Stack header and selector */
-        }
     </style>
 </head>
 
@@ -712,7 +950,6 @@ require_once $header_path;
 
     <div class="map-main-container">
         <div class="map-container">
-
             <div class="map-header">
                 <div class="page-header">
                     <a href="../../pages/user/dashboard.php" class="btn-back" title="Back to Dashboard">
@@ -730,18 +967,16 @@ require_once $header_path;
                 </div>
             </div>
 
-
             <div class="map-content">
-
                 <div class="map-viewer">
                     <div class="map-viewer-header">
                         <h2><i class="fas fa-map"></i> Campus Map</h2>
-                        
+
                         <div class="floor-selector" id="floorSelector">
-                            <?php 
+                            <?php
                             $floor_names = [
                                 'groundfloor' => 'Ground Floor',
-                                'floor_1' => '1st Floor',
+                                'mezzanine' => 'Mezzanine',
                                 'floor_2' => '2nd Floor',
                                 'floor_3' => '3rd Floor',
                                 'floor_4' => '4th Floor',
@@ -749,25 +984,22 @@ require_once $header_path;
                                 'floor_6' => '6th Floor',
                                 'floor_7' => '7th Floor',
                             ];
-                            foreach ($floors as $key => $file): 
-                            ?>
-                                <button 
-                                    class="floor-btn <?= $key === $initial_floor_key ? 'active-floor' : '' ?>"
-                                    data-floor-key="<?= $key ?>"
-                                    data-map-src="../../assets/img/<?= $file ?>"
+                            foreach ($floors as $key => $file):
+                                ?>
+                                <button class="floor-btn <?= $key === $initial_floor_key ? 'active-floor' : '' ?>"
+                                    data-floor-key="<?= $key ?>" data-map-src="../../assets/img/<?= $file ?>"
                                     title="View <?= $floor_names[$key] ?? $key ?>">
                                     <?= $floor_names[$key] ?? $key ?>
                                 </button>
                             <?php endforeach; ?>
                         </div>
-                        </div>
+                    </div>
 
                     <div class="map-display-container">
                         <div id="mapWrapper">
                             <div id="mapContainer">
-                                <iframe id="campusMap"
-                                    src="<?= $initial_map_src ?>"
-                                    title="University Campus Map" loading="lazy" referrerpolicy="no-referrer"></iframe>
+                                <iframe id="campusMap" src="<?= $initial_map_src ?>" title="University Campus Map"
+                                    loading="lazy" referrerpolicy="no-referrer"></iframe>
                             </div>
                         </div>
 
@@ -799,7 +1031,6 @@ require_once $header_path;
                     </div>
                 </div>
 
-
                 <div class="map-sidebar">
                     <div class="sidebar-header">
                         <h3><i class="fas fa-building"></i> Available Rooms</h3>
@@ -825,7 +1056,8 @@ require_once $header_path;
                                         data-room-type="<?= htmlspecialchars($room['room_type']) ?>"
                                         data-room-capacity="<?= $room['capacity'] ?? 0 ?>"
                                         data-room-location="<?= htmlspecialchars($room['location_description'] ?? '') ?>"
-                                        data-room-floor="<?= htmlspecialchars($room['floor'] ?? '') ?>"> <div class="room-item-name">
+                                        data-room-floor="<?= htmlspecialchars($room['floor'] ?? '') ?>">
+                                        <div class="room-item-name">
                                             <span><?= htmlspecialchars($room['room_name']) ?></span>
                                             <?php if ($room['capacity']): ?>
                                                 <small class="text-muted"><?= $room['capacity'] ?> seats</small>
@@ -871,7 +1103,8 @@ require_once $header_path;
                             </div>
                             <div class="legend-item">
                                 <div class="legend-color"
-                                    style="background: var(--accent-blue); border: 2px solid #ffffff;"></div>
+                                    style="background: var(--accent-blue); border: 2px solid var(--border-color);">
+                                </div>
                                 <span>Selected Room</span>
                             </div>
                         </div>
@@ -881,8 +1114,6 @@ require_once $header_path;
         </div>
     </div>
 
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../../assets/js/jquery.min.js"></script>
 
     <script>
@@ -893,7 +1124,7 @@ require_once $header_path;
             const maxZoom = 3;
             const zoomStep = 0.2;
             let selectedRoom = null;
-            let currentFloor = '<?= $initial_floor_key ?>'; // Store current floor key
+            let currentFloor = '<?= $initial_floor_key ?>';
 
             // DOM Elements
             const roomsList = document.getElementById('roomsList');
@@ -904,7 +1135,7 @@ require_once $header_path;
             const mapWrapper = document.getElementById('mapWrapper');
             const campusMap = document.getElementById('campusMap');
             const floorSelector = document.getElementById('floorSelector');
-            const roomItems = roomsList.querySelectorAll('.room-item'); // Get all room items once
+            const roomItems = roomsList.querySelectorAll('.room-item');
 
             // Apply initial zoom
             applyZoom();
@@ -913,7 +1144,7 @@ require_once $header_path;
             function filterRooms() {
                 const searchTerm = searchBox.value.toLowerCase().trim();
                 let hasVisibleRoom = false;
-                
+
                 roomItems.forEach(item => {
                     const roomName = item.dataset.roomName.toLowerCase();
                     const roomType = item.dataset.roomType.toLowerCase();
@@ -924,8 +1155,8 @@ require_once $header_path;
                         roomName.includes(searchTerm) ||
                         roomType.includes(searchTerm) ||
                         location.includes(searchTerm));
-                    
-                    const matchesFloor = (roomFloor === currentFloor || roomFloor === ''); // Empty floor data shows on all maps or filter logic needs refinement
+
+                    const matchesFloor = (roomFloor === currentFloor || roomFloor === '');
 
                     if (matchesSearch && matchesFloor) {
                         item.style.display = 'flex';
@@ -944,8 +1175,7 @@ require_once $header_path;
                     messageDiv.innerHTML = '<i class="fas fa-door-closed fa-2x mb-3"></i><p>No rooms found for this floor/search criteria.</p>';
                     roomsList.appendChild(messageDiv);
                 } else if (hasVisibleRoom && noRoomsMessage) {
-                     // Remove the 'No rooms found' message if rooms are visible
-                     noRoomsMessage.remove();
+                    noRoomsMessage.remove();
                 }
 
                 // If the selected room is now hidden, unselect it
@@ -956,7 +1186,7 @@ require_once $header_path;
                     }
                 }
             }
-            
+
             // Function to unselect the current room
             function unselectRoom() {
                 roomsList.querySelectorAll('.room-item').forEach(item => {
@@ -964,13 +1194,12 @@ require_once $header_path;
                 });
                 selectedRoom = null;
                 selectedRoomInfo.textContent = 'None';
-                // TODO: Clear highlight on map
             }
 
             // Search functionality
             searchBox.addEventListener('input', filterRooms);
 
-            // Floor Selection functionality (NEW)
+            // Floor Selection functionality
             floorSelector.addEventListener('click', function (e) {
                 const floorButton = e.target.closest('.floor-btn');
                 if (floorButton) {
@@ -979,19 +1208,18 @@ require_once $header_path;
                         btn.classList.remove('active-floor');
                     });
                     floorButton.classList.add('active-floor');
-                    
+
                     // Update map source
                     const newMapSrc = floorButton.dataset.mapSrc;
                     campusMap.src = newMapSrc;
                     currentFloor = floorButton.dataset.floorKey;
-                    
+
                     // Reset zoom and highlight on map change
                     resetZoom();
                     unselectRoom();
-                    filterRooms(); // Filter room list for the new floor
+                    filterRooms();
                 }
             });
-
 
             // Room selection
             roomsList.addEventListener('click', function (e) {
@@ -1012,13 +1240,10 @@ require_once $header_path;
                     // Scroll to show selected room
                     roomItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 
-                    // TODO: Highlight room on map (if coordinates are available)
+                    // TODO: Highlight room on map
                     highlightRoomOnMap(roomItem.dataset.roomName);
                 }
             });
-
-            // Zoom functionality (rest remains the same)
-            // ... (keep all your original zoom, pan, and fitToScreen functions) ...
 
             // Zoom functionality
             window.zoomIn = function () {
@@ -1049,11 +1274,9 @@ require_once $header_path;
                 const iframeContentWidth = mapIframe.contentWindow?.document.body.scrollWidth || containerRect.width;
                 const iframeContentHeight = mapIframe.contentWindow?.document.body.scrollHeight || containerRect.height;
 
-
-                // Use the iframe's content size for calculation if available, otherwise fallback to container size
                 const scaleX = wrapperRect.width / iframeContentWidth;
                 const scaleY = wrapperRect.height / iframeContentHeight;
-                currentZoom = Math.min(scaleX, scaleY) * 0.95; // 95% to add some padding
+                currentZoom = Math.min(scaleX, scaleY) * 0.95;
 
                 // Ensure zoom stays within bounds
                 currentZoom = Math.max(minZoom, Math.min(currentZoom, maxZoom));
@@ -1067,13 +1290,10 @@ require_once $header_path;
             function applyZoom() {
                 mapContainer.style.transform = `scale(${currentZoom})`;
                 zoomLevel.textContent = `${Math.round(currentZoom * 100)}%`;
-
-                // Update wrapper scroll behavior
                 updateWrapperScroll();
             }
 
             function updateWrapperScroll() {
-                // Adjust scroll position to maintain center-ish view
                 const scrollLeft = mapWrapper.scrollLeft;
                 const scrollTop = mapWrapper.scrollTop;
                 const scaleChange = currentZoom / (parseFloat(mapContainer.style.transform?.replace('scale(', '') || 1));
@@ -1082,7 +1302,6 @@ require_once $header_path;
                     const newScrollLeft = scrollLeft * scaleChange;
                     const newScrollTop = scrollTop * scaleChange;
 
-                    // Use requestAnimationFrame for smooth transition
                     requestAnimationFrame(() => {
                         mapWrapper.scrollLeft = newScrollLeft;
                         mapWrapper.scrollTop = newScrollTop;
@@ -1102,19 +1321,16 @@ require_once $header_path;
                     const oldScale = currentZoom;
 
                     if (e.deltaY < 0) {
-                        // Zoom in
                         if (currentZoom < maxZoom) {
                             currentZoom += zoomStep;
                         }
                     } else {
-                        // Zoom out
                         if (currentZoom > minZoom) {
                             currentZoom -= zoomStep;
                         }
                     }
 
                     if (oldScale !== currentZoom) {
-                        // Calculate new scroll position to zoom around cursor
                         const scaleChange = currentZoom / oldScale;
                         mapWrapper.scrollLeft = x * scaleChange - (x - mapWrapper.scrollLeft);
                         mapWrapper.scrollTop = y * scaleChange - (y - mapWrapper.scrollTop);
@@ -1160,59 +1376,67 @@ require_once $header_path;
                 return Math.sqrt(dx * dx + dy * dy);
             }
 
-
-            // Highlight room on map (placeholder function)
+            // Highlight room on map
             function highlightRoomOnMap(roomName) {
                 console.log(`Highlighting room: ${roomName}`);
-                // This function would need to interface with the SVG map
-                // For now, we'll just show a message
                 selectedRoomInfo.textContent = `${roomName} (Click to navigate)`;
             }
 
-            // Initialize:
-            // 1. Filter room list based on the initial floor
-            filterRooms(); 
+            // Initialize
+            filterRooms();
 
-            // 2. Select first available room on the initial floor
+            // Select first available room on the initial floor
             const firstAvailableRoom = roomsList.querySelector('.room-item:not(.unavailable):not([style*="display: none"])');
             if (firstAvailableRoom) {
                 firstAvailableRoom.click();
             }
 
-            // 3. Fit map to screen on initial load and whenever the map iframe loads new content
+            // Fit map to screen on initial load
             function fitMapOnLoad() {
                 setTimeout(() => {
                     fitToScreen();
-                }, 500); // Small delay to ensure iframe content is loaded and measured
+                }, 500);
             }
-            campusMap.onload = fitMapOnLoad; // Attach to iframe load event
-            fitMapOnLoad(); // Call once for initial load
+            campusMap.onload = fitMapOnLoad;
+            fitMapOnLoad();
+
+            // Dark mode detection and adjustment
+            function checkDarkMode() {
+                if (document.body.classList.contains('dark-mode')) {
+                    // Apply additional dark mode adjustments if needed
+                    document.body.style.backgroundColor = "var(--dm-bg-primary)";
+                }
+            }
+
+            // Check on load
+            checkDarkMode();
+
+            // Listen for dark mode changes
+            const observer = new MutationObserver(function (mutations) {
+                mutations.forEach(function (mutation) {
+                    if (mutation.attributeName === 'class') {
+                        checkDarkMode();
+                    }
+                });
+            });
+
+            observer.observe(document.body, { attributes: true });
         });
+
+        // Favicon setup
         (function () {
             const faviconUrl = "https://res.cloudinary.com/deua2yipj/image/upload/v1758917007/ChronoNav_logo_muon27.png";
-
-            // Remove any existing favicons
             document.querySelectorAll('link[rel="icon"], link[rel="shortcut icon"]').forEach(link => link.remove());
-
-            // Create a new favicon link
             const link = document.createElement("link");
             link.rel = "icon";
             link.type = "image/png";
             link.href = faviconUrl;
-
-            // Append to head
             document.head.appendChild(link);
         })();
     </script>
 
     <?php require_once '../../templates/footer.php'; ?>
-
     <?php include('../../includes/semantics/footer.php'); ?>
 </body>
 
 </html>
-
-
-<script>
-    document.body.style.backgroundColor = "#ffffff";
-</script>
