@@ -500,6 +500,330 @@ require_once $header_path;
             padding-right: 0.75rem !important;
         }
     }
+
+
+
+
+    /* ====================================================================== */
+    /* Dark Mode Overrides for Faculty Dashboard                              */
+    /* ====================================================================== */
+    body.dark-mode {
+        background-color: #121A21 !important;
+        color: #E5E8EB !important;
+    }
+
+    body.dark-mode .main-dashboard-content-wrapper {
+        background-color: #121A21 !important;
+    }
+
+    body.dark-mode .main-dashboard-content {
+        background-color: #121A21 !important;
+        color: #E5E8EB !important;
+    }
+
+    /* Welcome and section titles */
+    body.dark-mode .welcome-title {
+        color: #E5E8EB !important;
+    }
+
+    body.dark-mode .section-title {
+        color: #E5E8EB !important;
+    }
+
+    /* Search bar */
+    body.dark-mode .search-bar-custom {
+        background-color: #263645 !important;
+        border: 1px solid #121A21 !important;
+    }
+
+    body.dark-mode .search-bar-custom .input-group-text {
+        background-color: #263645 !important;
+        color: #94ADC7 !important;
+        border: none !important;
+    }
+
+    body.dark-mode .search-bar-custom .form-control {
+        background-color: #263645 !important;
+        color: #E5E8EB !important;
+        border: none !important;
+    }
+
+    body.dark-mode .search-bar-custom .form-control::placeholder {
+        color: #94ADC7 !important;
+    }
+
+    body.dark-mode .search-bar-custom .form-control:focus {
+        background-color: #263645 !important;
+        color: #E5E8EB !important;
+        box-shadow: none !important;
+    }
+
+    /* Cards and containers */
+    body.dark-mode .card {
+        background-color: #263645 !important;
+        border: 1px solid #121A21 !important;
+        color: #E5E8EB !important;
+    }
+
+    body.dark-mode .card.border-0 {
+        background-color: #263645 !important;
+        border: none !important;
+    }
+
+    /* Study load and class items */
+    body.dark-mode .study-load-card-custom {
+        background-color: #263645 !important;
+        border: 1px solid #121A21 !important;
+    }
+
+    body.dark-mode .class-item-custom {
+        background-color: #1a2635 !important;
+        border: 1px solid #121A21 !important;
+    }
+
+    /* Onboarding controls */
+    body.dark-mode .onboarding-controls {
+        background-color: #121A21 !important;
+        border: 1px solid #263645 !important;
+    }
+
+    body.dark-mode .onboarding-controls h5 {
+        color: #E5E8EB !important;
+    }
+
+    body.dark-mode .onboarding-controls p.text-muted {
+        color: #94ADC7 !important;
+    }
+
+    /* Buttons */
+    body.dark-mode .btn-custom-outline {
+        background-color: #121A21 !important;
+        color: #94ADC7 !important;
+        border: 1px solid #263645 !important;
+    }
+
+    body.dark-mode .btn-custom-outline:hover {
+        background-color: #1C7DD6 !important;
+        color: #FFFFFF !important;
+        border-color: #1C7DD6 !important;
+    }
+
+    body.dark-mode .btn-custom-primary {
+        background-color: #263645 !important;
+        color: #94ADC7 !important;
+        border: 1px solid #121A21 !important;
+    }
+
+    body.dark-mode .btn-custom-primary:hover {
+        background-color: #1C7DD6 !important;
+        color: #FFFFFF !important;
+        border-color: #1C7DD6 !important;
+    }
+
+    body.dark-mode .btn-custom-blue {
+        background-color: #121A21 !important;
+        color: #94ADC7 !important;
+        border: 1px solid #263645 !important;
+    }
+
+    body.dark-mode .btn-custom-blue:hover {
+        background-color: #1C7DD6 !important;
+        color: #FFFFFF !important;
+        border-color: #1C7DD6 !important;
+    }
+
+    /* Onboarding controls buttons - specific */
+    body.dark-mode .onboarding-controls .btn-custom-blue,
+    body.dark-mode .onboarding-controls .btn-custom-primary,
+    body.dark-mode .onboarding-controls .btn-custom-outline {
+        background: #121A21 !important;
+        color: #94ADC7 !important;
+        border: 1px solid #263645 !important;
+    }
+
+    body.dark-mode .onboarding-controls .btn-custom-blue:hover,
+    body.dark-mode .onboarding-controls .btn-custom-primary:hover,
+    body.dark-mode .onboarding-controls .btn-custom-outline:hover {
+        background-color: #1C7DD6 !important;
+        color: #FFFFFF !important;
+        border-color: #1C7DD6 !important;
+    }
+
+    /* Faculty links */
+    body.dark-mode .faculty-links .list-group-item {
+        background-color: #263645 !important;
+        border-color: #121A21 !important;
+    }
+
+    body.dark-mode .faculty-links .list-group-item.bg-info-subtle {
+        background-color: #1a2635 !important;
+    }
+
+    body.dark-mode .faculty-links .list-group-item a {
+        color: #E5E8EB !important;
+    }
+
+    body.dark-mode .faculty-links .list-group-item a:hover {
+        color: #1C7DD6 !important;
+    }
+
+    body.dark-mode .faculty-links .list-group-item small {
+        color: #94ADC7 !important;
+    }
+
+    /* Profile button */
+    body.dark-mode .profile.btn.btn-custom-outline {
+        background: rgba(28, 125, 214, 0.2) !important;
+        color: #94ADC7 !important;
+        border: 1px solid #263645 !important;
+    }
+
+    body.dark-mode .profile.btn.btn-custom-outline:hover {
+        background: #1C7DD6 !important;
+        color: #FFFFFF !important;
+    }
+
+    /* Quick links section */
+    body.dark-mode .list-unstyled li a {
+        color: #E5E8EB !important;
+    }
+
+    body.dark-mode .list-unstyled li a:hover {
+        color: #1C7DD6 !important;
+    }
+
+    body.dark-mode .card-text strong.text-dark {
+        color: #E5E8EB !important;
+    }
+
+    body.dark-mode .card-text.text-muted {
+        color: #94ADC7 !important;
+    }
+
+    /* Card shadows for dark mode */
+    body.dark-mode .card.shadow-sm {
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) !important;
+    }
+
+    /* Scrollbar for dark mode */
+    body.dark-mode ::-webkit-scrollbar-track {
+        background: #121A21 !important;
+    }
+
+    body.dark-mode ::-webkit-scrollbar-thumb {
+        background-color: #263645 !important;
+        border: 3px solid #121A21 !important;
+    }
+
+    body.dark-mode ::-webkit-scrollbar-thumb:hover {
+        background-color: #1C7DD6 !important;
+    }
+
+    /* Search results dropdown */
+    body.dark-mode #searchResults {
+        background-color: #263645 !important;
+        border: 1px solid #121A21 !important;
+    }
+
+    body.dark-mode .list-group-item {
+        background-color: #263645 !important;
+        color: #E5E8EB !important;
+        border-color: #121A21 !important;
+    }
+
+    body.dark-mode .list-group-item:hover {
+        background-color: #1C7DD6 !important;
+        color: #FFFFFF !important;
+    }
+
+    body.dark-mode .list-group-item.text-muted {
+        color: #94ADC7 !important;
+    }
+
+    /* Modal styling (for onboarding modal) */
+    body.dark-mode .modal-content {
+        background-color: #263645 !important;
+        border: 1px solid #121A21 !important;
+        color: #E5E8EB !important;
+    }
+
+    body.dark-mode .modal-header {
+        background-color: #121A21 !important;
+        border-bottom: 1px solid #263645 !important;
+    }
+
+    body.dark-mode .modal-header .modal-title {
+        color: #E5E8EB !important;
+    }
+
+    body.dark-mode .modal-header .btn-close {
+        filter: invert(1) grayscale(100%) brightness(200%) !important;
+    }
+
+    body.dark-mode .modal-body {
+        color: #E5E8EB !important;
+    }
+
+    /* Alert messages */
+    body.dark-mode .alert-success {
+        background-color: rgba(40, 167, 69, 0.2) !important;
+        border-color: rgba(40, 167, 69, 0.3) !important;
+        color: #94ADC7 !important;
+    }
+
+    /* Responsive adjustments for dark mode */
+    @media (max-width: 767px) {
+        body.dark-mode .main-dashboard-content {
+            background-color: #121A21 !important;
+        }
+    }
+
+    @media (min-width: 768px) and (max-width: 1023px) {
+        body.dark-mode .main-dashboard-content {
+            background-color: #121A21 !important;
+        }
+    }
+
+    @media (min-width: 1024px) {
+        body.dark-mode .main-dashboard-content {
+            background-color: #121A21 !important;
+        }
+    }
+
+    /* Text colors override */
+    body.dark-mode .text-dark {
+        color: #E5E8EB !important;
+    }
+
+    body.dark-mode .text-muted {
+        color: #94ADC7 !important;
+    }
+
+    body.dark-mode p.text-dark {
+        color: #E5E8EB !important;
+    }
+
+    body.dark-mode .card-title.text-dark {
+        color: #E5E8EB !important;
+    }
+
+    /* SVG icon colors */
+    body.dark-mode .text-warning {
+        color: #ffc107 !important;
+    }
+
+    body.dark-mode .text-info {
+        color: #17a2b8 !important;
+    }
+
+    /* Border colors */
+    body.dark-mode .border {
+        border-color: #263645 !important;
+    }
+
+    body.dark-mode .border.rounded {
+        border-color: #263645 !important;
+    }
 </style>
 
 <!-- Favicon -->
@@ -751,4 +1075,3 @@ require_once $header_path;
 </script>
 
 <?php include('../../includes/semantics/footer.php'); ?>
-

@@ -31,13 +31,6 @@ $chrononav_dropdown_logo_path = '../../assets/images/chrononav_logo_small.png'; 
 // Ensure these paths are correct and images exist!
 ?>
 
-<?php
-// CHRONONAV_WEB_DOSS/templates/faculty/header_faculty.php
-// This file assumes $user (session data), $page_title, and $current_page are set in the including script.
-
-// ... (existing PHP code) ...
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -52,16 +45,14 @@ $chrononav_dropdown_logo_path = '../../assets/images/chrononav_logo_small.png'; 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
-    <!-- important------------------------------------------------------------------------------------------------ -->
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="https://res.cloudinary.com/deua2yipj/image/upload/v1758917007/ChronoNav_logo_muon27.png">
-
-    <!-- <link rel="stylesheet" href="../../assets/css/faculty_css/header_faculty.css"> -->
+    <link rel="icon" type="image/png"
+        href="https://res.cloudinary.com/deua2yipj/image/upload/v1758917007/ChronoNav_logo_muon27.png">
 
     <script>
         // Check localStorage for dark mode preference and apply immediately
@@ -73,6 +64,26 @@ $chrononav_dropdown_logo_path = '../../assets/images/chrononav_logo_small.png'; 
 
 <body>
     <style>
+        :root {
+            --primary-dark: #101518;
+            --secondary-text: #5c748a;
+            --border-color: #e5e7eb;
+            --accent-blue: #2e78c6;
+            --light-bg: #f9fafb;
+            --available-color: #10b981;
+            --unavailable-color: #ef4444;
+
+            /* Dark mode variables */
+            --dm-bg-primary: #0a0f14;
+            --dm-bg-secondary: #121a21;
+            --dm-bg-tertiary: #1a2430;
+            --dm-text-primary: #e5e8eb;
+            --dm-text-secondary: #94a3b8;
+            --dm-border-color: #263645;
+            --dm-accent-blue: #4a90e2;
+            --dm-hover-blue: #1c7dd6;
+        }
+
         .custom-header {
             position: sticky;
         }
@@ -92,11 +103,13 @@ $chrononav_dropdown_logo_path = '../../assets/images/chrononav_logo_small.png'; 
             align-items: center;
             justify-content: space-between;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
         }
 
-        .custom-header {
-            position: sticky;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        body.dark-mode .custom-header {
+            background-color: var(--dm-bg-secondary) !important;
+            border-bottom-color: var(--dm-border-color) !important;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2) !important;
         }
 
         .settings-btn {
@@ -110,13 +123,25 @@ $chrononav_dropdown_logo_path = '../../assets/images/chrononav_logo_small.png'; 
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.2s ease;
+            transition: all 0.3s ease;
             text-decoration: none;
+        }
+
+        body.dark-mode .settings-btn {
+            background-color: var(--dm-bg-tertiary) !important;
+            color: var(--dm-text-primary) !important;
+            border: 1px solid var(--dm-border-color);
         }
 
         .settings-btn:hover {
             background-color: #d8dce1;
             color: #101518;
+            transform: translateY(-2px);
+        }
+
+        body.dark-mode .settings-btn:hover {
+            background-color: var(--dm-hover-blue) !important;
+            color: #ffffff !important;
         }
 
         /* Profile dropdown specific styles */
@@ -132,11 +157,16 @@ $chrononav_dropdown_logo_path = '../../assets/images/chrononav_logo_small.png'; 
             border-radius: 50%;
             object-fit: cover;
             border: 2px solid transparent;
-            transition: border-color 0.2s ease;
+            transition: all 0.3s ease;
         }
 
         .navbar-profile-dropdown .nav-link:hover .navbar-profile-img {
             border-color: #eaedf1;
+            transform: scale(1.05);
+        }
+
+        body.dark-mode .navbar-profile-dropdown .nav-link:hover .navbar-profile-img {
+            border-color: var(--dm-accent-blue) !important;
         }
 
         .logo-container {
@@ -149,6 +179,11 @@ $chrononav_dropdown_logo_path = '../../assets/images/chrononav_logo_small.png'; 
             width: 1.5rem;
             height: 1.5rem;
             color: #101518;
+            transition: color 0.3s ease;
+        }
+
+        body.dark-mode .logo-icon {
+            color: var(--dm-text-primary) !important;
         }
 
         .logo-text {
@@ -157,10 +192,19 @@ $chrononav_dropdown_logo_path = '../../assets/images/chrononav_logo_small.png'; 
             color: #101518;
             margin-bottom: 0;
             text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        body.dark-mode .logo-text {
+            color: var(--dm-text-primary) !important;
         }
 
         .logo-text:hover {
             color: #101518;
+        }
+
+        body.dark-mode .logo-text:hover {
+            color: var(--dm-text-primary) !important;
         }
 
         .header-right-section {
@@ -175,59 +219,116 @@ $chrononav_dropdown_logo_path = '../../assets/images/chrononav_logo_small.png'; 
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             border-radius: 0.75rem;
             padding: 0.5rem 0;
+            transition: all 0.3s ease;
+            min-width: 220px;
+        }
+
+        body.dark-mode .dropdown-menu {
+            background-color: var(--dm-bg-tertiary) !important;
+            border: 1px solid var(--dm-border-color) !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
         }
 
         .dropdown-item {
             padding: 0.5rem 1rem;
             display: flex;
             align-items: center;
+            transition: all 0.3s ease;
+            color: #333;
+        }
+
+        body.dark-mode .dropdown-item {
+            color: var(--dm-text-primary) !important;
         }
 
         .dropdown-item i {
             width: 20px;
             text-align: center;
             margin-right: 0.5rem;
+            color: #666;
+            transition: color 0.3s ease;
         }
 
-        /* Dark mode adjustments */
-        .dark-mode .custom-header {
-            background-color: #121212;
-            border-bottom-color: #2d3748;
+        body.dark-mode .dropdown-item i {
+            color: var(--dm-text-secondary) !important;
         }
 
-        .dark-mode .logo-text {
-            color: #f8f9fa;
+        .dropdown-item:hover {
+            background-color: #f8f9fa;
         }
 
-        .dark-mode .logo-icon {
-            color: #f8f9fa;
+        body.dark-mode .dropdown-item:hover {
+            background-color: var(--dm-hover-blue) !important;
+            color: #ffffff !important;
         }
 
-        .dark-mode .settings-btn {
-            background-color: #2d3748;
-            color: #f8f9fa;
+        body.dark-mode .dropdown-item:hover i {
+            color: #ffffff !important;
         }
 
-        .dark-mode .settings-btn:hover {
-            background-color: #3a4556;
-            color: #f8f9fa;
+        .dropdown-header {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #495057;
+            padding: 0.5rem 1rem;
+            transition: color 0.3s ease;
         }
 
-        .dark-mode .navbar-profile-dropdown .nav-link:hover .navbar-profile-img {
-            border-color: #4a5568;
+        body.dark-mode .dropdown-header {
+            color: var(--dm-text-primary) !important;
+            background-color: var(--dm-bg-tertiary);
         }
 
-        .dark-mode .dropdown-menu {
-            background-color: #2d3748;
-            border: 1px solid #4a5568;
+        .dropdown-divider {
+            margin: 0.25rem 0;
+            border-top: 1px solid #e9ecef;
+            transition: border-color 0.3s ease;
         }
 
-        .dark-mode .dropdown-item {
-            color: #f8f9fa;
+        body.dark-mode .dropdown-divider {
+            border-top-color: var(--dm-border-color) !important;
         }
 
-        .dark-mode .dropdown-item:hover {
-            background-color: #4a5568;
+        /* Text color adjustments */
+        .text-black-50 {
+            color: rgba(0, 0, 0, 0.5) !important;
+            transition: color 0.3s ease;
+        }
+
+        body.dark-mode .text-black-50 {
+            color: rgba(255, 255, 255, 0.7) !important;
+        }
+
+        /* SVG logo styling */
+        .custom-header svg {
+            transition: filter 0.3s ease;
+        }
+
+        body.dark-mode .custom-header svg {
+            filter: brightness(0.9) contrast(1.1);
+        }
+
+        /* Navbar toggler */
+        .navbar-toggler {
+            border: none;
+            padding: 0.25rem;
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode .navbar-toggler {
+            background-color: var(--dm-bg-tertiary);
+            color: var(--dm-text-primary);
+            display: none;
+        }
+
+        .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(0, 0, 0, 0.7)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+            transition: background-image 0.3s ease;
+            display: none;
+        }
+
+        body.dark-mode .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 255, 255, 0.7)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
         }
 
         /* Responsive adjustments */
@@ -240,12 +341,63 @@ $chrononav_dropdown_logo_path = '../../assets/images/chrononav_logo_small.png'; 
             .header-right-section {
                 gap: 0.75rem;
             }
+
+            .logo-text {
+                font-size: 1.1rem;
+            }
         }
 
         @media (max-width: 576px) {
             .header-right-section {
                 gap: 0.5rem;
             }
+
+            .settings-btn,
+            .navbar-profile-img {
+                width: 36px;
+                height: 36px;
+            }
+
+            .logo-text {
+                font-size: 1rem;
+            }
+        }
+
+        /* Hover effects */
+        .custom-header a:not(.dropdown-item):hover {
+            transform: translateY(-1px);
+            transition: transform 0.3s ease;
+        }
+
+        /* Accessibility improvements */
+        .settings-btn:focus,
+        .navbar-profile-dropdown .nav-link:focus,
+        .dropdown-item:focus {
+            outline: 2px solid var(--accent-blue);
+            outline-offset: 2px;
+        }
+
+        body.dark-mode .settings-btn:focus,
+        body.dark-mode .navbar-profile-dropdown .nav-link:focus,
+        body.dark-mode .dropdown-item:focus {
+            outline-color: var(--dm-accent-blue);
+        }
+
+        /* Animation for dropdown */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .dropdown-menu.show {
+            animation: fadeIn 0.2s ease-out;
         }
     </style>
 
@@ -275,7 +427,7 @@ $chrononav_dropdown_logo_path = '../../assets/images/chrononav_logo_small.png'; 
 
         <!-- Right Section with Settings and Profile -->
         <div class="header-right-section">
-            
+
             <!-- Settings Button -->
             <a href="../../pages/faculty/settings.php" class="settings-btn rounded-3" title="Settings">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
@@ -308,12 +460,12 @@ $chrononav_dropdown_logo_path = '../../assets/images/chrononav_logo_small.png'; 
                         <hr class="dropdown-divider">
                     </li>
                     <li><a class="dropdown-item" href="../../pages/faculty/support_center.php"><i
-                                class="fas fa-user-circle me-2"></i>Support and Ask question</a></li>
+                                class="fas fa-question-circle me-2"></i>Support and Ask question</a></li>
                     <li>
                         <hr class="dropdown-divider">
                     </li>
                     <li><a class="dropdown-item" href="../../pages/faculty/announcements.php"><i
-                                class="fas fa-user-circle me-2"></i>Campus Announcement</a></li>
+                                class="fas fa-bullhorn me-2"></i>Campus Announcement</a></li>
                     <li>
                         <hr class="dropdown-divider">
                     </li>
@@ -327,6 +479,59 @@ $chrononav_dropdown_logo_path = '../../assets/images/chrononav_logo_small.png'; 
 
     <script src="../../assets/js/jquery.min.js"></script>
     <script src="../../assets/js/script.js"></script>
+
+    <script>
+        // Dark mode detection and adjustment
+        function checkDarkMode() {
+            if (document.body.classList.contains('dark-mode')) {
+                document.body.style.backgroundColor = "var(--dm-bg-primary)";
+                document.body.style.color = "var(--dm-text-primary)";
+
+                // Update header specifically
+                const header = document.querySelector('.custom-header');
+                if (header) {
+                    header.style.backgroundColor = "var(--dm-bg-secondary)";
+                    header.style.borderBottomColor = "var(--dm-border-color)";
+                }
+            } else {
+                document.body.style.backgroundColor = "#ffffff";
+                document.body.style.color = "#333";
+
+                const header = document.querySelector('.custom-header');
+                if (header) {
+                    header.style.backgroundColor = "#fff";
+                    header.style.borderBottomColor = "#eaedf1";
+                }
+            }
+        }
+
+        // Check on load
+        document.addEventListener('DOMContentLoaded', function () {
+            checkDarkMode();
+
+            // Listen for dark mode changes
+            const observer = new MutationObserver(function (mutations) {
+                mutations.forEach(function (mutation) {
+                    if (mutation.attributeName === 'class') {
+                        checkDarkMode();
+                    }
+                });
+            });
+
+            observer.observe(document.body, { attributes: true });
+        });
+
+        // Favicon setup
+        (function () {
+            const faviconUrl = "https://res.cloudinary.com/deua2yipj/image/upload/v1758917007/ChronoNav_logo_muon27.png";
+            document.querySelectorAll('link[rel="icon"], link[rel="shortcut icon"]').forEach(link => link.remove());
+            const link = document.createElement("link");
+            link.rel = "icon";
+            link.type = "image/png";
+            link.href = faviconUrl;
+            document.head.appendChild(link);
+        })();
+    </script>
 </body>
 
 </html>

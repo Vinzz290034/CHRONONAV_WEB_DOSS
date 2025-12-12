@@ -544,6 +544,181 @@ if (!isset($current_page)) {
         border-radius: 5px;
         font-size: 0.9rem;
     }
+
+
+
+    /* ====================================================================== */
+    /* Dark Mode Overrides - Aligned with consistent theme                   */
+    /* ====================================================================== */
+    :root {
+        --dm-bg-primary: #0a0f14;
+        --dm-bg-secondary: #121a21;
+        --dm-bg-tertiary: #1a2430;
+        --dm-text-primary: #e5e8eb;
+        --dm-text-secondary: #94a3b8;
+        --dm-border-color: #263645;
+        --dm-accent-blue: #4a90e2;
+        --dm-hover-blue: #1c7dd6;
+    }
+
+    body.dark-mode {
+        background-color: var(--dm-bg-primary) !important;
+        color: var(--dm-text-primary) !important;
+    }
+
+    body.dark-mode .app-sidebar {
+        background-color: var(--dm-bg-secondary) !important;
+        border-right: 1px solid var(--dm-border-color) !important;
+    }
+
+    body.dark-mode .sidebar-header {
+        border-bottom: 1px solid var(--dm-border-color) !important;
+    }
+
+    body.dark-mode .logo-container {
+        color: var(--dm-text-primary) !important;
+    }
+
+    body.dark-mode .app-logo {
+        filter: brightness(0.9) contrast(1.1);
+    }
+
+    body.dark-mode .app-sidebar-menu .nav-link {
+        color: var(--dm-text-primary) !important;
+    }
+
+    body.dark-mode .app-sidebar-menu .nav-link svg {
+        color: var(--dm-text-secondary) !important;
+    }
+
+    body.dark-mode .app-sidebar-menu .nav-link:hover {
+        background-color: var(--dm-bg-tertiary) !important;
+        color: var(--dm-text-primary) !important;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+
+    body.dark-mode .app-sidebar-menu .nav-link:hover svg {
+        color: var(--dm-accent-blue) !important;
+    }
+
+    body.dark-mode .app-sidebar-menu .nav-link.active {
+        background-color: var(--dm-hover-blue) !important;
+        color: #ffffff !important;
+        box-shadow: 0 2px 8px rgba(28, 125, 214, 0.3);
+    }
+
+    body.dark-mode .app-sidebar-menu .nav-link.active svg {
+        color: #ffffff !important;
+    }
+
+    body.dark-mode .app-sidebar .nav-item.mt-auto {
+        border-top: 1px solid var(--dm-border-color) !important;
+    }
+
+    body.dark-mode .text-muted {
+        color: var(--dm-text-secondary) !important;
+    }
+
+    body.dark-mode .main-content-wrapper {
+        background-color: var(--dm-bg-primary) !important;
+        color: var(--dm-text-primary) !important;
+    }
+
+    body.dark-mode .sidebar-toggle {
+        background: var(--dm-bg-tertiary) !important;
+        color: var(--dm-text-primary) !important;
+        border: 1px solid var(--dm-border-color) !important;
+    }
+
+    body.dark-mode .sidebar-toggle:hover {
+        background-color: var(--dm-hover-blue) !important;
+        color: #ffffff !important;
+    }
+
+    body.dark-mode .sidebar-toggle svg {
+        color: var(--dm-text-primary) !important;
+    }
+
+    body.dark-mode .sidebar-toggle:hover svg {
+        color: #ffffff !important;
+    }
+
+    /* Scrollbar dark mode styling */
+    body.dark-mode .app-sidebar::-webkit-scrollbar-track {
+        background: var(--dm-bg-secondary) !important;
+    }
+
+    body.dark-mode .app-sidebar::-webkit-scrollbar-thumb {
+        background-color: var(--dm-text-secondary) !important;
+    }
+
+    body.dark-mode .app-sidebar::-webkit-scrollbar-thumb:hover {
+        background-color: var(--dm-accent-blue) !important;
+    }
+
+    body.dark-mode .app-sidebar {
+        scrollbar-color: var(--dm-text-secondary) var(--dm-bg-secondary) !important;
+    }
+
+    /* Responsive dark mode adjustments */
+    @media (max-width: 1023px) {
+        body.dark-mode .app-sidebar {
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.4) !important;
+        }
+
+        body.dark-mode .app-sidebar.active {
+            background-color: var(--dm-bg-secondary) !important;
+        }
+    }
+
+    /* Demo content dark mode */
+    body.dark-mode .demo-content {
+        background: var(--dm-bg-secondary) !important;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3) !important;
+    }
+
+    body.dark-mode .screen-size-indicator {
+        background: var(--dm-bg-tertiary) !important;
+        color: var(--dm-text-primary) !important;
+    }
+
+    /* Text selection and focus states for accessibility */
+    body.dark-mode ::selection {
+        background-color: var(--dm-accent-blue);
+        color: #ffffff;
+    }
+
+    body.dark-mode .nav-link:focus,
+    body.dark-mode .sidebar-toggle:focus {
+        outline: 2px solid var(--dm-accent-blue) !important;
+        outline-offset: 2px;
+    }
+
+    /* Active state animation for dark mode */
+    @keyframes pulse-dark {
+        0% {
+            box-shadow: 0 0 0 0 rgba(74, 144, 226, 0.4);
+        }
+
+        70% {
+            box-shadow: 0 0 0 10px rgba(74, 144, 226, 0);
+        }
+
+        100% {
+            box-shadow: 0 0 0 0 rgba(74, 144, 226, 0);
+        }
+    }
+
+    body.dark-mode .app-sidebar-menu .nav-link.active {
+        animation: pulse-dark 2s infinite;
+    }
+
+    /* Smooth transitions for all interactive elements */
+    body.dark-mode .app-sidebar-menu .nav-link,
+    body.dark-mode .sidebar-toggle,
+    body.dark-mode .app-sidebar {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    }
 </style>
 
 <button id="sidebarToggle"
@@ -570,7 +745,7 @@ if (!isset($current_page)) {
                     <span class="nav-link-text fs-6">Dashboard</span>
                 </a>
             </li>
-            
+
             <li class="nav-item">
                 <a class="nav-link <?= ($current_page === 'calendar') ? 'active' : '' ?>"
                     href="<?= $base_path ?>pages/faculty/calendar.php">
