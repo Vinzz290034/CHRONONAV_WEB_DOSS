@@ -1219,6 +1219,28 @@ require_once $header_path;
 <script id="tour-data" type="application/json">
     <?= json_encode($onboarding_steps); ?>
                 </script>
+
+<!-- Schedule Detail Modal -->
+<div class="modal fade" id="scheduleDetailModal" tabindex="-1" aria-labelledby="scheduleDetailModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold" id="scheduleDetailModalLabel">Class Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="modal-content-area">
+                <div class="text-center text-muted py-4">
+                    <i class="fas fa-spinner fa-spin me-2"></i> Loading details...
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary rounded-pill" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <?php require_once '../../templates/footer.php'; ?>
 <script src="../../assets/js/jquery.min.js"></script>
 <script src="../../assets/js/script.js"></script>
