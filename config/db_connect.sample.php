@@ -6,7 +6,7 @@ if (!isset($conn)) {
     $servername = "localhost";
     $username = "root"; // Your database username
     $password = "";     // Your database password
-    $dbname = "chrononav_web_doss"; // Your database name
+    $dbname = "chrononav_web_doss1"; // Your database name
 
     // Create connection
     $conn = new mysqli($servername, $username, $password, $dbname);

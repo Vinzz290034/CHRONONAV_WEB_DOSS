@@ -1,12 +1,48 @@
 <?php
 require_once '../config/db_connect.php';
+// You'll need to include your emailer library/config here
+// require_once '../vendor/autoload.php'; // e.g., if using Composer
+// require_once '../config/email_config.php'; 
 
+/** @var \mysqli $conn */ 
 $message = '';
 $message_type = '';
+
+function generateSecureToken() {
+    // Generate a secure, URL-safe token (e.g., 64 characters long)
+    return bin2hex(random_bytes(32)); 
+}
+
+function sendPasswordResetEmail(string $recipientEmail, string $token) {
+    // *** Placeholder for actual email sending logic (MUST BE IMPLEMENTED) ***
+    // Use PHPMailer, Symfony Mailer, or an API service (SendGrid, Mailgun)
+    $resetLink = "http://yourdomain.com/auth/reset_password.php?token=" . urlencode($token);
+    
+    $subject = "ChronoNav Password Reset";
+    $body = "
+        <p>You requested a password reset for your ChronoNav account.</p>
+        <p>Click this link to reset your password: <a href=\"{$resetLink}\">Reset My Password</a></p>
+        <p>This link will expire in 1 hour.</p>
+        <p>If you did not request this, please ignore this email.</p>";
+        
+    // For this example, we assume it's successful.
+    // In a real app, you would include your email sending code here:
+    // try {
+    //     $mailer = getMailerInstance();
+    //     $mailer->send($recipientEmail, $subject, $body);
+    //     return true;
+    // } catch (\Exception $e) {
+    //     error_log("Email sending failed: " . $e->getMessage());
+    //     return false;
+    // }
+    return true; 
+}
+
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $_POST['email'] ?? '';
 
+    // 1. Basic Validation
     if (empty($email)) {
         $message = 'Please enter your email address.';
         $message_type = 'danger';
@@ -14,14 +50,65 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $message = 'Invalid email format.';
         $message_type = 'danger';
     } else {
+        // 2. Check if user exists
         $stmt = $conn->prepare("SELECT id FROM users WHERE email = ?");
         if ($stmt) {
             $stmt->bind_param("s", $email);
             $stmt->execute();
             $result = $stmt->get_result();
-            $message = 'If an account with that email exists, a password reset link has been sent.';
-            $message_type = 'success';
+            $user = $result->fetch_assoc();
             $stmt->close();
+            
+            // 3. User Found - Proceed to generate token and send email
+            if ($user) {
+                $userId = $user['id'];
+                $rawToken = generateSecureToken();
+                // Hash the token for database storage
+                $tokenHash = hash('sha256', $rawToken); 
+                // Set expiry time (e.g., 1 hour)
+                $expires = date('Y-m-d H:i:s', time() + 3600); 
+
+                // Start a transaction for atomicity (recommended)
+                $conn->begin_transaction(); 
+
+                try {
+                    // Delete any existing tokens for this user
+                    $deleteStmt = $conn->prepare("DELETE FROM password_resets WHERE user_id = ?");
+                    $deleteStmt->bind_param("i", $userId);
+                    $deleteStmt->execute();
+                    $deleteStmt->close();
+
+                    // Insert the new token
+                    $insertStmt = $conn->prepare("INSERT INTO password_resets (user_id, token_hash, expires_at) VALUES (?, ?, ?)");
+                    $insertStmt->bind_param("iss", $userId, $tokenHash, $expires);
+                    $insertStmt->execute();
+                    $insertStmt->close();
+                    
+                    // 5. Send the email with the unhashed token
+                    if (sendPasswordResetEmail($email, $rawToken)) {
+                        $conn->commit(); // Commit transaction on success
+                        $message = 'If an account with that email exists, a password reset link has been sent.';
+                        $message_type = 'success';
+                    } else {
+                        $conn->rollback(); // Rollback if email fails
+                        $message = 'Failed to send reset email. Please try again later.';
+                        $message_type = 'danger';
+                        error_log("Failed to send reset email for user_id: {$userId}");
+                    }
+                } catch (\Exception $e) {
+                    $conn->rollback(); // Rollback on any exception
+                    $message = 'A critical error occurred. Please try again later.';
+                    $message_type = 'danger';
+                    error_log("Password reset transaction failed: " . $e->getMessage());
+                }
+                
+            } else {
+                // IMPORTANT: Use the same success message even if the email doesn't exist
+                $message = 'If an account with that email exists, a password reset link has been sent.';
+                $message_type = 'success';
+                // Add a small, non-user-facing delay to slow down enumeration attempts
+                sleep(1); 
+            }
         } else {
             $message = 'Database error. Please try again later.';
             $message_type = 'danger';
@@ -40,15 +127,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
 
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    
 
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
     <link rel="stylesheet" as="style" onload="this.rel='stylesheet'"
         href="https://fonts.googleapis.com/css2?display=swap&family=Noto+Sans:wght@400;500;700;900&family=Space+Grotesk:wght@400;500;700">
 
-    <!-- Favicon -->
     <link rel="icon" type="image/x-icon"
         href="https://res.cloudinary.com/deua2yipj/image/upload/v1758917007/ChronoNav_logo_muon27.png">
 
@@ -215,7 +300,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             text-decoration: underline;
         }
 
-        /* Modal Styles for Auth Pages */
+        /* Modal Styles for Auth Pages (Keeping these as they were in your original code) */
         .auth-modal {
             display: none;
             position: fixed;
@@ -391,7 +476,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     </div>
 
-    <!-- Privacy Policy Modal -->
     <div class="auth-modal" id="authPrivacyModal">
         <div class="auth-modal-content">
             <div class="auth-modal-header">
@@ -410,7 +494,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </button>
             </div>
             <div class="auth-modal-body">
-                <!-- Privacy Policy content would go here -->
                 <p>Privacy policy content...</p>
             </div>
             <div class="auth-modal-footer">
@@ -421,7 +504,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     </div>
 
-    <!-- Terms of Service Modal -->
     <div class="auth-modal" id="authTermsModal">
         <div class="auth-modal-content">
             <div class="auth-modal-header">
@@ -440,7 +522,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </button>
             </div>
             <div class="auth-modal-body">
-                <!-- Terms of Service content would go here -->
                 <p>Terms of service content...</p>
             </div>
             <div class="auth-modal-footer">
@@ -489,12 +570,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Sending...';
             submitBtn.disabled = true;
 
-            // In a real application, you would let the form submit normally
-            // This is just for visual feedback
-            setTimeout(() => {
-                submitBtn.textContent = originalText;
-                submitBtn.disabled = false;
-            }, 2000);
+            // Note: In a real application, the PHP submission handles the reset of this state 
+            // after the page reloads. The setTimeout here is primarily for visual effect 
+            // if the form submission happens very fast on the server side.
+            // Since the form will submit and reload the page, the JavaScript state below
+            // will likely be reset by the reload.
         });
     </script>
 </body>

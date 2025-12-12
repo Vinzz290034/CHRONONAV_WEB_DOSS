@@ -1,76 +1,101 @@
-<?php
-// CHRONONAV_WEB_DOSS/pages/user/dashboard.php
+SCHEDULE_PHP:
 
+<?php
+// pages/user/schedule.php
+session_start();
 require_once '../../middleware/auth_check.php';
-require_once '../../config/db_connect.php'; // Using mysqli connection (assumed)
-require_once '../../includes/onboarding_functions.php';
-require_once '../../includes/onboarding_module.php';
+require_once '../../config/db_connect.php';
 
 /** @var \mysqli $conn */ // FIX: Resolves "Undefined method/property" IntelliSense errors on $conn.
 
+// Check if the user is a regular user or faculty
+if (!isset($_SESSION['user']) || ($_SESSION['user']['role'] !== 'user' && $_SESSION['user']['role'] !== 'faculty')) {
+    header("Location: ../../auth/logout.php");
+    exit();
+}
+
 $user = $_SESSION['user'];
-$page_title = "User Dashboard";
-$current_page = "dashboard";
-$display_name = htmlspecialchars($user['name'] ?? 'User');
-$user_role = htmlspecialchars($user['role'] ?? 'user');
-$user_id = $user['id'] ?? 0; // Get user ID for fetching schedule
 
-// Assuming get_db_connection returns a valid mysqli connection ($conn)
-// Reusing global $conn for schedule fetching if db_connect uses mysqli
-global $conn;
+// Page specific variables
+$page_title = "My Schedule";
+$current_page = "schedule";
 
-$onboarding_steps = [];
-$pdo = null; // Initialize PDO as null for local scope
+// --- Handle Date Selection ---
+$selected_date = isset($_GET['date']) ? $_GET['date'] : date('Y-m-d');
+$selected_timestamp = strtotime($selected_date);
 
-// Try to use mysqli connection first, as most files use it
-if (isset($conn) && $conn instanceof mysqli) {
-    try {
-        // Attempt to convert mysqli connection to PDO for existing functions if needed,
-        // but let's rewrite getUserSchedule to use mysqli directly for consistency.
-        $pdo = null; // Ignore PDO setup for simplicity, use mysqli below
-    } catch (Exception $e) {
-        // Handle potential PDO connection error if functions require it
+// Your existing PHP code for fetching schedules and reminders...
+$daily_schedules = [];
+$daily_reminders = [];
+
+$day_name = date('l', $selected_timestamp);
+
+$stmt_schedules = $conn->prepare("SELECT s.title, s.description, s.start_time, s.end_time, r.room_name
+                                       FROM schedules s
+                                       LEFT JOIN rooms r ON s.room_id = r.id
+                                       WHERE s.user_id = ? AND s.day_of_week = ? ORDER BY s.start_time");
+if ($stmt_schedules) {
+    $stmt_schedules->bind_param("is", $user['id'], $day_name);
+    $stmt_schedules->execute();
+    $result_schedules = $stmt_schedules->get_result();
+    while ($row = $result_schedules->fetch_assoc()) {
+        $daily_schedules[] = $row;
     }
+    $stmt_schedules->close();
 }
 
-
-// --- MODIFIED PHP FUNCTION: Fetch User's Schedule from add_pdf (MySQLi) ---
-function getUserSchedule($user_id, $conn)
-{
-    if (!$conn || $conn->connect_error) {
-        error_log("DB connection failed in getUserSchedule.");
-        return [];
-    }
-
-    try {
-        // Query the add_pdf table (schedule data)
-        $stmt = $conn->prepare("
-            SELECT title, start_time, end_time, day_of_week, room, schedule_code 
-            FROM add_pdf 
-            WHERE user_id = ? AND is_active = 1
-            ORDER BY FIELD(day_of_week, 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'), start_time
-        ");
-
-        if ($stmt) {
-            $stmt->bind_param("i", $user_id);
-            $stmt->execute();
-            $result = $stmt->get_result();
-            return $result->fetch_all(MYSQLI_ASSOC);
-        } else {
-            error_log("Failed to prepare user schedule statement: " . $conn->error);
-            return [];
+$stmt_reminders = $conn->prepare("SELECT title, description, due_date, due_time, is_completed FROM reminders WHERE user_id = ? AND due_date = ? ORDER BY due_time");
+if ($stmt_reminders) {
+    $stmt_reminders->bind_param("is", $user['id'], $selected_date);
+    $stmt_reminders->execute();
+    $result_reminders = $stmt_reminders->get_result();
+    while ($row = $result_reminders->fetch_assoc()) {
+        $due_datetime = $row['due_date'] . ' ' . $row['due_time'];
+        if ($row['is_completed'] == 0 && ($due_datetime > date('Y-m-d H:i:s') || empty($row['due_time']))) {
+            $daily_reminders[] = $row;
         }
-    } catch (Exception $e) {
-        error_log("Failed to fetch user schedule: " . $e->getMessage());
-        return [];
     }
+    $stmt_reminders->close();
 }
-$user_schedule = getUserSchedule($user_id, $conn);
-// --- END MODIFIED PHP FUNCTION ---
 
-// Placeholder for onboarding steps (using empty array to avoid fatal error if onboarding functions are not available)
-$onboarding_steps = [];
+$all_daily_events = [];
 
+foreach ($daily_schedules as $sched) {
+    $all_daily_events[] = [
+        'type' => 'schedule',
+        'title' => $sched['title'],
+        'description' => $sched['description'],
+        'time' => $sched['start_time'],
+        'end_time' => $sched['end_time'],
+        'location' => $sched['room_name'] ?? 'N/A'
+    ];
+}
+
+foreach ($daily_reminders as $rem) {
+    $all_daily_events[] = [
+        'type' => 'reminder',
+        'title' => $rem['title'],
+        'description' => $rem['description'],
+        'time' => $rem['due_time'],
+        'due_date' => $rem['due_date'],
+        'is_completed' => $rem['is_completed']
+    ];
+}
+
+usort($all_daily_events, function ($a, $b) {
+    $timeA = $a['time'] ? strtotime($a['time']) : 0;
+    $timeB = $b['time'] ? strtotime($b['time']) : 0;
+    return $timeA - $timeB;
+});
+
+$message = '';
+$message_type = '';
+if (isset($_SESSION['message'])) {
+    $message = $_SESSION['message'];
+    $message_type = $_SESSION['message_type'];
+    unset($_SESSION['message']);
+    unset($_SESSION['message_type']);
+}
 
 $header_path = '../../templates/user/header_user.php';
 if (isset($user['role'])) {
@@ -81,1382 +106,1321 @@ if (isset($user['role'])) {
     }
 }
 require_once $header_path;
-
 ?>
+<!DOCTYPE html>
+<html lang="en">
 
-<link rel="stylesheet" href="../../assets/css/user_css/dashboards.css">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><?= $page_title ?? 'ChronoNav - Schedule' ?></title>
 
-<style>
-    /* CSS styles (unchanged) */
-    body {
-        background-color: rgb(255, 255, 255)
-    }
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    .main-dashboard-content {
-        margin-left: 20%;
-        padding: 20px 35px;
-    }
+    <!-- FullCalendar CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
 
-    .main-dashboard-content-wrapper {
-        font-family: "Space Grotesk", "Noto Sans", sans-serif;
-        min-height: 100vh;
-        padding-top: 20px;
-    }
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-    /* Custom styles to match the exact design */
-    .search-bar {
-        display: flex;
-        align-items: center;
-        background-color: rgb(231, 231, 231);
-        border-radius: 0.75rem;
-        padding: 0px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-        transition: all 0.3s ease;
-        margin-top: 15px;
-        margin-bottom: 25px;
-    }
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
+    <link rel="stylesheet" as="style" onload="this.rel='stylesheet'"
+        href="https://fonts.googleapis.com/css2?display=swap&family=Noto+Sans:wght@400;500;700;900&family=Space+Grotesk:wght@400;500;700">
 
-    .search-bar-custom {
-        height: 48px;
-        background-color: #eaedf1;
-        border-radius: 0.75rem;
-        border: none;
-    }
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon"
+        href="https://res.cloudinary.com/deua2yipj/image/upload/v1758917007/ChronoNav_logo_muon27.png">
 
-    .search-bar-custom .input-group-text {
-        background-color: #eaedf1;
-        border: none;
-        border-radius: 0.75rem 0 0 0.75rem;
-        color: #5c748a;
-        padding-left: 1rem;
-    }
-
-    .search-bar-custom .form-control {
-        background-color: #eaedf1;
-        border: none;
-        border-radius: 0 0.75rem 0.75rem 0;
-        color: #101518;
-        padding-left: 0.5rem;
-        height: 48px;
-    }
-
-    .search-bar-custom .form-control:focus {
-        box-shadow: none;
-        background-color: #eaedf1;
-    }
-
-    .search-bar-custom .form-control::placeholder {
-        color: #5c748a;
-    }
-
-    .study-load-card-custom {
-        border-radius: 0.75rem;
-        overflow: hidden;
-        border: none;
-        background: white;
-    }
-
-    .study-load-image-custom {
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-        border-radius: 0.75rem;
-        min-height: 200px;
-        height: 100%;
-    }
-
-    .class-item-custom {
-        background-color: #f9fafb;
-        padding: 12px 16px;
-        border-radius: 0.5rem;
-        margin-bottom: 8px;
-    }
-
-    .class-image-custom {
-        width: 56px;
-        height: 74.67px;
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-        border-radius: 0.5rem;
-        flex-shrink: 0;
-    }
-
-    .btn-custom-outline {
-        background-color: #eaedf1;
-        color: #101518;
-        border: none;
-        border-radius: 9999px;
-        font-weight: 500;
-        font-size: 0.875rem;
-        padding: 8px 16px;
-        min-width: 84px;
-        height: 32px;
-    }
-
-    .btn-custom-primary {
-        background-color: #dce8f3;
-        color: #101518;
-        border: none;
-        border-radius: 9999px;
-        font-weight: 500;
-        font-size: 0.875rem;
-        padding: 8px 16px;
-        min-width: 84px;
-        height: 32px;
-    }
-
-    .text-truncate-2 {
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-    }
-
-    .welcome-title {
-        font-size: 28px;
-        font-weight: bold;
-        color: #101518;
-        line-height: 1.2;
-    }
-
-    .section-title {
-        font-size: 22px;
-        font-weight: bold;
-        color: #101518;
-        line-height: 1.2;
-    }
-
-    .onboarding-controls .btn-custom-blue,
-    .onboarding-controls .btn-custom-primary,
-    .onboarding-controls .btn-custom-outline {
-        background: #E8EDF2;
-    }
-
-    .onboarding-controls .btn-custom-blue:hover,
-    .onboarding-controls .btn-custom-primary:hover,
-    .onboarding-controls .btn-custom-outline:hover {
-        color: #2e78c6;
-    }
-
-    /* Scrollbar Styling */
-    ::-webkit-scrollbar {
-        width: 12px;
-        height: 12px;
-    }
-
-    ::-webkit-scrollbar-track {
-        background: #ffffff;
-    }
-
-    ::-webkit-scrollbar-thumb {
-        background-color: #737373;
-        border-radius: 6px;
-        border: 3px solid #ffffff;
-    }
-
-    ::-webkit-scrollbar-thumb:hover {
-        background-color: #2e78c6;
-    }
-
-
-
-    /* Mobile: 767px and below */
-    @media (max-width: 767px) {
-        .main-dashboard-content {
-            margin-left: 0;
-            padding: 15px;
+    <style>
+        body {
+            font-family: "Space Grotesk", "Noto Sans", sans-serif;
+            background-color: #fff;
         }
 
-        .welcome-title {
-            font-size: 22px;
+        /* Exact styles from the first code */
+        .layout-content-container {
+            max-width: 80%;
+            flex: 1;
+            margin: 0 auto;
+            margin-left: 20%;
+            background: #ffff;
         }
 
-        .section-title {
-            font-size: 18px;
+        .nav-tabs-custom {
+            border-bottom: 1px solid #cedce8;
+            gap: 2rem;
         }
 
-        .search-bar-custom {
-            height: 42px;
-        }
-
-        .search-bar-custom .form-control {
-            height: 42px;
+        .nav-tabs-custom .nav-link {
+            border: none;
+            color: #49749c;
+            font-weight: bold;
             font-size: 0.875rem;
+            padding: 1rem 0 0.8125rem;
+            border-bottom: 3px solid transparent;
         }
 
-        input#searchInput {
-            padding-right: 1rem;
+        .nav-tabs-custom .nav-link.active {
+            color: #0d151c;
+            border-bottom: 3px solid #2E78C6;
         }
 
-        .study-load-card-custom .row {
-            flex-direction: column;
+        .class-item {
+            min-height: 72px;
+            background-color: #f8fafc;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 0.5rem;
         }
 
-        .study-load-image-custom {
-            min-height: 150px;
-        }
-
-        .class-item-custom {
+        .class-icon {
+            width: 48px;
+            height: 48px;
+            background-color: #e7edf4;
+            border-radius: 0.5rem;
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            margin-bottom: 12px;
-            padding: 12px 16px;
-            gap: 10px;
-            min-width: 100%;
-        }
-
-        .class-image-custom {
-            width: 56px;
-            height: 74.67px;
+            justify-content: center;
             flex-shrink: 0;
         }
 
-        .class-item-custom .d-flex.flex-column.flex-grow-1 {
-            min-width: 60%;
-            gap: 10px;
-        }
-
-        .d-flex.align-items-center.flex-grow-1 {
-            min-width: 60%;
-        }
-
-        .class-item-custom button {
-            flex-shrink: 0;
-            min-width: 70px;
-        }
-
-        .onboarding-controls .d-flex {
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .onboarding-controls .btn {
-            width: 100%;
-        }
-
-        .dashboard-widgets-grid {
-            margin-bottom: 20px;
-        }
-    }
-
-    /* Tablet: 768px to 1023px */
-    @media (min-width: 768px) and (max-width: 1023px) {
-        .main-dashboard-content {
-            margin-left: 80px;
-            padding: 20px 25px;
-        }
-
-        .welcome-title {
-            font-size: 24px;
-        }
-
-        .section-title {
-            font-size: 20px;
-        }
-
-        .study-load-card-custom .row {
-            flex-direction: row;
-        }
-
-        .study-load-image-custom {
-            min-height: 180px;
-        }
-
-        .class-item-custom {
-            flex-direction: row;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .class-image-custom {
+        .floating-btn {
+            background-color: #565e64;
             width: 56px;
-            height: 74.67px;
-        }
-    }
-
-    /* Desktop: 1024px and above */
-    @media (min-width: 1024px) {
-        .main-dashboard-content {
-            margin-left: 20%;
-            padding: 20px 35px;
-        }
-
-        .welcome-title {
-            font-size: 28px;
-        }
-
-        .section-title {
-            font-size: 22px;
-        }
-
-        .study-load-card-custom .row {
-            flex-direction: row;
-        }
-
-        .study-load-image-custom {
-            min-height: 200px;
-        }
-
-        .class-item-custom {
-            flex-direction: row;
+            height: 56px;
+            border-radius: 50%;
+            border: none;
+            display: flex;
             align-items: center;
+            justify-content: center;
+            position: fixed;
+            bottom: 1.25rem;
+            right: 1.25rem;
+            color: white;
+            text-decoration: none;
         }
 
-        .class-image-custom {
-            width: 56px;
-            height: 74.67px;
-        }
-    }
-
-
-    /* Enhanced Schedule Styling */
-    .day-group {
-        background: white;
-        border-radius: 0.75rem;
-        padding: 20px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-        border: 1px solid #e5e7eb;
-    }
-
-    .day-header {
-        padding-bottom: 15px;
-        border-bottom: 2px solid #eaedf1;
-    }
-
-    .day-badge .badge {
-        font-size: 0.875rem;
-        font-weight: 500;
-        background: linear-gradient(135deg, #2e78c6, #3e99f4);
-        border: none;
-    }
-
-    .classes-container {
-        margin-top: 15px;
-    }
-
-    .class-item-custom {
-        background: linear-gradient(135deg, #f8fafc, #ffffff);
-        border: 1px solid #e5e7eb;
-        border-left: 4px solid #2e78c6;
-        border-radius: 0.75rem;
-        transition: all 0.3s ease;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .class-item-custom::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(135deg, rgba(46, 120, 198, 0.03), rgba(62, 153, 244, 0.03));
-        opacity: 0;
-        transition: opacity 0.3s ease;
-    }
-
-    .class-item-custom:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-        border-color: #d1dce6;
-    }
-
-    .class-item-custom:hover::before {
-        opacity: 1;
-    }
-
-    .class-icon {
-        background: linear-gradient(135deg, #2e78c6, #3e99f4);
-        color: white;
-        font-size: 1.25rem;
-        box-shadow: 0 4px 12px rgba(46, 120, 198, 0.2);
-    }
-
-    .class-item-custom .badge.bg-light {
-        background-color: #eaedf1 !important;
-        color: #101518;
-        font-size: 0.75rem;
-        font-weight: 500;
-        border: 1px solid #d1d5db;
-    }
-
-    .btn-custom-outline {
-        background-color: #eaedf1;
-        color: #101518;
-        border: none;
-        border-radius: 9999px;
-        font-weight: 500;
-        font-size: 0.875rem;
-        padding: 8px 16px;
-        min-width: 84px;
-        height: 32px;
-        transition: all 0.3s ease;
-    }
-
-    .btn-custom-outline:hover {
-        background-color: #dce8f3;
-        color: #2e78c6;
-        transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(46, 120, 198, 0.1);
-    }
-
-    .btn-custom-delete {
-        background-color: #fee2e2;
-        color: #dc3545;
-        border: none;
-        border-radius: 9999px;
-        font-weight: 500;
-        font-size: 0.875rem;
-        padding: 8px 16px;
-        min-width: 84px;
-        height: 32px;
-        transition: all 0.3s ease;
-    }
-
-    .btn-custom-delete:hover {
-        background-color: #fecaca;
-        color: #b91c1c;
-        transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(220, 53, 69, 0.1);
-    }
-
-    .empty-state {
-        background: white;
-        border-radius: 0.75rem;
-        border: 2px dashed #e5e7eb;
-        margin: 20px 0;
-    }
-
-    .empty-state-icon {
-        color: #9ca3af;
-    }
-
-    .text-truncate {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        max-width: 200px;
-    }
-
-    /* Dark mode adjustments */
-    body.dark-mode .day-group {
-        background-color: #263645 !important;
-        border-color: #121A21 !important;
-    }
-
-    body.dark-mode .day-header {
-        border-bottom-color: #121A21 !important;
-    }
-
-    body.dark-mode .class-item-custom {
-        background: linear-gradient(135deg, #121A21, #263645) !important;
-        border-color: #121A21 !important;
-        border-left-color: #1C7DD6 !important;
-    }
-
-    body.dark-mode .class-item-custom:hover {
-        border-color: #1C7DD6 !important;
-        box-shadow: 0 4px 20px rgba(28, 125, 214, 0.2);
-    }
-
-    body.dark-mode .class-item-custom .badge.bg-light {
-        background-color: #121A21 !important;
-        color: #E5E8EB !important;
-        border-color: #263645 !important;
-    }
-
-    body.dark-mode .btn-custom-outline {
-        background-color: #121A21 !important;
-        color: #94ADC7 !important;
-        border: 1px solid #263645 !important;
-    }
-
-    body.dark-mode .btn-custom-outline:hover {
-        background-color: #1C7DD6 !important;
-        color: #FFFFFF !important;
-        border-color: #1C7DD6 !important;
-    }
-
-    body.dark-mode .btn-custom-delete {
-        background-color: #121A21 !important;
-        color: #E57373 !important;
-        border: 1px solid #263645 !important;
-    }
-
-    body.dark-mode .btn-custom-delete:hover {
-        background-color: #C62828 !important;
-        color: #FFFFFF !important;
-        border-color: #C62828 !important;
-    }
-
-    body.dark-mode .empty-state {
-        background-color: #263645 !important;
-        border-color: #121A21 !important;
-    }
-
-    /* Responsive adjustments */
-    @media (max-width: 767px) {
-        .class-item-custom {
-            flex-direction: column;
-            align-items: flex-start;
-            padding: 20px;
+        .floating-btn.fw-bold {
+            background-color: #2E78C6;
         }
 
-        .class-item-custom>.d-flex.align-items-center {
-            width: 100%;
-            margin-bottom: 15px;
+        .text-truncate-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
         }
 
-        .class-item-custom .d-flex.gap-2 {
-            width: 100%;
-            justify-content: flex-end;
+        /* FullCalendar Custom Styling - exact from first code */
+        .fc {
+            font-family: "Space Grotesk", "Noto Sans", sans-serif;
         }
 
-        .btn-custom-outline,
-        .btn-custom-delete {
-            flex: 1;
-            min-width: auto;
+        .fc-toolbar {
+            flex-wrap: wrap;
+            gap: 1rem;
         }
 
-        .class-item-custom .d-flex.flex-column.flex-grow-1 {
-            margin-left: 15px;
+        .fc-toolbar-title {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: #0d151c;
         }
 
-        .text-truncate {
-            max-width: 150px;
+        .fc-button {
+            background-color: transparent;
+            border: 1px solid #cedce8;
+            color: #0d151c;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
         }
 
-        .day-group {
-            padding: 15px;
-        }
-    }
-
-    @media (min-width: 768px) and (max-width: 1023px) {
-        .class-item-custom {
-            padding: 20px;
+        .fc-button:hover {
+            background-color: #f0f2f5;
         }
 
-        .text-truncate {
-            max-width: 250px;
-        }
-    }
-
-    @media (min-width: 1024px) {
-        .class-item-custom {
-            padding: 20px 25px;
+        .fc-button-primary:not(:disabled).fc-button-active {
+            background-color: #2E78C6;
+            border-color: #2E78C6;
         }
 
-        .text-truncate {
-            max-width: 300px;
-        }
-    }
-
-    /* Demo content styles */
-    body {
-        font-family: 'Space Grotesk', 'Noto Sans', sans-serif;
-        background-color: #f8f9fa;
-        margin: 0;
-        padding: 0;
-    }
-
-    .demo-content {
-        background: white;
-        border-radius: 8px;
-        padding: 2rem;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    }
-
-    .screen-size-indicator {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        background: #333;
-        color: white;
-        padding: 10px 15px;
-        border-radius: 5px;
-        font-size: 0.9rem;
-    }
-
-
-    /* ====================================================================== */
-    /* Dark Mode Overrides for Dashboard - Custom Colors                      */
-    /* ====================================================================== */
-    body.dark-mode {
-        background-color: #121A21 !important;
-        color: #E5E8EB !important;
-    }
-
-    body.dark-mode .main-dashboard-content-wrapper {
-        background-color: #121A21 !important;
-        color: #E5E8EB !important;
-    }
-
-    body.dark-mode .main-dashboard-content {
-        background-color: #121A21 !important;
-        color: #E5E8EB !important;
-    }
-
-    body.dark-mode .welcome-title {
-        color: #E5E8EB !important;
-    }
-
-    body.dark-mode .section-title {
-        color: #E5E8EB !important;
-    }
-
-    body.dark-mode .search-bar-custom {
-        background-color: #263645 !important;
-        border: 1px solid #121A21 !important;
-    }
-
-    body.dark-mode .search-bar-custom .input-group-text {
-        background-color: #263645 !important;
-        color: #94ADC7 !important;
-        border: none !important;
-    }
-
-    body.dark-mode .search-bar-custom .form-control {
-        background-color: #263645 !important;
-        color: #E5E8EB !important;
-        border: none !important;
-    }
-
-    body.dark-mode .search-bar-custom .form-control::placeholder {
-        color: #94ADC7 !important;
-    }
-
-    body.dark-mode .search-bar-custom .form-control:focus {
-        background-color: #263645 !important;
-        color: #E5E8EB !important;
-        box-shadow: none !important;
-    }
-
-    body.dark-mode .card {
-        background-color: #263645 !important;
-        border: 1px solid #121A21 !important;
-        color: #E5E8EB !important;
-    }
-
-    body.dark-mode .card.border-0 {
-        background-color: #263645 !important;
-        border: none !important;
-    }
-
-    body.dark-mode .onboarding-controls {
-        background-color: #121A21 !important;
-        border: 1px solid #263645 !important;
-    }
-
-    body.dark-mode .onboarding-controls h5 {
-        color: #E5E8EB !important;
-    }
-
-    body.dark-mode .onboarding-controls p.text-muted {
-        color: #94ADC7 !important;
-    }
-
-    body.dark-mode .btn-custom-outline {
-        background-color: #121A21 !important;
-        color: #94ADC7 !important;
-        border: 1px solid #263645 !important;
-    }
-
-    body.dark-mode .btn-custom-outline:hover {
-        background-color: #1C7DD6 !important;
-        color: #FFFFFF !important;
-        border-color: #1C7DD6 !important;
-    }
-
-    body.dark-mode .btn-custom-primary {
-        background-color: #263645 !important;
-        color: #94ADC7 !important;
-        border: 1px solid #121A21 !important;
-    }
-
-    body.dark-mode .btn-custom-primary:hover {
-        background-color: #1C7DD6 !important;
-        color: #FFFFFF !important;
-        border-color: #1C7DD6 !important;
-    }
-
-    body.dark-mode .btn-custom-blue {
-        background-color: #121A21 !important;
-        color: #94ADC7 !important;
-        border: 1px solid #263645 !important;
-    }
-
-    body.dark-mode .btn-custom-blue:hover {
-        background-color: #1C7DD6 !important;
-        color: #FFFFFF !important;
-        border-color: #1C7DD6 !important;
-    }
-
-    body.dark-mode .onboarding-controls .btn-custom-blue,
-    body.dark-mode .onboarding-controls .btn-custom-primary,
-    body.dark-mode .onboarding-controls .btn-custom-outline {
-        background: #121A21 !important;
-        color: #94ADC7 !important;
-        border: 1px solid #263645 !important;
-    }
-
-    body.dark-mode .onboarding-controls .btn-custom-blue:hover,
-    body.dark-mode .onboarding-controls .btn-custom-primary:hover,
-    body.dark-mode .onboarding-controls .btn-custom-outline:hover {
-        background-color: #1C7DD6 !important;
-        color: #FFFFFF !important;
-        border-color: #1C7DD6 !important;
-    }
-
-    body.dark-mode .study-load-card-custom {
-        background: #263645 !important;
-        border: 1px solid #121A21 !important;
-    }
-
-    body.dark-mode .study-load-card-custom .card-title {
-        color: #E5E8EB !important;
-    }
-
-    body.dark-mode .study-load-card-custom p.text-muted {
-        color: #94ADC7 !important;
-    }
-
-    body.dark-mode .class-item-custom {
-        background-color: #121A21 !important;
-        border: 1px solid #263645 !important;
-    }
-
-    body.dark-mode .class-item-custom:hover {
-        background-color: rgba(28, 125, 214, 0.1) !important;
-    }
-
-    body.dark-mode .class-item-custom p.text-dark {
-        color: #E5E8EB !important;
-    }
-
-    body.dark-mode .class-item-custom p.text-muted {
-        color: #94ADC7 !important;
-    }
-
-    body.dark-mode .modal-content {
-        background-color: #263645 !important;
-        border: 1px solid #121A21 !important;
-        color: #E5E8EB !important;
-    }
-
-    body.dark-mode .modal-header {
-        background-color: #121A21 !important;
-        border-bottom: 1px solid #263645 !important;
-    }
-
-    body.dark-mode .modal-header .modal-title {
-        color: #E5E8EB !important;
-    }
-
-    body.dark-mode .modal-body {
-        color: #E5E8EB !important;
-    }
-
-    body.dark-mode .form-control {
-        background-color: #121A21 !important;
-        border: 1px solid #263645 !important;
-        color: #E5E8EB !important;
-    }
-
-    body.dark-mode .form-control:focus {
-        background-color: #121A21 !important;
-        border-color: #1C7DD6 !important;
-        color: #E5E8EB !important;
-        box-shadow: 0 0 0 0.2rem rgba(28, 125, 214, 0.25) !important;
-    }
-
-    body.dark-mode .table {
-        color: #E5E8EB !important;
-    }
-
-    body.dark-mode .table-striped tbody tr:nth-of-type(odd) {
-        background-color: #121A21 !important;
-    }
-
-    body.dark-mode .table-striped tbody tr:nth-of-type(even) {
-        background-color: #263645 !important;
-    }
-
-    body.dark-mode .table-hover tbody tr:hover {
-        background-color: rgba(28, 125, 214, 0.2) !important;
-    }
-
-    body.dark-mode thead {
-        background-color: #121A21 !important;
-    }
-
-    body.dark-mode .alert {
-        background-color: #263645 !important;
-        border: 1px solid #121A21 !important;
-    }
-
-    body.dark-mode .alert-info {
-        background-color: #0D47A1 !important;
-        color: #BBDEFB !important;
-        border-color: #1565C0 !important;
-    }
-
-    body.dark-mode .alert-success {
-        background-color: #1B5E20 !important;
-        color: #C8E6C9 !important;
-        border-color: #2E7D32 !important;
-    }
-
-    body.dark-mode .alert-danger {
-        background-color: #B71C1C !important;
-        color: #FFCDD2 !important;
-        border-color: #C62828 !important;
-    }
-
-    body.dark-mode .text-dark {
-        color: #E5E8EB !important;
-    }
-
-    body.dark-mode .text-muted {
-        color: #94ADC7 !important;
-    }
-
-    body.dark-mode ::-webkit-scrollbar-track {
-        background: #121A21 !important;
-    }
-
-    body.dark-mode ::-webkit-scrollbar-thumb {
-        background-color: #263645 !important;
-        border: 3px solid #121A21 !important;
-    }
-
-    body.dark-mode ::-webkit-scrollbar-thumb:hover {
-        background-color: #1C7DD6 !important;
-    }
-
-    body.dark-mode .demo-content {
-        background-color: #263645 !important;
-        color: #E5E8EB !important;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-    }
-
-    body.dark-mode .screen-size-indicator {
-        background: #1C7DD6 !important;
-        color: #FFFFFF !important;
-    }
-
-    body.dark-mode .btn-close {
-        filter: invert(1) grayscale(100%) brightness(200%) !important;
-    }
-
-    body.dark-mode .input-group-text {
-        background-color: #121A21 !important;
-        border: 1px solid #263645 !important;
-        color: #94ADC7 !important;
-    }
-
-    @media (max-width: 767px) {
-        body.dark-mode .main-dashboard-content {
-            background-color: #121A21 !important;
+        .fc-col-header-cell {
+            background-color: transparent;
+            padding: 0.75rem 0;
         }
 
-        body.dark-mode .class-item-custom {
-            background-color: #121A21 !important;
+        .fc-col-header-cell-cushion {
+            color: #0d151c;
+            font-weight: bold;
+            font-size: 0.8125rem;
+            text-decoration: none;
         }
-    }
 
-    @media (min-width: 768px) and (max-width: 1023px) {
-        body.dark-mode .main-dashboard-content {
-            background-color: #121A21 !important;
+        .fc-daygrid-day-number {
+            color: #0d151c;
+            font-weight: 500;
+            text-decoration: none;
+            padding: 0.5rem;
         }
-    }
 
-    @media (min-width: 1024px) {
+        .fc-daygrid-day.fc-day-today {
+            background-color: rgba(11, 128, 238, 0.1);
+        }
+
+        .fc-daygrid-day.fc-day-today .fc-daygrid-day-number {
+            color: white;
+            background-color: #2E78C6;
+            border-radius: 50%;
+            width: 2rem;
+            height: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0.25rem;
+        }
+
+        .fc-event {
+            background-color: #2E78C6;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            padding: 2px 4px;
+        }
+
+        .fc-event-title {
+            font-weight: 500;
+        }
+
+        .fc-daygrid-event-dot {
+            border-color: #2E78C6;
+        }
+
+        @media (min-width: 768px) {
+            .floating-btn {
+                position: static;
+                width: auto;
+                height: auto;
+                border-radius: 9999px;
+                padding: 0.875rem 1.5rem;
+                gap: 1rem;
+            }
+        }
+
+        /* Additional styles for your PHP functionality */
+        .main-dashboard-content {
+            padding: 2rem 1rem;
+        }
+
+        .alert {
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        [type=button]:not(:disabled),
+        [type=reset]:not(:disabled),
+        [type=submit]:not(:disabled),
+        button:not(:disabled) {
+            cursor: pointer;
+            background-color: #f0f2f5;
+            color: #111418;
+            font-weight: bold;
+            border: none;
+            border-radius: 0.75rem;
+        }
+
+        /* Calendar Customization */
+        button.fc-prev-button.fc-button.fc-button-primary,
+        button.fc-next-button.fc-button.fc-button-primary {
+            background-color: #fff;
+        }
+
+        button.fc-prev-button.fc-button.fc-button-primary:hover,
+        button.fc-next-button.fc-button.fc-button-primary:hover {
+            background-color: #737373;
+        }
+
+        span.fc-icon.fc-icon-chevron-left:hover {
+            color: #fff;
+        }
+
+        button.fc-today-button.fc-button.fc-button-primary {
+            background-color: transparent;
+            border-color: transparent;
+            color: #212528;
+            font-weight: bold;
+        }
+
+        .fc-direction-ltr .fc-button-group>.fc-button:not(:last-child) {
+            border-bottom-right-radius: 0px;
+            border-top-right-radius: 0px;
+            background-color: transparent;
+            color: #212529;
+        }
+
+        .fc-direction-ltr .fc-button-group>.fc-button:hover {
+            color: #212529;
+        }
+
+        .fc-direction-ltr .fc-button-group>.fc-button:not(:first-child) {
+            border-bottom-left-radius: 0px;
+            border-top-left-radius: 0px;
+            margin-left: -1px;
+            background-color: transparent;
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 12px;
+            height: 12px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #ffffff;
+            /* white track */
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background-color: #737373;
+            /* gray thumb */
+            border-radius: 6px;
+            border: 3px solid #ffffff;
+            /* padding effect with white border */
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background-color: #2e78c6;
+            /* blue on hover */
+        }
+
+
+
+
+        /* Add these media queries at the end of your existing CSS */
+
+        /* Mobile: 767px and below */
+        @media (max-width: 767px) {
+            .layout-content-container {
+                max-width: 100% !important;
+                margin-left: 0 !important;
+                padding: 1rem !important;
+            }
+
+            .main-dashboard-content {
+                padding: 1rem 0 !important;
+            }
+
+            .text-dark.fw-bold.fs-3.mb-0 {
+                font-size: 1.5rem !important;
+                text-align: center;
+                width: 100%;
+                min-width: auto !important;
+            }
+
+            .fc-toolbar {
+                flex-direction: column !important;
+                align-items: center !important;
+                gap: 0.5rem !important;
+            }
+
+            .fc-toolbar-title {
+                font-size: 1.1rem !important;
+                text-align: center;
+            }
+
+            .fc-header-toolbar .fc-toolbar-chunk {
+                display: flex;
+                justify-content: center;
+                width: 100%;
+            }
+
+            .fc .fc-button {
+                font-size: 0.8rem !important;
+                padding: 0.4rem 0.8rem !important;
+            }
+
+            .class-item {
+                flex-direction: column !important;
+                align-items: flex-start !important;
+                gap: 1rem !important;
+                padding: 1rem !important;
+                min-height: auto !important;
+            }
+
+            .class-icon {
+                width: 40px !important;
+                height: 40px !important;
+            }
+
+            .d-flex.justify-content-between.align-items-center.mb-3 {
+                flex-direction: column !important;
+                gap: 1rem !important;
+            }
+
+            .btn {
+                width: 100% !important;
+                justify-content: center;
+            }
+
+            .floating-btn {
+                position: fixed !important;
+                bottom: 1.25rem !important;
+                right: 1.25rem !important;
+                width: 56px !important;
+                height: 56px !important;
+                border-radius: 50% !important;
+            }
+
+            .floating-btn span {
+                display: none !important;
+            }
+
+            .modal-dialog {
+                margin: 0.5rem !important;
+                max-width: calc(100% - 1rem) !important;
+            }
+
+            .fc-daygrid-day-number {
+                font-size: 0.7rem !important;
+                padding: 0.25rem !important;
+            }
+
+            .fc-col-header-cell-cushion {
+                font-size: 0.7rem !important;
+            }
+
+            h3.text-dark.fw-bold.fs-5.px-0.pb-2.pt-4 {
+                font-size: 1.1rem !important;
+                text-align: center;
+            }
+
+            img,
+            svg {
+                vertical-align: unset;
+            }
+        }
+
+        /* Tablet: 768px to 1023px */
+        @media (min-width: 768px) and (max-width: 1023px) {
+            .layout-content-container {
+                max-width: 85% !important;
+                margin-left: 15% !important;
+                padding: 1.5rem !important;
+            }
+
+            .fc-toolbar {
+                flex-wrap: wrap !important;
+                gap: 0.75rem !important;
+            }
+
+            .fc-toolbar-title {
+                font-size: 1.15rem !important;
+            }
+
+            .fc .fc-button {
+                font-size: 0.85rem !important;
+                padding: 0.45rem 0.9rem !important;
+            }
+
+            .class-item {
+                padding: 0.75rem !important;
+                min-height: 65px !important;
+            }
+
+            .class-icon {
+                width: 44px !important;
+                height: 44px !important;
+            }
+
+            .floating-btn {
+                position: static !important;
+                width: auto !important;
+                height: auto !important;
+                border-radius: 9999px !important;
+                padding: 0.75rem 1.25rem !important;
+            }
+
+            .floating-btn span {
+                display: inline !important;
+            }
+
+            .modal-dialog {
+                max-width: 600px !important;
+                margin: 1.75rem auto !important;
+            }
+
+            .fc-daygrid-day-number {
+                font-size: 0.75rem !important;
+            }
+
+            .fc-col-header-cell-cushion {
+                font-size: 0.75rem !important;
+            }
+        }
+
+        /* Desktop: 1024px and above */
+        @media (min-width: 1024px) {
+            .layout-content-container {
+                max-width: 80% !important;
+                margin-left: 20% !important;
+                padding: 2rem 2.5rem !important;
+            }
+
+            .fc-toolbar {
+                flex-wrap: nowrap !important;
+            }
+
+            .fc-toolbar-title {
+                font-size: 1.25rem !important;
+            }
+
+            .fc .fc-button {
+                font-size: 0.875rem !important;
+                padding: 0.5rem 1rem !important;
+            }
+
+            .class-item {
+                padding: 0.5rem 1rem !important;
+                min-height: 72px !important;
+            }
+
+            .class-icon {
+                width: 48px !important;
+                height: 48px !important;
+            }
+
+            .floating-btn {
+                position: static !important;
+                width: auto !important;
+                height: auto !important;
+                border-radius: 9999px !important;
+                padding: 0.875rem 1.5rem !important;
+            }
+
+            .floating-btn span {
+                display: inline !important;
+            }
+
+            .modal-dialog {
+                max-width: 500px !important;
+                margin: 1.75rem auto !important;
+            }
+        }
+
+        /* Responsive sidebar toggle button */
+        .sidebar-toggle {
+            display: none;
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 1100;
+            background: #3e99f4;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 8px 12px;
+            font-size: 1.2rem;
+        }
+
+        @media (max-width: 1023px) {
+            .sidebar-toggle {
+                display: block !important;
+            }
+        }
+
+        /* Enhanced FullCalendar responsiveness */
+        @media (max-width: 767px) {
+            .fc .fc-daygrid-day-frame {
+                min-height: 60px !important;
+            }
+
+            .fc .fc-daygrid-event {
+                font-size: 0.7rem !important;
+                margin: 1px !important;
+            }
+
+            .fc .fc-event-title {
+                padding: 1px 2px !important;
+            }
+        }
+
+        @media (max-width: 575px) {
+            .fc .fc-daygrid-day-frame {
+                min-height: 50px !important;
+            }
+
+            .fc .fc-daygrid-day-number {
+                font-size: 0.65rem !important;
+                padding: 0.15rem !important;
+            }
+
+            .fc-day-today .fc-daygrid-day-number {
+                width: 1.5rem !important;
+                height: 1.5rem !important;
+                margin: 0.15rem !important;
+            }
+        }
+
+        /* Improved modal responsiveness */
+        @media (max-width: 767px) {
+            .modal-content {
+                border-radius: 0.5rem !important;
+            }
+
+            .modal-header,
+            .modal-body,
+            .modal-footer {
+                padding: 1rem !important;
+            }
+
+            .modal-title {
+                font-size: 1.25rem !important;
+            }
+
+            .form-control {
+                font-size: 16px !important;
+                /* Prevents zoom on iOS */
+            }
+        }
+
+        /* Better touch targets for mobile */
+        @media (max-width: 767px) {
+            .class-item {
+                min-height: 80px;
+            }
+
+            .btn {
+                min-height: 44px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .fc .fc-button {
+                min-height: 36px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+            }
+        }
+
+        /* Print styles for schedule */
+        @media print {
+            .layout-content-container {
+                margin-left: 0 !important;
+                max-width: 100% !important;
+                padding: 0 !important;
+            }
+
+            .floating-btn,
+            .sidebar-toggle,
+            .btn:not(.btn-print) {
+                display: none !important;
+            }
+
+            .class-item {
+                break-inside: avoid;
+            }
+        }
+
+        /* Enhanced calendar event display */
+        @media (max-width: 767px) {
+            .fc-event {
+                font-size: 0.7rem !important;
+                padding: 1px 2px !important;
+            }
+
+            .fc-event-title {
+                font-size: 0.7rem !important;
+            }
+        }
+
+        /* Ensure proper spacing in calendar */
+        @media (max-width: 767px) {
+            .fc .fc-scrollgrid {
+                font-size: 0.8rem;
+            }
+
+            .fc .fc-col-header-cell {
+                padding: 0.5rem 0 !important;
+            }
+        }
+
+
+
+        /* ====================================================================== */
+        /* Dark Mode Overrides for Schedule Page - Custom Colors                 */
+        /* ====================================================================== */
         body.dark-mode {
+            background-color: #121A21 !important;
+            /* Primary dark background */
+            color: #E5E8EB !important;
+        }
+
+        /* Layout container */
+        body.dark-mode .layout-content-container {
+            background-color: #121A21 !important;
+            color: #E5E8EB !important;
+        }
+
+        /* Header and text */
+        body.dark-mode .text-dark.fw-bold.fs-3.mb-0 {
+            color: #E5E8EB !important;
+            /* Light text for page title */
+        }
+
+        body.dark-mode .text-dark.fw-bold.fs-5 {
+            color: #E5E8EB !important;
+            /* Light text for section titles */
+        }
+
+        body.dark-mode .text-dark.fw-medium {
+            color: #E5E8EB !important;
+            /* Light text for class titles */
+        }
+
+        body.dark-mode .text-muted {
+            color: #94ADC7 !important;
+            /* Secondary text color */
+        }
+
+        /* Calendar container */
+        body.dark-mode #calendar {
+            background-color: #263645 !important;
+            /* Secondary dark background */
+            border: 1px solid #121A21 !important;
+            color: #E5E8EB !important;
+        }
+
+        /* FullCalendar custom styling for dark mode */
+        body.dark-mode .fc {
+            color: #E5E8EB !important;
+        }
+
+        body.dark-mode .fc-toolbar-title {
+            color: #E5E8EB !important;
+            /* Light text for calendar title */
+        }
+
+        body.dark-mode .fc-button {
+            background-color: #121A21 !important;
+            /* Primary dark */
+            border: 1px solid #263645 !important;
+            /* Secondary border */
+            color: #94ADC7 !important;
+            /* Secondary text */
+        }
+
+        body.dark-mode .fc-button:hover {
+            background-color: #263645 !important;
+            /* Secondary dark on hover */
+            color: #E5E8EB !important;
+            /* Light text on hover */
+        }
+
+        body.dark-mode .fc-button-primary:not(:disabled).fc-button-active {
+            background-color: #1C7DD6 !important;
+            /* Active blue */
+            border-color: #1C7DD6 !important;
+            color: #FFFFFF !important;
+            /* White text when active */
+        }
+
+        /* Calendar header cells */
+        body.dark-mode .fc-col-header-cell {
+            background-color: #121A21 !important;
+            /* Primary dark */
+            border-bottom: 1px solid #263645 !important;
+        }
+
+        body.dark-mode .fc-col-header-cell-cushion {
+            color: #94ADC7 !important;
+            /* Secondary text for day names */
+        }
+
+        /* Calendar day cells */
+        body.dark-mode .fc-daygrid-day {
+            background-color: #263645 !important;
+            /* Secondary dark background */
+            border: 1px solid #121A21 !important;
+        }
+
+        body.dark-mode .fc-daygrid-day-number {
+            color: #E5E8EB !important;
+            /* Light text for day numbers */
+        }
+
+        /* Today's date */
+        body.dark-mode .fc-daygrid-day.fc-day-today {
+            background-color: rgba(28, 125, 214, 0.2) !important;
+            /* Blue tint for today */
+        }
+
+        body.dark-mode .fc-daygrid-day.fc-day-today .fc-daygrid-day-number {
+            color: #FFFFFF !important;
+            /* White text for today */
+            background-color: #1C7DD6 !important;
+            /* Active blue for today's circle */
+        }
+
+        /* Calendar events */
+        body.dark-mode .fc-event {
+            background-color: #1C7DD6 !important;
+            /* Active blue for events */
+            border: none !important;
+            color: #FFFFFF !important;
+            /* White text for events */
+        }
+
+        body.dark-mode .fc-event:hover {
+            background-color: #1565C0 !important;
+            /* Darker blue on hover */
+        }
+
+        body.dark-mode .fc-daygrid-event-dot {
+            border-color: #1C7DD6 !important;
+            /* Blue for event dots */
+        }
+
+        /* Class items */
+        body.dark-mode .class-item {
+            background-color: #121A21 !important;
+            /* Primary dark background */
+            border: 1px solid #263645 !important;
+            color: #E5E8EB !important;
+        }
+
+        body.dark-mode .class-item:hover {
+            background-color: #263645 !important;
+            /* Secondary dark on hover */
+        }
+
+        /* Class icon */
+        body.dark-mode .class-icon {
+            background-color: #263645 !important;
+            /* Secondary dark */
+            color: #94ADC7 !important;
+            /* Secondary text color for icons */
+        }
+
+        body.dark-mode .class-icon i {
+            color: #94ADC7 !important;
+            /* Secondary color for icons */
+        }
+
+        /* Buttons */
+        body.dark-mode .btn-primary {
+            background-color: #1C7DD6 !important;
+            /* Active blue */
+            color: #FFFFFF !important;
+            border: none !important;
+        }
+
+        body.dark-mode .btn-primary:hover {
+            background-color: #1565C0 !important;
+            /* Darker blue on hover */
+        }
+
+        body.dark-mode .btn-light {
+            background-color: #121A21 !important;
+            /* Primary dark */
+            color: #94ADC7 !important;
+            /* Secondary text */
+            border: 1px solid #263645 !important;
+        }
+
+        body.dark-mode .btn-light:hover {
+            background-color: #263645 !important;
+            /* Secondary dark on hover */
+            color: #E5E8EB !important;
+            /* Light text on hover */
+        }
+
+        /* Floating button */
+        body.dark-mode .floating-btn {
+            background-color: #1C7DD6 !important;
+            /* Active blue */
+            color: #FFFFFF !important;
+            border: none !important;
+        }
+
+        body.dark-mode .floating-btn:hover {
+            background-color: #1565C0 !important;
+            /* Darker blue on hover */
+        }
+
+        /* Alerts */
+        body.dark-mode .alert {
+            background-color: #263645 !important;
+            /* Secondary dark background */
+            border: 1px solid #121A21 !important;
+            color: #E5E8EB !important;
+        }
+
+        body.dark-mode .alert-info {
+            background-color: #0D47A1 !important;
+            /* Dark blue */
+            color: #BBDEFB !important;
+            /* Light blue text */
+            border-color: #1565C0 !important;
+        }
+
+        body.dark-mode .alert-success {
+            background-color: #1B5E20 !important;
+            /* Dark green */
+            color: #C8E6C9 !important;
+            /* Light green text */
+            border-color: #2E7D32 !important;
+        }
+
+        body.dark-mode .alert-warning {
+            background-color: #F57C00 !important;
+            /* Dark orange */
+            color: #FFE0B2 !important;
+            /* Light orange text */
+            border-color: #EF6C00 !important;
+        }
+
+        body.dark-mode .alert-danger {
+            background-color: #B71C1C !important;
+            /* Dark red */
+            color: #FFCDD2 !important;
+            /* Light red text */
+            border-color: #C62828 !important;
+        }
+
+        /* Modal styling */
+        body.dark-mode .modal-content {
+            background-color: #263645 !important;
+            /* Secondary dark background */
+            border: 1px solid #121A21 !important;
+            color: #E5E8EB !important;
+        }
+
+        body.dark-mode .modal-header {
+            background-color: #121A21 !important;
+            /* Primary dark */
+            border-bottom: 1px solid #263645 !important;
+            /* Secondary border */
+        }
+
+        body.dark-mode .modal-header .modal-title {
+            color: #E5E8EB !important;
+            /* Light text for modal title */
+        }
+
+        body.dark-mode .modal-footer {
+            background-color: #121A21 !important;
+            /* Primary dark */
+            border-top: 1px solid #263645 !important;
+            /* Secondary border */
+        }
+
+        /* Form elements */
+        body.dark-mode .form-control {
+            background-color: #121A21 !important;
+            /* Primary dark */
+            border: 1px solid #263645 !important;
+            /* Secondary border */
+            color: #E5E8EB !important;
+            /* Light text */
+        }
+
+        body.dark-mode .form-control:focus {
+            background-color: #121A21 !important;
+            border-color: #1C7DD6 !important;
+            /* Blue focus */
+            color: #E5E8EB !important;
+            box-shadow: 0 0 0 2px rgba(28, 125, 214, 0.2) !important;
+        }
+
+        body.dark-mode .form-label {
+            color: #94ADC7 !important;
+            /* Secondary text for labels */
+        }
+
+        /* Close button in modals */
+        body.dark-mode .btn-close {
+            filter: invert(1) grayscale(100%) brightness(200%) !important;
+        }
+
+        /* Scrollbar for dark mode */
+        body.dark-mode ::-webkit-scrollbar-track {
             background: #121A21 !important;
+            /* Primary dark track */
+        }
+
+        body.dark-mode ::-webkit-scrollbar-thumb {
+            background-color: #263645 !important;
+            /* Secondary dark thumb */
+            border: 3px solid #121A21 !important;
+        }
+
+        body.dark-mode ::-webkit-scrollbar-thumb:hover {
+            background-color: #1C7DD6 !important;
+            /* Blue on hover */
+        }
+
+        /* Navigation tabs */
+        body.dark-mode .nav-tabs-custom {
+            border-bottom: 1px solid #263645 !important;
+            /* Secondary border */
+        }
+
+        body.dark-mode .nav-tabs-custom .nav-link {
+            color: #94ADC7 !important;
+            /* Secondary text for tabs */
+            border-bottom: 3px solid transparent !important;
+        }
+
+        body.dark-mode .nav-tabs-custom .nav-link.active {
+            color: #E5E8EB !important;
+            /* Light text for active tab */
+            border-bottom: 3px solid #1C7DD6 !important;
+            /* Blue underline for active tab */
+        }
+
+        body.dark-mode .nav-tabs-custom .nav-link:hover {
+            color: #E5E8EB !important;
+            /* Light text on hover */
+        }
+
+        /* Today button in calendar */
+        body.dark-mode button.fc-today-button.fc-button.fc-button-primary {
             background-color: #121A21 !important;
+            /* Primary dark */
+            color: #94ADC7 !important;
+            /* Secondary text */
+            border: 1px solid #263645 !important;
         }
 
-        body.dark-mode .main-dashboard-content {
+        body.dark-mode button.fc-today-button.fc-button.fc-button-primary:hover {
+            background-color: #263645 !important;
+            /* Secondary dark on hover */
+            color: #E5E8EB !important;
+            /* Light text on hover */
+        }
+
+        /* Previous/next buttons in calendar */
+        body.dark-mode button.fc-prev-button.fc-button.fc-button-primary,
+        body.dark-mode button.fc-next-button.fc-button.fc-button-primary {
             background-color: #121A21 !important;
+            /* Primary dark */
+            color: #94ADC7 !important;
+            /* Secondary text */
+            border: 1px solid #263645 !important;
         }
-    }
 
-    body.dark-mode #searchResults {
-        background-color: #263645 !important;
-        border: 1px solid #121A21 !important;
-    }
-
-    body.dark-mode .list-group-item {
-        background-color: #263645 !important;
-        color: #E5E8EB !important;
-        border-color: #121A21 !important;
-    }
-
-    body.dark-mode .list-group-item:hover {
-        background-color: #1C7DD6 !important;
-        color: #FFFFFF !important;
-    }
-
-    body.dark-mode .list-group-item.text-muted {
-        color: #94ADC7 !important;
-    }
-</style>
-
-<link rel="icon" type="image/x-icon"
-    href="https://res.cloudinary.com/deua2yipj/image/upload/v1758917007/ChronoNav_logo_muon27.png">
-
-<?php include('../../includes/semantics/head.php'); ?>
-
-<div class="d-flex" id="wrapper" data-user-role="<?= $user_role ?>">
-    <?php
-    $sidenav_path = '../../templates/user/sidenav_user.php';
-    if (isset($user['role'])) {
-        if ($user['role'] === 'admin') {
-            $sidenav_path = '../../templates/admin/sidenav_admin.php';
-        } elseif ($user['role'] === 'faculty') {
-            $sidenav_path = '../../templates/faculty/sidenav_faculty.php';
+        body.dark-mode button.fc-prev-button.fc-button.fc-button-primary:hover,
+        body.dark-mode button.fc-next-button.fc-button.fc-button-primary:hover {
+            background-color: #263645 !important;
+            /* Secondary dark on hover */
+            color: #E5E8EB !important;
+            /* Light text on hover */
         }
-    }
-    require_once $sidenav_path;
-    ?>
 
-    <div class="main-dashboard-content-wrapper" id="page-content-wrapper">
-        <div class="main-dashboard-content">
-            <div class="d-flex flex-column px-3 pt-4 pb-2">
-                <h2 class="welcome-title mb-0">Welcome, <?= htmlspecialchars($user['name']) ?></h2>
+        /* Calendar button group */
+        body.dark-mode .fc-direction-ltr .fc-button-group>.fc-button:not(:last-child),
+        body.dark-mode .fc-direction-ltr .fc-button-group>.fc-button:not(:first-child) {
+            background-color: #121A21 !important;
+            /* Primary dark */
+            color: #94ADC7 !important;
+            /* Secondary text */
+            border: 1px solid #263645 !important;
+        }
+
+        body.dark-mode .fc-direction-ltr .fc-button-group>.fc-button:hover {
+            background-color: #263645 !important;
+            /* Secondary dark on hover */
+            color: #E5E8EB !important;
+            /* Light text on hover */
+        }
+
+        /* Responsive adjustments for dark mode */
+        @media (max-width: 767px) {
+            body.dark-mode .layout-content-container {
+                background-color: #121A21 !important;
+            }
+
+            body.dark-mode .main-dashboard-content {
+                background-color: #121A21 !important;
+            }
+        }
+
+        @media (min-width: 768px) and (max-width: 1023px) {
+            body.dark-mode .layout-content-container {
+                background-color: #121A21 !important;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            body.dark-mode .layout-content-container {
+                background-color: #121A21 !important;
+            }
+        }
+
+        /* Print styles for dark mode (when printing in dark mode) */
+        @media print {
+            body.dark-mode .layout-content-container {
+                background-color: white !important;
+                /* White for printing */
+                color: black !important;
+            }
+
+            body.dark-mode .class-item {
+                background-color: #f8f9fa !important;
+                /* Light background for print */
+                border: 1px solid #dee2e6 !important;
+            }
+        }
+
+        /* Enhanced modal for dark mode */
+        body.dark-mode .modal-content.border-0.rounded-4.shadow-lg {
+            background-color: #263645 !important;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3) !important;
+        }
+
+        /* Rounded buttons in modal footer */
+        body.dark-mode .btn.rounded-pill {
+            border-radius: 50px !important;
+        }
+    </style>
+</head>
+
+<body>
+    <?php require_once '../../templates/user/sidenav_user.php'; ?>
+
+    <div class="layout-content-container d-flex flex-column mb-5 p-3 px-5 justify-content-end">
+        <!-- Header -->
+        <div class="d-flex flex-wrap justify-content-between gap-3 mb-3">
+            <p class="text-dark fw-bold fs-3 mb-0" style="min-width: 288px;">Schedule</p>
+        </div>
+
+        <!-- Calendar Section -->
+        <div class="mb-4">
+            <div id="calendar" class="bg-white rounded shadow-sm p-3"></div>
+        </div>
+
+        <!-- Upcoming Classes Section -->
+        <h3 class="text-dark fw-bold fs-5 px-0 pb-2 pt-4">Upcoming Classes - <?= date('F d, Y', $selected_timestamp) ?>
+        </h3>
+
+        <?php if ($message): ?>
+            <div class="alert alert-<?= $message_type ?> alert-dismissible fade show" role="alert">
+                <?= htmlspecialchars($message) ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
+        <?php endif; ?>
 
+        <div class="d-flex justify-content-end align-items-center mb-3">
+            <button class="btn btn-primary px-4 py-2" onclick="window.print()">
+                <i class="fas fa-print"></i> Print Schedule
+            </button>
+        </div>
 
-            <div class="search-bar position-relative mb-4">
-                <div class="input-group search-bar-custom">
-                    <span class="input-group-text">
-                        <i class="fas fa-search"></i>
-                    </span>
-                    <input type="text" id="searchInput" class="form-control"
-                        placeholder="Search your schedule, courses, or reminders...">
-                </div>
-                <div id="searchResults" class="list-group position-absolute w-100 mt-1"
-                    style="z-index:1000; display: none;"></div>
-
+        <?php if (empty($all_daily_events)): ?>
+            <div class="alert alert-info text-center">
+                No events or reminders scheduled for this day.
             </div>
-
-            <div class="card p-4 mb-4 border-0">
-                <p class="text-dark mb-3">This is your personal space in ChronoNav. Keep an eye on your upcoming
-                    schedules and reminders.</p>
-                <div class="onboarding-controls mt-4 p-3 border rounded">
-                    <h5 class="text-dark fw-bold mb-3">Onboarding & Quick Guides</h5>
-                    <p class="text-muted mb-3">Learn more about using ChronoNav, view helpful tips, or restart your
-                        guided tour.</p>
-                    <div class="d-flex flex-wrap gap-2">
-                        <button class="btn btn-custom-blue rounded-pill" id="viewTourBtn">
-                            <i class="fas fa-route me-1"></i> View Tour
-                        </button>
-                        <button class="btn btn-custom-primary rounded-pill" id="viewTipsBtn">
-                            <i class="fas fa-lightbulb me-1"></i> View Tips
-                        </button>
-                        <button class="btn btn-custom-outline rounded-pill" id="restartOnboardingBtn">
-                            <i class="fas fa-sync-alt me-1"></i> Restart Onboarding
-                        </button>
+        <?php else: ?>
+            <!-- Dynamic Classes from your PHP data -->
+            <?php foreach ($all_daily_events as $event): ?>
+                <div class="class-item d-flex align-items-center gap-3">
+                    <div class="class-icon text-dark">
+                        <?php if ($event['type'] === 'schedule'): ?>
+                            <i class="fas fa-book-open"></i>
+                        <?php elseif ($event['type'] === 'reminder'): ?>
+                            <i class="fas fa-bell"></i>
+                        <?php endif; ?>
                     </div>
-                </div>
-                <div id="onboardingContent" class="mt-3"></div>
-            </div>
-
-            <div class="dashboard-widgets-grid mb-4 px-3">
-                <div class="card study-load-card-custom p-0 w-100">
-                    <div class="row g-0">
-                        <div class="col-12 col-xl-8">
-                            <div class="study-load-image-custom"
-                                style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuD954QIt-gjVs85lBbDP2JqyWtLS1JkL27Y6Or63Qm3SYXXEDGjS_1Zgz278DlR8dGPMDnq8uXRg0NvWFNn3z_sMSFPbzFtTechOl28InzjkBN3fVGWU6VTWRVXNPZ075PPeYJEwmqq6Ye_2n0zcXbwnnIIuRWWKPhUIkz9xa5GmLFWyH_h59WBby1QwlzB_LSr5EVKikvNrmrRTfzrOlefxoZ9Z6fADSNh2E7pi7YyQKNhdB6PlANQDzni9dCVi1p3Ucbkn9SEvw0");'>
-                            </div>
-                        </div>
-                        <div class="col-12 col-xl-4">
-                            <div class="card-body d-flex flex-column justify-content-center h-100 p-4">
-                                <h5 class="card-title fw-bold mb-2">Add Study Load</h5>
-                                <div class="d-flex flex-column flex-xl-row justify-content-between align-items-xl-end">
-                                    <div class="mb-3 mb-xl-0 flex-grow-1">
-                                        <p class="text-muted mb-1">Get started by adding your courses for the semester.
-                                        </p>
-                                        <p class="text-muted mb-0">Plan your academic journey with ease. Add your
-                                            courses and stay organized.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="px-3 pt-3 pb-1">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h3 class="section-title mb-0">Upcoming Classes</h3>
-                    <span class="text-muted small"><?= count($user_schedule) ?>
-                        class<?= count($user_schedule) !== 1 ? 'es' : '' ?>
-                        scheduled</span>
-                </div>
-            </div>
-
-            <div class="px-3">
-                <?php if (!empty($user_schedule)): ?>
-                    <div class="schedule-list">
-                        <?php
-                        // Group classes by day for better organization
-                        $grouped_classes = [];
-                        foreach ($user_schedule as $class) {
-                            $day = htmlspecialchars($class['day_of_week']);
-                            if (!isset($grouped_classes[$day])) {
-                                $grouped_classes[$day] = [];
-                            }
-                            $grouped_classes[$day][] = $class;
-                        }
-
-                        // Sort days in order
-                        $day_order = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-                        ?>
-
-                        <?php foreach ($day_order as $day): ?>
-                            <?php if (isset($grouped_classes[$day]) && !empty($grouped_classes[$day])): ?>
-                                <div class="day-group mb-4">
-                                    <div class="day-header d-flex align-items-center mb-3">
-                                        <div class="day-badge me-3">
-                                            <span class="badge bg-primary px-3 py-2 rounded-pill">
-                                                <i class="fas fa-calendar-day me-2"></i><?= $day ?>
-                                            </span>
-                                        </div>
-                                        <div class="day-count text-muted small">
-                                            <?= count($grouped_classes[$day]) ?>
-                                            class<?= count($grouped_classes[$day]) !== 1 ? 'es' : '' ?>
-                                        </div>
-                                    </div>
-
-                                    <div class="classes-container">
-                                        <?php foreach ($grouped_classes[$day] as $class): ?>
-                                            <div class="class-item-custom d-flex align-items-center justify-content-between mb-3 p-3"
-                                                id="schedule-item-<?= htmlspecialchars($class['schedule_code']) ?>">
-
-                                                <div class="d-flex align-items-center flex-grow-1">
-                                                    <div class="class-icon me-3 d-flex align-items-center justify-content-center rounded-2"
-                                                        style="width: 48px; height: 48px; background: linear-gradient(135deg, #2e78c6, #3e99f4); color: white;">
-                                                        <i class="fas fa-book"></i>
-                                                    </div>
-
-                                                    <div class="d-flex flex-column flex-grow-1">
-                                                        <div class="d-flex align-items-center mb-2">
-                                                            <p class="text-dark fw-medium mb-0 text-truncate me-2">
-                                                                <?= htmlspecialchars($class['title']) ?>
-                                                            </p>
-                                                            <span class="badge bg-light text-dark small px-2 py-1 rounded-pill">
-                                                                <i class="fas fa-clock me-1"></i>
-                                                                <?= htmlspecialchars($class['start_time']) ?> -
-                                                                <?= htmlspecialchars($class['end_time']) ?>
-                                                            </span>
-                                                        </div>
-
-                                                        <div class="d-flex align-items-center text-muted small">
-                                                            <span class="d-flex align-items-center me-3">
-                                                                <i class="fas fa-map-marker-alt me-1"></i>
-                                                                <?= htmlspecialchars($class['room']) ?>
-                                                            </span>
-                                                            <span class="d-flex align-items-center me-3">
-                                                                <i class="fas fa-calendar me-1"></i>
-                                                                <?= htmlspecialchars($class['day_of_week']) ?>
-                                                            </span>
-                                                            <span class="d-flex align-items-center">
-                                                                <i class="fas fa-id-card me-1"></i>
-                                                                <?= htmlspecialchars($class['schedule_code']) ?>
-                                                            </span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <div class="d-flex gap-2 ms-3">
-                                                    <button class="btn btn-custom-outline btn-view-schedule rounded-pill px-3"
-                                                        data-schedule-id="<?= htmlspecialchars($class['schedule_code']) ?>"
-                                                        title="View Details">
-                                                        <i class="fas fa-eye me-1"></i> View
-                                                    </button>
-
-                                                    <button class="btn btn-custom-delete rounded-pill px-3"
-                                                        data-schedule-id="<?= htmlspecialchars($class['schedule_code']) ?>"
-                                                        title="Delete Class"
-                                                        style="background-color: #fee2e2; color: #dc3545; border: none;">
-                                                        <i class="fas fa-trash-alt me-1"></i> Delete
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        <?php endforeach; ?>
-                                    </div>
-                                </div>
+                    <div class="d-flex flex-column justify-content-center">
+                        <p class="text-dark fw-medium mb-1 text-truncate"><?= htmlspecialchars($event['title']) ?></p>
+                        <p class="text-muted small mb-0 text-truncate-2">
+                            <?php if ($event['type'] === 'schedule'): ?>
+                                <?= htmlspecialchars(date('h:i A', strtotime($event['time']))) ?> -
+                                <?= htmlspecialchars(date('h:i A', strtotime($event['end_time']))) ?>
+                                <?php if (!empty($event['location'])): ?>
+                                    · <?= htmlspecialchars($event['location']) ?>
+                                <?php endif; ?>
+                            <?php elseif ($event['type'] === 'reminder'): ?>
+                                Due: <?= htmlspecialchars(date('h:i A', strtotime($event['time']))) ?>
+                                <?php if (!empty($event['description'])): ?>
+                                    · <?= nl2br(htmlspecialchars($event['description'])) ?>
+                                <?php endif; ?>
                             <?php endif; ?>
-                        <?php endforeach; ?>
+                        </p>
                     </div>
-                <?php else: ?>
-                    <div class="empty-state text-center py-5">
-                        <div class="empty-state-icon mb-3">
-                            <i class="fas fa-calendar-times text-muted" style="font-size: 3rem;"></i>
-                        </div>
-                        <h4 class="text-dark mb-2">No Classes Scheduled</h4>
-                        <p class="text-muted mb-4">You haven't added any classes yet. Start by adding your study load to see
-                            your
-                            schedule here.</p>
-                        <a href="#addStudyLoad" class="btn btn-custom-primary rounded-pill px-4">
-                            <i class="fas fa-plus me-2"></i> Add Study Load
-                        </a>
-                    </div>
-                <?php endif; ?>
-            </div>
+                </div>
+            <?php endforeach; ?>
+        <?php endif; ?>
 
+        <!-- Floating Action Button -->
+        <div class="d-flex justify-content-end overflow-hidden p-0 pt-3">
+            <button class="floating-btn fw-bold text-white" data-bs-toggle="modal" data-bs-target="#addReminderModal"
+                data-date="<?= $selected_date ?>">
+                <i class="fas fa-plus"></i>
+                <span class="d-none d-md-inline">Add Schedule</span>
+            </button>
         </div>
     </div>
-</div>
 
-<?php require_once '../../templates/common/onboarding_modal.php'; ?>
+    <!-- FullCalendar JS -->
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
 
-<script id="tour-data" type="application/json">
-    <?= json_encode($onboarding_steps); ?>
-                </script>
-<?php require_once '../../templates/footer.php'; ?>
-<script src="../../assets/js/jquery.min.js"></script>
-<script src="../../assets/js/script.js"></script>
-<script src="../../assets/js/onboarding_tour.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="../../assets/js/jquery.min.js"></script>
 
-<script>
-    $(document).ready(function () {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const calendarEl = document.getElementById('calendar');
 
-        // ================== VIEW SCHEDULE FUNCTIONALITY ==================
-        $(document).on('click', '.btn-view-schedule', function () {
-            const scheduleId = $(this).data('schedule-id');
-            const modalBody = $('#modal-content-area')
-            modalBody.html('<i class="fas fa-spinner fa-spin me-2"></i> Loading details...');
-            $('#scheduleDetailModal').modal('show');
-
-            // AJAX call to fetch schedule details
-            // NOTE: You must create the file pages/user/get_schedule_details.php
-            $.ajax({
-                url: "../../pages/user/get_schedule_details.php",
-                method: "GET",
-                data: { schedule_id: scheduleId },
-                success: function (response) {
-                    // Expecting detailed HTML content from the PHP file
-                    modalBody.html(response);
-                },
-                error: function () {
-                    modalBody.html('<div class="alert alert-danger">Could not load schedule details.</div>');
-                }
-            });
-        });
-
-        // ================== DELETE SCHEDULE FUNCTIONALITY ==================
-        $(document).on('click', '.btn-custom-delete', function () {
-            const scheduleId = $(this).data('schedule-id');
-
-            if (confirm('Are you sure you want to delete this schedule entry? This action cannot be undone.')) {
-                // Disable button during AJAX call
-                const deleteButton = $(this);
-                deleteButton.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i>');
-
-                // NOTE: You must create the file pages/user/delete_schedule.php
-                $.ajax({
-                    url: "../../pages/user/delete_schedule.php",
-                    method: "POST",
-                    data: { schedule_id: scheduleId },
-                    dataType: 'json',
-                    success: function (response) {
-                        if (response.success) {
-                            // Success: Remove the visual item from the list
-                            $('#schedule-item-' + scheduleId).fadeOut(300, function () {
-                                $(this).remove();
-                                alert(response.message);
-                            });
-                        } else {
-                            alert('Error: ' + response.message);
-                            deleteButton.prop('disabled', false).html('<i class="fas fa-trash-alt"></i>');
-                        }
+            // Prepare events for FullCalendar from PHP data
+            const calendarEvents = [
+                <?php foreach ($all_daily_events as $event): ?>
+                    {
+                        title: '<?= addslashes($event['title']) ?>',
+                        start: '<?= $selected_date ?>T<?= $event['time'] ?>',
+                        <?php if ($event['type'] === 'schedule' && !empty($event['end_time'])): ?>
+                            end: '<?= $selected_date ?>T<?= $event['end_time'] ?>',
+                        <?php endif; ?>
+                            description: '<?= addslashes($event['type'] === 'schedule' ? $event['location'] : $event['description']) ?>',
+                        color: '<?= $event['type'] === 'schedule' ? '   ' : '#ffc107' ?>'   
                     },
-                    error: function () {
-                        alert('An error occurred while communicating with the server.');
-                        deleteButton.prop('disabled', false).html('<i class="fas fa-trash-alt"></i>');
-                    }
-                });
-            }
-        });
-    });
+                <?php endforeach; ?>
+            ];
 
-    // ================== AJAX SEARCH ==================
-    $("#searchInput").on("keyup", function () {
-        let query = $(this).val();
-        if (query.length > 2) {
-            $.ajax({
-                url: "../../pages/user/search.php",
-                method: "GET",
-                data: { q: query },
-                success: function (response) {
-                    let data = JSON.parse(response);
-                    let output = "";
-                    if (data.length > 0) {
-                        data.forEach(item => {
-                            output += `<a href="#" class="list-group-item list-group-item-action">${item.title}</a>`;
-                        });
-                    } else {
-                        output = `<div class="list-group-item text-muted">No results found</div>`;
-                    }
-                    $("#searchResults").html(output).show();
+            const calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                },
+                events: calendarEvents,
+                eventClick: function (info) {
+                    alert('Event: ' + info.event.title + '\nDescription: ' + info.event.extendedProps.description);
+                },
+                dateClick: function (info) {
+                    window.location.href = 'schedule.php?date=' + info.dateStr;
                 }
             });
-        } else {
-            $("#searchResults").hide();
-        }
-    });
 
-    // ================== AJAX ONBOARDING ==================
-    $("#viewTipsBtn").click(function () {
-        $.get("../../pages/user/get_tips.php", function (data) {
-            $("#onboardingContent").html(data);
-        });
-    });
-    $("#restartOnboardingBtn").click(function () {
-        $.post("../../pages/user/restart_onboarding.php", { user: "<?= $user['id'] ?? 0 ?>" }, function (data) {
-            $("#onboardingContent").html("<div class='alert alert-success'>Onboarding restarted!</div>");
-        });
+            calendar.render();
 
-    });
+            // Handle modal functionality
+            const navItems = document.querySelectorAll('.nav-tabs-custom .nav-link');
+            const modal = new bootstrap.Modal(document.getElementById('calendarModal'));
+            const modalBody = document.getElementById('calendarModalBody');
+            const modalTitle = document.getElementById('calendarModalLabel');
 
-    // Back to upload button functionality
-    $("#backToUploadBtn").click(function () {
-        $("#preview-step").hide();
-        $("#upload-step").show();
-        $("#ocr-alert").addClass("d-none");
-    });
+            navItems.forEach(item => {
+                item.addEventListener('click', function (event) {
+                    event.preventDefault();
+                    const view = this.getAttribute('data-view');
+                    const titleMap = {
+                        'month': 'Month View',
+                        'week': 'Week View',
+                        'day': 'Day View'
+                    };
+                    modalTitle.textContent = titleMap[view];
 
+                    fetch(`../../includes/fetch_calendar_view.php?view=${view}`)
+                        .then(response => response.text())
+                        .then(data => {
+                            modalBody.innerHTML = data;
+                            modal.show();
+                        })
+                        .catch(error => console.error('Error fetching calendar view:', error));
+                });
+            });
 
-
-
-    // JavaScript for responsive behavior
-    document.addEventListener('DOMContentLoaded', function () {
-        const sidebarToggle = document.getElementById('sidebarToggle');
-        const mainContent = document.querySelector('.main-dashboard-content');
-        const screenSizeText = document.getElementById('screenSizeText');
-
-        // Function to update screen size indicator
-        function updateScreenSizeIndicator() {
-            const width = window.innerWidth;
-            if (width <= 767) {
-                screenSizeText.textContent = 'Mobile';
-            } else if (width >= 768 && width <= 1023) {
-                screenSizeText.textContent = 'Tablet';
-            } else {
-                screenSizeText.textContent = 'Desktop';
-            }
-        }
-
-        // Toggle sidebar on button click
-        sidebarToggle.addEventListener('click', function () {
-            const isCollapsed = mainContent.style.marginLeft === '0px' ||
-                (window.innerWidth <= 1023 && mainContent.style.marginLeft !== '20%');
-
-            if (isCollapsed) {
-                // Expand sidebar
-                if (window.innerWidth <= 767) {
-                    mainContent.style.marginLeft = '0';
-                } else if (window.innerWidth <= 1023) {
-                    mainContent.style.marginLeft = '80px';
-                } else {
-                    mainContent.style.marginLeft = '20%';
+            // Handle add reminder modal
+            const addReminderModal = document.getElementById('addReminderModal');
+            addReminderModal.addEventListener('show.bs.modal', function (event) {
+                const button = event.relatedTarget;
+                const selectedDate = button.getAttribute('data-date');
+                const reminderDateInput = document.getElementById('reminderDate');
+                if (selectedDate) {
+                    reminderDateInput.value = selectedDate;
                 }
-            } else {
-                // Collapse sidebar
-                mainContent.style.marginLeft = '0';
-            }
+            });
         });
+    </script>
 
-        // Handle window resize
-        window.addEventListener('resize', function () {
-            updateScreenSizeIndicator();
+    <!-- Your existing modals -->
+    <div class="modal fade" id="calendarModal" tabindex="-1" aria-labelledby="calendarModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="calendarModalLabel">Calendar View</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="calendarModalBody">
+                    <p>Loading...</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-            // Reset content area based on screen size
-            if (window.innerWidth >= 1024) {
-                mainContent.style.marginLeft = '20%';
-            } else if (window.innerWidth >= 768 && window.innerWidth <= 1023) {
-                mainContent.style.marginLeft = '80px';
-            } else {
-                mainContent.style.marginLeft = '0';
-            }
-        });
+    <div class="modal fade" id="addReminderModal" tabindex="-1" aria-labelledby="addReminderModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content border-0 rounded-4 shadow-lg">
+                <div class="modal-header border-0 pb-0 pt-4 px-4">
+                    <h5 class="modal-title fw-bold" id="addReminderModalLabel">
+                        <i class="fas fa-plus-circle me-2 text-primary"></i> Add New Reminder
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
 
-        // Initialize
-        updateScreenSizeIndicator();
+                <div class="modal-body px-4 py-3">
+                    <form id="addReminderForm" action="../../includes/add_reminder_handler.php" method="POST">
+                        <div class="mb-3">
+                            <label for="reminderTitle" class="form-label fw-semibold">Title</label>
+                            <input type="text" class="form-control" id="reminderTitle" name="title" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="reminderDescription" class="form-label fw-semibold">Description
+                                (Optional)</label>
+                            <textarea class="form-control" id="reminderDescription" name="description"
+                                rows="3"></textarea>
+                        </div>
 
-        // Demo AJAX functionality
-        document.getElementById('viewTipsBtn').addEventListener('click', function () {
-            document.getElementById('onboardingContent').innerHTML =
-                '<div class="alert alert-info">Tips loaded successfully! Here are some helpful tips for using ChronoNav.</div>';
-        });
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="reminderDate" class="form-label fw-semibold">Due Date</label>
+                                <input type="date" class="form-control" id="reminderDate" name="due_date" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="reminderTime" class="form-label fw-semibold">Due Time (Optional)</label>
+                                <input type="time" class="form-control" id="reminderTime" name="due_time">
+                            </div>
+                        </div>
 
-        document.getElementById('restartOnboardingBtn').addEventListener('click', function () {
-            document.getElementById('onboardingContent').innerHTML =
-                '<div class="alert alert-success">Onboarding restarted successfully!</div>';
-        });
-    });
-</script>
+                    </form>
+                </div>
 
+                <div class="modal-footer border-0 pt-2 pb-4 px-4">
+                    <button type="button" class="btn btn-light rounded-pill px-4"
+                        data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" form="addReminderForm" class="btn btn-primary rounded-pill px-4">
+                        <i class="fas fa-save me-1"></i> Save Reminder
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <?php require_once '../../templates/footer.php'; ?>
+</body>
 <?php include('../../includes/semantics/footer.php'); ?>
 
-
+</html>
 
 <script>
-    // Add click handlers for the improved buttons
-    document.addEventListener('DOMContentLoaded', function () {
-        // Add animation to class items
-        const classItems = document.querySelectorAll('.class-item-custom');
-        classItems.forEach((item, index) => {
-            item.style.animationDelay = `${index * 0.05}s`;
-            item.classList.add('animate-fade-in');
-        });
-
-        // Add tooltips to buttons
-        const viewButtons = document.querySelectorAll('.btn-view-schedule');
-        const deleteButtons = document.querySelectorAll('.btn-custom-delete');
-
-        viewButtons.forEach(btn => {
-            btn.setAttribute('data-bs-toggle', 'tooltip');
-            btn.setAttribute('data-bs-placement', 'top');
-            btn.setAttribute('title', 'View class details');
-        });
-
-        deleteButtons.forEach(btn => {
-            btn.setAttribute('data-bs-toggle', 'tooltip');
-            btn.setAttribute('data-bs-placement', 'top');
-            btn.setAttribute('title', 'Remove from schedule');
-        });
-
-        // Initialize Bootstrap tooltips
-        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-        tooltipTriggerList.map(function (tooltipTriggerEl) {
-            return new bootstrap.Tooltip(tooltipTriggerEl);
-        });
-    });
-</script>
-
-
-<!-- Favicon Script -->
-<script>
-    (function () {
-        const faviconUrl = "https://res.cloudinary.com/deua2yipj/image/upload/v1758917007/ChronoNav_logo_muon27.png";
-
-        // Remove any existing favicons
-        document.querySelectorAll('link[rel="icon"], link[rel="shortcut icon"]').forEach(link => link.remove());
-
-        // Create a new favicon link
-        const link = document.createElement("link");
-        link.rel = "icon";
-        link.type = "image/png";
-        link.href = faviconUrl;
-
-        // Append to head
-        document.head.appendChild(link);
-    })();
+    document.body.style.backgroundColor = "#ffffff";
 </script>

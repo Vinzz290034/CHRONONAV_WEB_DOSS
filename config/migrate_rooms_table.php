@@ -7,14 +7,14 @@
 $servername = "localhost";
 $username = "root";
 $password = "";
-$dbname = "chrononav_web_doss";
+$dbname = "chrononav_web_doss1";
 
 // Create connection using the MySQL socket
 $conn = new mysqli($servername, $username, $password, $dbname, 3306, '/opt/lampp/var/mysql/mysql.sock');
 
 // Check connection
 if ($conn->connect_error) {
-    die("❌ Connection failed: " . $conn->connect_error);
+    die("Connection failed: " . $conn->connect_error);
 }
 
 try {

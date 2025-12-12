@@ -3,6 +3,8 @@
 session_start();
 require_once '../config/db_connect.php';
 
+/** @var \mysqli $conn */ // <--- ADD THIS LINE!
+
 /** @var string $error */ // Type hint for Intelephense
 $error = ''; // Initialize error message
 

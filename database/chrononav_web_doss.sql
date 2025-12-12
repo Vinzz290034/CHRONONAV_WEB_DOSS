@@ -980,6 +980,17 @@ CREATE TABLE ocr_templates (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
+
+CREATE TABLE password_resets (
+    id INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    -- Removed 'UNSIGNED' here to match common 'users.id' types
+    user_id INT(11) NOT NULL, 
+    token_hash VARCHAR(255) NOT NULL,
+    expires_at DATETIME NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
 -- ========================================
 -- ADMIN ACCOUNT SETUP
 -- ========================================

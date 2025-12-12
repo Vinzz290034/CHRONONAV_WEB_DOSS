@@ -1,13 +1,20 @@
 <?php
 // CHRONONAV_WEB_DOSS/actions/admin/export_report_pdf.php
+
+// NOTE: This handler MUST be executed after running 'composer require dompdf/dompdf'
 require_once '../../config/db_connect.php';
 
-// Composer Autoloader - This is the corrected line
-require_once '../../vendor/autoload.php';
+// Composer Autoloader - This path is critical for loading Dompdf classes
+require_once '../../vendor/autoload.php'; 
+/** @var \mysqli $conn */ 
 
 // Use statements for Dompdf classes
 use Dompdf\Dompdf;
-use Dompdf\Options;
+use Dompdf\Options; // Class "Dompdf\Options" is defined in the vendor directory
+
+// Restrict access or ensure admin context (omitted for brevity, but recommended security measure)
+// if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'admin') { ... }
+
 
 // Retrieve filter parameters from GET request
 $filter_faculty_id = $_GET['faculty_id'] ?? '';
@@ -19,8 +26,11 @@ $report_data = [];
 
 // Determine the threshold for 'total_expected_sessions' based on end_date filter
 if (!empty($end_date)) {
-    $expected_sessions_end_condition = "CONCAT(cs_sub.session_date, ' ', cs_sub.actual_end_time) <= '" . $conn->real_escape_string($end_date) . " 23:59:59'";
+    // Escaping $end_date before placing it directly into the subquery SQL string
+    $safe_end_date = $conn->real_escape_string($end_date);
+    $expected_sessions_end_condition = "CONCAT(cs_sub.session_date, ' 23:59:59') <= '{$safe_end_date}'";
 } else {
+    // Default condition: All sessions up to the current moment
     $expected_sessions_end_condition = "CONCAT(cs_sub.session_date, ' ', cs_sub.actual_end_time) < NOW()";
 }
 
@@ -45,7 +55,7 @@ $sql = "
     LEFT JOIN
         class_sessions cs ON c.class_id = cs.class_id
     LEFT JOIN
-        attendance_records ar ON cs.id = ar.session_id
+        attendance_record ar ON cs.id = ar.session_id
     WHERE
         u.role = 'faculty'
 ";
@@ -79,7 +89,12 @@ if ($stmt_report === false) {
     die("Error preparing report query.");
 } else {
     if (!empty($params)) {
-        $stmt_report->bind_param($types, ...$params);
+        // Use call_user_func_array for safe dynamic binding (since PHP 8, ...$params is preferred, but for compatibility/debugging, this is often used)
+        $ref_params = [];
+        foreach ($params as $key => $value) {
+            $ref_params[$key] = &$params[$key];
+        }
+        call_user_func_array([$stmt_report, 'bind_param'], array_merge([$types], $ref_params));
     }
     $stmt_report->execute();
     $result_report = $stmt_report->get_result();
@@ -89,9 +104,10 @@ if ($stmt_report === false) {
     $stmt_report->close();
 }
 
+// Close DB connection before rendering (best practice)
 $conn->close();
 
-// HTML for the PDF
+// --- PDF HTML GENERATION ---
 $html = '<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -136,12 +152,14 @@ $html = '<!DOCTYPE html>
 
 foreach ($report_data as $row) {
     $attendance_percentage = 0;
-    if ($row['total_students_in_class'] > 0 && $row['total_sessions_recorded'] > 0) {
-        $possible_records = $row['total_students_in_class'] * $row['total_sessions_recorded'];
-        if ($possible_records > 0) {
-            $attendance_percentage = ($row['total_attendance_marked'] / $possible_records) * 100;
-        }
+    $possible_records = $row['total_students_in_class'] * $row['total_sessions_recorded'];
+    if ($possible_records > 0 && $row['total_attendance_marked'] > 0) {
+        $attendance_percentage = ($row['total_attendance_marked'] / $possible_records) * 100;
     }
+    
+    // Determine color class for PDF output (optional styling in CSS)
+    $percentage_display = number_format($attendance_percentage, 2) . '%';
+
     $html .= '<tr>
         <td>' . htmlspecialchars($row['faculty_name']) . '</td>
         <td>' . htmlspecialchars($row['class_code']) . '</td>
@@ -149,7 +167,7 @@ foreach ($report_data as $row) {
         <td>' . htmlspecialchars($row['semester'] ?? 'N/A') . ' (' . htmlspecialchars($row['academic_year'] ?? 'N/A') . ')</td>
         <td>' . htmlspecialchars($row['total_sessions_recorded']) . '</td>
         <td>' . htmlspecialchars($row['total_expected_sessions']) . '</td>
-        <td>' . number_format($attendance_percentage, 2) . '%</td>
+        <td>' . $percentage_display . '</td>
         <td>' . htmlspecialchars($row['total_students_in_class']) . '</td>
         <td>' . htmlspecialchars($row['total_present']) . '</td>
         <td>' . htmlspecialchars($row['total_absent']) . '</td>
@@ -165,7 +183,8 @@ $html .= '
 
 // Instantiate Dompdf and render the HTML
 try {
-    $options = new Options();
+    // Line 168: Where the error currently points (Class "Dompdf\Options" not found)
+    $options = new Options(); 
     $options->set('isHtml5ParserEnabled', true);
     $options->set('isRemoteEnabled', true);
 

@@ -791,6 +791,17 @@ if (!isset($current_page)) {
                     <span class="nav-link-text fs-6">Report Generator</span>
                 </a>
             </li>
+
+            <li class="nav-item">
+                <a class="nav-link <?= ($current_page === 'manage_resets') ? 'active' : '' ?>"
+                    href="<?= $base_path ?>pages/admin/manage_resets.php">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor" viewBox="0 0 256 256">
+                        <path d="M208,80H176V56a48,48,0,0,0-96,0V80H48A16,16,0,0,0,32,96V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V96A16,16,0,0,0,208,80ZM144,176a16,16,0,1,1-16-16A16,16,0,0,1,144,176ZM112,80V56a16,16,0,0,1,32,0V80Z"></path>
+                    </svg>
+                    <span class="nav-link-text fs-6">Reset Requests</span>
+                </a>
+            </li>
+
             <li class="nav-item">
                 <a class="nav-link <?= ($current_page === 'faculty_verification_codes') ? 'active' : '' ?>"
                     href="<?= $base_path ?>pages/admin/faculty_verification_codes.php">

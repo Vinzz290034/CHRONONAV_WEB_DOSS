@@ -1,7 +1,9 @@
 <?php
 session_start();
 require_once '../config/db_connect.php'; // Make sure to include your database connection file
+/** @var \mysqli $conn */ // <--- ADD THIS LINE!
 
+/** @var string $error */ // Type hint for Intelephense
 // Check if a user is currently logged in
 if (isset($_SESSION['user']['id'])) {
     // --- START OF NEW CODE: INSERT AUDIT LOG FOR LOGOUT ---
