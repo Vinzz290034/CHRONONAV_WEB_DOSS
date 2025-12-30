@@ -263,6 +263,12 @@
                             <a class="text-dark text-decoration-none fw-medium nav-link" href="#services">Services</a>
                             <a class="text-dark text-decoration-none fw-medium nav-link" href="#faqs">FAQs</a>
                             <a class="text-dark text-decoration-none fw-medium nav-link" href="#contact">Contact</a>
+
+                            <a class="text-primary text-decoration-none fw-bold nav-link d-flex align-items-center gap-1" href="auth/login_process.php?guest=true">
+                                <i class="fas fa-user-clock"></i> Visitor
+                            </a>
+
+
                             <!-- Dark Mode Toggle Button -->
                             <button class="btn btn-link text-dark p-0" id="darkModeToggle" title="Toggle Dark Mode">
                                 <i class="fas fa-moon"></i>
@@ -290,6 +296,9 @@
                         <a class="text-dark text-decoration-none fw-medium nav-link" href="#services">Services</a>
                         <a class="text-dark text-decoration-none fw-medium nav-link" href="#faqs">FAQs</a>
                         <a class="text-dark text-decoration-none fw-medium nav-link" href="#contact">Contact</a>
+                        <a class="text-primary text-decoration-none fw-bold border-top pt-2" href="auth/login_process.php?guest=true">
+                            Visitor Mode
+                        </a>
 
                         <!-- Dark Mode Toggle Button for Mobile -->
                         <button class="btn btn-link text-dark p-0 text-end ms-auto" id="darkModeToggleMobile"
